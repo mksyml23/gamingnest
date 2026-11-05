@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, serverTimestamp, updateDoc, increment, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCwmLK8oB0gxqXU-96b6avE1wIRyy4uyME", authDomain: "gamingnest-accounts.firebaseapp.com", projectId: "gamingnest-accounts", storageBucket: "gamingnest-accounts.firebasestorage.app", messagingSenderId: "23653785300", appId: "1:23653785300:web:4e3295b19556e0a312e541", measurementId: "G-HBLK0LF7PB" };
@@ -8,110 +8,54 @@ export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 export { updateDoc, increment, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit };
 
-window.saveGameData = async (gameId, dataToSave) => {
-  const user = auth.currentUser;
-  if (!user) return false;
-  try {
-    const cleanData = JSON.parse(JSON.stringify(dataToSave));
-    await setDoc(doc(firestore, "users", user.uid, "games", gameId), { ...cleanData, lastSave: cleanData.lastSave || Date.now(), serverUpdatedAt: serverTimestamp() }, { merge: true });
-    return true;
-  } catch (error) { console.error("Cloud save error", error); return false; }
+window.saveGameData = async (gameId, data) => {
+  if (!auth.currentUser) return false;
+  try { const clean = JSON.parse(JSON.stringify(data)); await setDoc(doc(firestore, "users", auth.currentUser.uid, "games", gameId), { ...clean, lastSave: clean.lastSave || Date.now(), serverUpdatedAt: serverTimestamp() }, { merge:true }); return true; } catch (error) { console.error("Cloud save error", error); return false; }
 };
 window.loadGameData = (gameId) => new Promise((resolve) => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    unsubscribe();
-    if (!user) return resolve(null);
-    try { const snapshot = await getDoc(doc(firestore, "users", user.uid, "games", gameId)); resolve(snapshot.exists() ? snapshot.data() : null); }
-    catch (error) { console.error("Cloud load error", error); resolve(null); }
-  });
+  const stop = onAuthStateChanged(auth, async (user) => { stop(); if (!user) return resolve(null); try { const snap = await getDoc(doc(firestore, "users", user.uid, "games", gameId)); resolve(snap.exists() ? snap.data() : null); } catch (error) { console.error("Cloud load error", error); resolve(null); } });
 });
 
 const copy = {
-  en: { langLabel: "Language", subtitle: "Because you should be doing your homework.", seoTitle: "Play Free Games Online Without Downloading", seoText: "Play free online browser games instantly. No downloads. Just click and play action, idle, strategy and multiplayer games.", games: "{count} games ready to play", accountTitle: "Create your account", accountIntro: "Save your progress across GamingNest.", google: "Continue with Google", or: "OR", email: "Email address", password: "Password", create: "Create account", haveAccount: "Already have an account?", login: "Log in", noAccount: "New here?", logout: "Log out", welcome: "Welcome back!", guest: "GamingNest player", play: "PLAY", playNow: "PLAY NOW", popular: "Popular", liked: "Most Liked", newest: "New", all: "All Games", search: "Search free browser games...", invalid: "Enter a valid email address.", passwordShort: "Your password needs at least 6 characters.", working: "One moment...", popup: "Google sign-in could not open here. Redirecting you securely instead...", emailInUse: "That email already has an account. Try logging in instead.", wrongPassword: "That email or password is incorrect.", notFound: "No account exists for that email yet.", network: "Connection problem. Check your internet and try again.", generic: "Something went wrong. Please try again." },
-  nl: { langLabel: "Taal", subtitle: "Omdat je eigenlijk huiswerk hoort te maken.", seoTitle: "Speel gratis games online, zonder downloaden", seoText: "Speel gratis browsergames meteen in je browser. Geen downloads. Klik en speel actie-, idle-, strategie- en multiplayergames.", games: "{count} games klaar om te spelen", accountTitle: "Maak je account", accountIntro: "Bewaar je voortgang op heel GamingNest.", google: "Doorgaan met Google", or: "OF", email: "E-mailadres", password: "Wachtwoord", create: "Account maken", haveAccount: "Heb je al een account?", login: "Inloggen", noAccount: "Nieuw hier?", logout: "Uitloggen", welcome: "Welkom terug!", guest: "GamingNest-speler", play: "SPELEN", playNow: "NU SPELEN", popular: "Populair", liked: "Meest geliket", newest: "Nieuw", all: "Alle games", search: "Zoek gratis browsergames...", invalid: "Vul een geldig e-mailadres in.", passwordShort: "Je wachtwoord moet minstens 6 tekens hebben.", working: "Momentje...", popup: "Google-inloggen kan hier niet als pop-up openen. Je wordt veilig doorgestuurd...", emailInUse: "Dit e-mailadres heeft al een account. Probeer in te loggen.", wrongPassword: "Dit e-mailadres of wachtwoord klopt niet.", notFound: "Er bestaat nog geen account met dit e-mailadres.", network: "Verbindingsprobleem. Controleer je internet en probeer opnieuw.", generic: "Er ging iets mis. Probeer het opnieuw." }
+ en:{language:"Language",subtitle:"Because you should be doing your homework.",heroHeading:"Play Free Games Online Without Downloading",heroText:"Play free online browser games instantly. No downloads. Just click and play action, idle, strategy and multiplayer games.",games:"{count} games ready to play",popular:"Popular",liked:"Most Liked",newest:"New",all:"All Games",search:"Search free browser games...",play:"PLAY",playNow:"PLAY NOW",hall:"HALL OF FAME",bottomHeading:"Play Free Browser Games Online",accountTitle:"Create your account",accountIntro:"Save your progress across GamingNest.",google:"Continue with Google",or:"OR",email:"Email address",password:"Password",create:"Create account",login:"Log in",haveAccount:"Already have an account?",newHere:"New here?",forgot:"Forgot password?",resetSent:"Password reset email sent. Check your inbox.",welcome:"Welcome back!",guest:"GamingNest player",logout:"Log out",invalid:"Enter a valid email address.",passwordShort:"Your password needs at least 6 characters.",popup:"Google sign-in could not open as a pop-up. Redirecting you securely instead…",working:"One moment…",emailInUse:"That email already has an account. Try logging in instead.",wrongPassword:"That email or password is incorrect.",notFound:"No account exists for that email yet.",network:"Connection problem. Check your internet and try again.",generic:"Something went wrong. Please try again.",feedback:"Feedback",yourName:"Your name",yourEmail:"Your email",message:"Type here…",submit:"Send",gameOfDay:"GAME OF THE DAY",featured:"One of GamingNest’s featured games. Jump in and see what makes it special."},
+ nl:{language:"Taal",subtitle:"Omdat je eigenlijk huiswerk hoort te maken.",heroHeading:"Speel gratis games online, zonder downloaden",heroText:"Speel gratis browsergames meteen in je browser. Geen downloads. Klik en speel actie-, idle-, strategie- en multiplayergames.",games:"{count} games klaar om te spelen",popular:"Populair",liked:"Meest geliket",newest:"Nieuw",all:"Alle games",search:"Zoek gratis browsergames…",play:"SPELEN",playNow:"NU SPELEN",hall:"EREGALERIJ",bottomHeading:"Speel gratis browsergames online",accountTitle:"Maak je account",accountIntro:"Bewaar je voortgang op heel GamingNest.",google:"Doorgaan met Google",or:"OF",email:"E-mailadres",password:"Wachtwoord",create:"Account maken",login:"Inloggen",haveAccount:"Heb je al een account?",newHere:"Nieuw hier?",forgot:"Wachtwoord vergeten?",resetSent:"E-mail voor wachtwoordherstel verstuurd. Kijk in je inbox.",welcome:"Welkom terug!",guest:"GamingNest-speler",logout:"Uitloggen",invalid:"Vul een geldig e-mailadres in.",passwordShort:"Je wachtwoord moet minstens 6 tekens hebben.",popup:"Google-inloggen kan hier niet als pop-up openen. Je wordt veilig doorgestuurd…",working:"Momentje…",emailInUse:"Dit e-mailadres heeft al een account. Probeer in te loggen.",wrongPassword:"Dit e-mailadres of wachtwoord klopt niet.",notFound:"Er bestaat nog geen account met dit e-mailadres.",network:"Verbindingsprobleem. Controleer je internet en probeer opnieuw.",generic:"Er ging iets mis. Probeer het opnieuw.",feedback:"Feedback",yourName:"Je naam",yourEmail:"Je e-mailadres",message:"Typ hier…",submit:"Versturen",gameOfDay:"GAME VAN DE DAG",featured:"Een uitgelichte GamingNest-game. Start hem en ontdek waarom."}
 };
-const locale = () => document.getElementById("language-select")?.value || localStorage.getItem("gn_locale") || "en";
-const text = (key, values = {}) => (copy[locale()] || copy.en)[key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
-const setText = (selector, value) => { const node = document.querySelector(selector); if (node) node.textContent = value; };
-const replaceText = (root, replacements) => {
-  if (!root) return;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  [...Array.from({ length: 0 })];
-  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
-  nodes.forEach((node) => { const source = node.nodeValue; const trimmed = source.trim(); if (replacements[trimmed]) node.nodeValue = source.replace(trimmed, replacements[trimmed]); });
-};
+let language = localStorage.getItem("gn_locale") || ((navigator.language || "").toLowerCase().startsWith("nl") ? "nl" : "en");
+const tr = (key, vars={}) => (copy[language][key] || copy.en[key] || key).replace(/\{(\w+)\}/g, (_,k) => vars[k] ?? "");
+const set = (selector, value) => { const node=document.querySelector(selector); if(node) node.textContent=value; };
+const textNodes = (root=document.body) => { const walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const list=[]; while(walker.nextNode()) list.push(walker.currentNode); return list; };
+function replaceVisibleText(map) { textNodes().forEach((node)=>{ const raw=node.nodeValue, clean=raw.trim(); if(map[clean]) node.nodeValue=raw.replace(clean,map[clean]); }); }
 function applyLocale() {
-  const picker = document.getElementById("language-select");
-  if (!picker) return;
-  const active = locale();
-  document.documentElement.lang = active;
-  picker.setAttribute("aria-label", text("langLabel"));
-  picker.title = text("langLabel");
-  setText("#funny-subtitle", text("subtitle"));
-  setText("header .hero-desc h2", text("seoTitle"));
-  const heroText = document.querySelector("header .hero-desc p"); if (heroText) heroText.textContent = text("seoText");
-  const summary = document.getElementById("results-summary"); if (summary) { const count = document.querySelectorAll(".game-card").length || document.querySelectorAll("article").length; summary.textContent = text("games", { count }); }
-  const search = document.getElementById("search"); if (search) search.placeholder = text("search");
-  replaceText(document.querySelector(".categories"), { Popular: text("popular"), "Most Liked": text("liked"), New: text("newest"), "All Games": text("all") });
-  replaceText(document, { PLAY: text("play"), "PLAY NOW": text("playNow") });
-  refreshAccountCopy();
+ document.documentElement.lang=language; document.title=language==="nl"?"Gratis online browsergames spelen | GamingNest":"Free Online Browser Games | Play Instantly No Download - GamingNest";
+ set("#funny-subtitle",tr("subtitle")); set("header .hero-desc h2",tr("heroHeading")); const hp=document.querySelector("header .hero-desc p"); if(hp) hp.textContent=tr("heroText");
+ const search=document.getElementById("search"); if(search) search.placeholder=tr("search");
+ const cards=document.querySelectorAll("article").length; const results=document.getElementById("results-summary"); if(results) results.textContent=tr("games",{count:cards});
+ const category=document.querySelectorAll(".categories button"); [tr("popular"),tr("liked"),tr("newest"),tr("all")].forEach((value,index)=>{if(category[index])category[index].textContent=value});
+ replaceVisibleText({"PLAY":tr("play"),"PLAY NOW":tr("playNow"),"HALL OF FAME":tr("hall"),"Play Free Browser Games Online":tr("bottomHeading"),"Feedback":tr("feedback"),"GAME OF THE DAY":tr("gameOfDay"),"One of GamingNest’s featured games. Jump in and see what makes it special.":tr("featured")});
+ document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(copy[language][key])el.textContent=tr(key)});
+ refreshAccount();
 }
-function installLanguageUI() {
-  const style = document.createElement("style");
-  style.textContent = `#language-select.language-select{appearance:none!important;position:fixed!important;top:16px!important;left:16px!important;z-index:1000!important;min-width:88px!important;padding:10px 34px 10px 14px!important;border-radius:14px!important;border:1px solid rgba(117,221,255,.62)!important;background:linear-gradient(135deg,rgba(13,25,48,.96),rgba(8,12,25,.96))!important;color:#f5fbff!important;font:800 .76rem/1 Poppins,Arial,sans-serif!important;letter-spacing:.08em!important;box-shadow:0 10px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14)!important;background-image:linear-gradient(45deg,transparent 50%,#75ddff 50%),linear-gradient(135deg,#75ddff 50%,transparent 50%),linear-gradient(135deg,rgba(13,25,48,.96),rgba(8,12,25,.96))!important;background-position:calc(100% - 16px) 15px,calc(100% - 11px) 15px,0 0!important;background-size:5px 5px,5px 5px,100% 100%!important;background-repeat:no-repeat!important}#language-select.language-select:hover{border-color:#fff!important;transform:translateY(-1px)}#language-select.language-select:focus-visible{outline:3px solid #fff!important;outline-offset:3px!important}@media(max-width:650px){#language-select.language-select{top:12px!important;left:12px!important;min-width:76px!important;padding:9px 30px 9px 12px!important}}`;
-  document.head.append(style);
-  const picker = document.getElementById("language-select");
-  if (picker) picker.addEventListener("change", () => setTimeout(applyLocale, 0));
-  window.addEventListener("load", () => { applyLocale(); new MutationObserver(() => requestAnimationFrame(applyLocale)).observe(document.body, { childList: true, subtree: true }); });
+function installVisualSystem(){
+ const css=document.createElement("style"); css.textContent=`html{scrollbar-color:#00bfff #080d1c;scrollbar-width:thin}::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:#080d1c;border-left:1px solid rgba(117,221,255,.14)}::-webkit-scrollbar-thumb{background:linear-gradient(#19cdfd,#087ec7);border:3px solid #080d1c;border-radius:999px}::-webkit-scrollbar-thumb:hover{background:linear-gradient(#8eeaff,#00a7e8)}#language-select{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}.gn-language{position:fixed;top:16px;left:16px;z-index:1100;font-family:Poppins,Arial,sans-serif}.gn-language__button{display:flex;align-items:center;gap:8px;min-width:88px;border:1px solid rgba(117,221,255,.55);border-radius:12px;background:linear-gradient(145deg,#15294d,#0a1022);color:#f7fcff;padding:9px 12px;box-shadow:0 9px 24px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.12);font:800 .76rem/1 Poppins,Arial,sans-serif;letter-spacing:.08em;cursor:pointer}.gn-language__button:hover,.gn-language__button[aria-expanded=true]{border-color:#fff;transform:translateY(-1px);box-shadow:0 12px 28px rgba(0,191,255,.22)}.gn-language__chevron{color:#75ddff;font-size:.8rem;transition:transform .18s}.gn-language__button[aria-expanded=true] .gn-language__chevron{transform:rotate(180deg)}.gn-language__menu{position:absolute;top:calc(100% + 8px);left:0;width:132px;padding:6px;background:rgba(9,16,34,.98);border:1px solid rgba(117,221,255,.4);border-radius:12px;box-shadow:0 18px 35px rgba(0,0,0,.45);display:none}.gn-language.open .gn-language__menu{display:grid;gap:4px}.gn-language__option{width:100%;border:0;border-radius:8px;background:transparent;color:#dff8ff;padding:10px 11px;text-align:left;font:800 .77rem Poppins,Arial,sans-serif;letter-spacing:.06em;cursor:pointer}.gn-language__option:hover,.gn-language__option.active{background:rgba(0,191,255,.16);color:#fff}.gn-language__option.active:after{content:"✓";float:right;color:#75ddff}.account-switch-button,.account-reset{border:0;background:none;color:#75ddff;font:700 .86rem Poppins,Arial,sans-serif;cursor:pointer;padding:3px 0}.account-switch-button:hover,.account-reset:hover{text-decoration:underline;color:#fff}.account-reset{display:block;margin:9px auto 0}.account-error{line-height:1.45}@media(max-width:650px){.gn-language{top:12px;left:12px}.gn-language__button{min-width:78px;padding:8px 10px}}`; document.head.append(css);
+ const native=document.getElementById("language-select"); if(!native || document.querySelector(".gn-language"))return; native.value=language;
+ const holder=document.createElement("div"); holder.className="gn-language"; holder.innerHTML=`<button class="gn-language__button" type="button" aria-expanded="false"><span class="gn-language__current"></span><span class="gn-language__chevron">⌄</span></button><div class="gn-language__menu" role="menu"><button class="gn-language__option" type="button" data-language="en" role="menuitem">EN English</button><button class="gn-language__option" type="button" data-language="nl" role="menuitem">NL Nederlands</button></div>`; native.insertAdjacentElement("afterend",holder);
+ const button=holder.querySelector(".gn-language__button"), current=holder.querySelector(".gn-language__current");
+ const close=()=>{holder.classList.remove("open");button.setAttribute("aria-expanded","false")}; const redraw=()=>{current.textContent=language.toUpperCase();holder.querySelectorAll("[data-language]").forEach(item=>item.classList.toggle("active",item.dataset.language===language))};
+ button.addEventListener("click",()=>{const show=!holder.classList.contains("open");holder.classList.toggle("open",show);button.setAttribute("aria-expanded",String(show))}); holder.querySelectorAll("[data-language]").forEach(item=>item.addEventListener("click",()=>{language=item.dataset.language;localStorage.setItem("gn_locale",language);native.value=language;native.dispatchEvent(new Event("change",{bubbles:true}));redraw();applyLocale();close()})); document.addEventListener("click",event=>{if(!holder.contains(event.target))close()}); redraw();
 }
 
-let accountMode = "signup";
-const account = () => ({ title: document.getElementById("account-title"), subtitle: document.getElementById("account-subtitle"), error: document.getElementById("account-error"), google: document.getElementById("google-login"), email: document.getElementById("account-email"), password: document.getElementById("account-password"), submit: document.getElementById("account-submit"), divider: document.querySelector(".account-divider"), switchBox: document.querySelector(".account-switch"), switchText: document.getElementById("account-switch-text"), switchButton: document.getElementById("account-switch-button") });
-function showAccountError(error) {
-  const box = account().error; if (!box) return;
-  const codes = { "auth/email-already-in-use": "emailInUse", "auth/invalid-credential": "wrongPassword", "auth/wrong-password": "wrongPassword", "auth/user-not-found": "notFound", "auth/network-request-failed": "network" };
-  box.textContent = text(codes[error?.code] || "generic"); box.style.display = "block";
-}
-function clearAccountError() { const box = account().error; if (box) { box.textContent = ""; box.style.display = "none"; } }
-function setBusy(busy) { const { submit, google } = account(); [submit, google].filter(Boolean).forEach((button) => { button.disabled = busy; button.dataset.label ||= button.textContent; if (busy) button.textContent = text("working"); else button.textContent = button.dataset.label; }); }
-async function ensureProfile(user) { try { const ref = doc(firestore, "users", user.uid); if (!(await getDoc(ref)).exists()) await setDoc(ref, { email: user.email || "", displayName: user.displayName || "", photoURL: user.photoURL || "", createdAt: serverTimestamp() }); } catch (error) { console.warn("Profile setup skipped", error); } }
-function showSignedOut() {
-  const ui = account(); if (!ui.title) return;
-  ui.title.textContent = accountMode === "signup" ? text("accountTitle") : text("login");
-  if (ui.subtitle) ui.subtitle.textContent = accountMode === "signup" ? text("accountIntro") : text("accountIntro");
-  if (ui.google) { ui.google.style.display = ""; ui.google.innerHTML = `<i class="fab fa-google"></i>&nbsp; ${text("google")}`; }
-  if (ui.divider) ui.divider.style.display = "";
-  if (ui.email) { ui.email.style.display = ""; ui.email.placeholder = text("email"); }
-  if (ui.password) { ui.password.style.display = ""; ui.password.placeholder = text("password"); ui.password.autocomplete = accountMode === "signup" ? "new-password" : "current-password"; }
-  if (ui.submit) { ui.submit.style.display = ""; ui.submit.textContent = accountMode === "signup" ? text("create") : text("login"); }
-  if (ui.switchBox) ui.switchBox.innerHTML = `<span id="account-switch-text">${accountMode === "signup" ? text("haveAccount") : text("noAccount")}</span> <button id="account-switch-button" class="account-switch-button" type="button">${accountMode === "signup" ? text("login") : text("create")}</button>`;
-  document.getElementById("account-switch-button")?.addEventListener("click", () => { accountMode = accountMode === "signup" ? "login" : "signup"; clearAccountError(); showSignedOut(); });
-}
-function updateAccountUI(user) {
-  const ui = account(); if (!ui.title) return;
-  clearAccountError(); ui.title.textContent = text("welcome"); if (ui.subtitle) ui.subtitle.textContent = user.email || user.displayName || text("guest");
-  [ui.google, ui.divider, ui.email, ui.password, ui.submit].filter(Boolean).forEach((node) => node.style.display = "none");
-  if (ui.switchBox) { ui.switchBox.innerHTML = `<button id="logout-button" class="account-switch-button" type="button">${text("logout")}</button>`; document.getElementById("logout-button")?.addEventListener("click", async () => { await signOut(auth); showSignedOut(); }); }
-}
-function refreshAccountCopy() { if (auth.currentUser) updateAccountUI(auth.currentUser); else showSignedOut(); }
-async function emailSignIn() {
-  const { email, password } = account(); const address = email?.value.trim() || ""; const secret = password?.value || ""; clearAccountError();
-  if (!/^\S+@\S+\.\S+$/.test(address)) return showAccountError({ code: "invalid" }), account().error.textContent = text("invalid");
-  if (secret.length < 6) return showAccountError({ code: "invalid" }), account().error.textContent = text("passwordShort");
-  setBusy(true); try { const result = accountMode === "signup" ? await createUserWithEmailAndPassword(auth, address, secret) : await signInWithEmailAndPassword(auth, address, secret); await ensureProfile(result.user); updateAccountUI(result.user); } catch (error) { showAccountError(error); } finally { setBusy(false); }
-}
-async function googleSignIn() {
-  clearAccountError(); const provider = new GoogleAuthProvider(); provider.setCustomParameters({ prompt: "select_account" }); setBusy(true);
-  try { const result = await signInWithPopup(auth, provider); await ensureProfile(result.user); updateAccountUI(result.user); }
-  catch (error) { if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment"].includes(error.code)) { const box = account().error; if (box) { box.textContent = text("popup"); box.style.display = "block"; } await signInWithRedirect(auth, provider); return; } showAccountError(error); } finally { setBusy(false); }
-}
-function installAccountUI() {
-  const ui = account(); if (!ui.title) return;
-  if (ui.google) { ui.google.type = "button"; ui.google.addEventListener("click", googleSignIn); }
-  if (ui.submit) { ui.submit.type = "button"; ui.submit.addEventListener("click", emailSignIn); }
-  [ui.email, ui.password].filter(Boolean).forEach((input) => input.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); emailSignIn(); } }));
-  getRedirectResult(auth).then(async (result) => { if (result?.user) { await ensureProfile(result.user); updateAccountUI(result.user); } }).catch(showAccountError);
-  onAuthStateChanged(auth, (user) => user ? updateAccountUI(user) : showSignedOut());
-}
-installLanguageUI();
-installAccountUI();
+let accountMode="signup";
+const ui=()=>({title:document.getElementById("account-title"),subtitle:document.getElementById("account-subtitle"),error:document.getElementById("account-error"),google:document.getElementById("google-login"),email:document.getElementById("account-email"),password:document.getElementById("account-password"),submit:document.getElementById("account-submit"),divider:document.querySelector(".account-divider"),switchBox:document.querySelector(".account-switch")});
+function accountError(error){const box=ui().error;if(!box)return;const keys={"auth/email-already-in-use":"emailInUse","auth/invalid-credential":"wrongPassword","auth/wrong-password":"wrongPassword","auth/user-not-found":"notFound","auth/network-request-failed":"network"};box.textContent=tr(keys[error?.code]||"generic");box.style.display="block"}
+function notice(message){const box=ui().error;if(box){box.textContent=message;box.style.display="block"}} function clearError(){const box=ui().error;if(box){box.textContent="";box.style.display="none"}}
+function busy(value){const {submit,google}=ui();[submit,google].filter(Boolean).forEach(button=>{button.disabled=value;if(value){button.dataset.label=button.innerHTML;button.textContent=tr("working")}else if(button.dataset.label)button.innerHTML=button.dataset.label})}
+async function profile(user){try{const ref=doc(firestore,"users",user.uid);if(!(await getDoc(ref)).exists())await setDoc(ref,{email:user.email||"",displayName:user.displayName||"",photoURL:user.photoURL||"",createdAt:serverTimestamp()})}catch(error){console.warn("Profile set-up skipped",error)}}
+function signedOut(){const x=ui();if(!x.title)return;clearError();x.title.textContent=accountMode==="signup"?tr("accountTitle"):tr("login");if(x.subtitle)x.subtitle.textContent=tr("accountIntro");if(x.google){x.google.style.display="";x.google.innerHTML=`<i class="fab fa-google"></i>&nbsp; ${tr("google")}`}if(x.divider)x.divider.textContent=tr("or");if(x.divider)x.divider.style.display="";if(x.email){x.email.style.display="";x.email.placeholder=tr("email");x.email.autocomplete="email"}if(x.password){x.password.style.display="";x.password.placeholder=tr("password");x.password.autocomplete=accountMode==="signup"?"new-password":"current-password"}if(x.submit){x.submit.style.display="";x.submit.textContent=accountMode==="signup"?tr("create"):tr("login")}if(x.switchBox){x.switchBox.innerHTML=`<span>${accountMode==="signup"?tr("haveAccount"):tr("newHere")}</span> <button type="button" class="account-switch-button" id="account-switch-button">${accountMode==="signup"?tr("login"):tr("create")}</button>${accountMode==="login"?`<button type="button" class="account-reset" id="account-reset">${tr("forgot")}</button>`:""}`;document.getElementById("account-switch-button")?.addEventListener("click",()=>{accountMode=accountMode==="signup"?"login":"signup";signedOut()});document.getElementById("account-reset")?.addEventListener("click",resetPassword)}}
+function signedIn(user){const x=ui();if(!x.title)return;clearError();x.title.textContent=tr("welcome");if(x.subtitle)x.subtitle.textContent=user.email||user.displayName||tr("guest");[x.google,x.divider,x.email,x.password,x.submit].filter(Boolean).forEach(node=>node.style.display="none");if(x.switchBox){x.switchBox.innerHTML=`<button type="button" class="account-switch-button" id="logout-button">${tr("logout")}</button>`;document.getElementById("logout-button")?.addEventListener("click",async()=>{await signOut(auth);signedOut()})}}
+function refreshAccount(){auth.currentUser?signedIn(auth.currentUser):signedOut()}
+async function emailAuth(){const {email,password}=ui();const address=email?.value.trim()||"",secret=password?.value||"";clearError();if(!/^\S+@\S+\.\S+$/.test(address))return notice(tr("invalid"));if(secret.length<6)return notice(tr("passwordShort"));busy(true);try{const result=accountMode==="signup"?await createUserWithEmailAndPassword(auth,address,secret):await signInWithEmailAndPassword(auth,address,secret);await profile(result.user);signedIn(result.user)}catch(error){accountError(error)}finally{busy(false)}}
+async function resetPassword(){const address=ui().email?.value.trim()||"";if(!/^\S+@\S+\.\S+$/.test(address))return notice(tr("invalid"));try{await sendPasswordResetEmail(auth,address);notice(tr("resetSent"))}catch(error){accountError(error)}}
+async function googleAuth(){clearError();const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});busy(true);try{const result=await signInWithPopup(auth,provider);await profile(result.user);signedIn(result.user)}catch(error){if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(error.code)){notice(tr("popup"));await signInWithRedirect(auth,provider);return}accountError(error)}finally{busy(false)}}
+function installAccount(){const x=ui();if(!x.title)return;if(x.google){x.google.type="button";x.google.addEventListener("click",googleAuth)}if(x.submit){x.submit.type="button";x.submit.addEventListener("click",emailAuth)}[x.email,x.password].filter(Boolean).forEach(input=>input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();emailAuth()}}));getRedirectResult(auth).then(async result=>{if(result?.user){await profile(result.user);signedIn(result.user)}}).catch(accountError);onAuthStateChanged(auth,user=>user?signedIn(user):signedOut())}
+
+installVisualSystem(); installAccount(); window.addEventListener("load",applyLocale);
