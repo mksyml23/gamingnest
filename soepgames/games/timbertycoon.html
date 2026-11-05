@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO: Geoptimaliseerde Titel & Beschrijving -->
+    <title>Play Timber Tycoon Free Online - Idle Game | GamingNest</title>
+    <meta name="description" content="Play Timber Tycoon, an addictive free online idle game. Chop wood, upgrade your lumberjacks, and conquer different biomes instantly in your browser.">
+    <meta name="keywords" content="Timber Tycoon, idle game, incremental game, lumberjack game, free online game, browser game, GamingNest">
+    <link rel="canonical" href="https://gamingnest.nl/games/timbertycoon.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Play Timber Tycoon Free Online - GamingNest">
+    <meta property="og:description" content="Chop wood, hire lumberjacks, and build a timber empire in this free idle browser game.">
+    <meta property="og:image" content="https://gamingnest.nl/timbertycoonlogo.png">
+    <meta property="og:url" content="https://gamingnest.nl/games/timbertycoon.html">
+    <meta property="og:type" content="website">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Timber Tycoon",
+      "url": "https://gamingnest.nl/games/timbertycoon.html",
+      "image": "https://gamingnest.nl/timbertycoonlogo.png",
+      "description": "Timber Tycoon is an incremental idle game where you harvest wood, hire workers, and unlock new biomes to build a timber empire. Free online browser game.",
+      "genre": ["Idle", "Incremental", "Strategy", "Simulation"],
+      "playMode": "SinglePlayer",
+      "applicationCategory": "BrowserGame",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+    </script>
+
+    <!-- FIREBASE CLOUD SAVE & SCRIPTS -->
+    <script type="module" src="/firebase-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5f408d48-7592-4cb0-a796-c0234493dd3e"></script>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&display=swap');
+
+      body {
+        font-family: 'Crimson Pro', serif;
+        background-color: #1a2e12;
+        color: #f1f8e9;
+        overflow: hidden;
+      }
+      .pixel-font {
+        font-family: 'Press Start 2P', cursive;
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #3e2723;
+        border-left: 1px solid #5d4037;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #8d6e63;
+        border: 2px solid #3e2723;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a1887f;
+      }
+
+      /* Patterns */
+      .bg-wood-pattern {
+        background-color: #4e342e;
+        background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233e2723' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        border: 2px solid #3e2723;
+      }
+
+      /* Animations */
+      @keyframes float-up {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-40px); opacity: 0; }
+      }
+      .animate-float {
+        animation: float-up 1.5s ease-out forwards;
+      }
+      @keyframes sway {
+        0% { transform: rotate(-3deg); }
+        100% { transform: rotate(3deg); }
+      }
+      .animate-sway {
+        animation: sway 4s ease-in-out infinite alternate;
+        transform-origin: bottom center;
+      }
+      .animate-sway-fast {
+        animation: sway 2s ease-in-out infinite alternate;
+        transform-origin: bottom center;
+      }
+      .animate-spin-slow {
+        animation: spin 8s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .text-shadow-sm {
+        text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+      }
+      .animate-fade-in {
+          animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="sr-only">
+      <h1>Play Timber Tycoon Free Online - Idle Clicker Game</h1>
+      <p>Timber Tycoon is a free online idle incremental game. Harvest wood, upgrade your lumberjacks, explore biomes like the Boreal and Mystic forests, and build a global timber empire. Play instantly on GamingNest without downloading.</p>
+    </div>
+	
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONSTANTS & ENUMS ---
+        const TreeStage = {
+          Empty: 'EMPTY',
+          Sapling: 'SAPLING',
+          Young: 'YOUNG',
+          Mature: 'MATURE',
+          Stump: 'STUMP'
+        };
+
+        const BiomeType = {
+          Temperate: 'TEMPERATE',
+          Boreal: 'BOREAL',
+          Jungle: 'JUNGLE',
+          Savanna: 'SAVANNA',
+          Mystic: 'MYSTIC',
+          Gods: 'GODS'
+        };
+
+        const WeatherType = {
+          Sunny: 'SUNNY',
+          Rain: 'RAIN',
+          Snow: 'SNOW',
+          Drought: 'DROUGHT',
+          Storm: 'STORM'
+        };
+
+        const UpgradeType = {
+          ManualClick: 'MANUAL',
+          AutoChopper: 'AUTO_CHOP', 
+          WorkerSpeed: 'WORKER_SPEED',
+          AutoPlanter: 'AUTO_PLANT',
+          GrowthSpeed: 'GROWTH',
+          Marketing: 'MARKETING',
+          GlobalTech: 'GLOBAL_TECH'
+        };
+
+        const LumberjackState = {
+          IDLE: 'IDLE',
+          MOVING_TO_TREE: 'MOVING_TO_TREE',
+          CHOPPING: 'CHOPPING',
+          MOVING_TO_STORAGE: 'MOVING_TO_STORAGE'
+        };
+
+        const CarState = {
+          HIDDEN: 'HIDDEN',
+          ARRIVING: 'ARRIVING',
+          LOADING: 'LOADING',
+          DEPARTING: 'DEPARTING'
+        };
+
+        const SkillType = {
+            GlobalXP: 'GLOBAL_XP',
+            AmberBoost: 'AMBER_BOOST',
+            CheapUpgrades: 'CHEAP_UPGRADES',
+            MasterTrader: 'MASTER_TRADER',
+            GrowthSurge: 'GROWTH_SURGE'
+        };
+
+        const TREES_PER_ZONE = 32;
+        const TICK_RATE_MS = 50; 
+        const EVENT_INTERVAL_MS = 60000;
+        const STORAGE_LOCATION = { x: 7, y: 3 }; 
+        const GROWTH_CAP_MULTIPLIER = 5.0;
+
+        // Economy Configuration
+        const BASE_WOOD_PRICES = {
+            [BiomeType.Temperate]: 20,
+            [BiomeType.Boreal]: 100,
+            [BiomeType.Savanna]: 600,
+            [BiomeType.Jungle]: 3500,
+            [BiomeType.Mystic]: 25000,
+            [BiomeType.Gods]: 200000
+        };
+
+        const SKILL_TREE = [
+            { id: 'xp_boost', name: 'Forester Wisdom', type: SkillType.GlobalXP, cost: 1, maxLevel: 5, desc: '+20% Zone XP Gain per level' },
+            { id: 'trade_boost', name: 'Guild Charter', type: SkillType.MasterTrader, cost: 2, maxLevel: 5, desc: '+10% Wood Sale Value per level' },
+            { id: 'cost_red', name: 'Efficient Tools', type: SkillType.CheapUpgrades, cost: 5, maxLevel: 3, desc: '-5% Upgrade Costs per level' },
+            { id: 'amber_boost', name: 'Crystal Resonance', type: SkillType.AmberBoost, cost: 10, maxLevel: 3, desc: '+10% Prestige Amber Gain' },
+            { id: 'growth_surge', name: 'Gaia\'s Blessing', type: SkillType.GrowthSurge, cost: 20, maxLevel: 1, desc: '+50% Global Growth Speed' },
+        ];
+
+        // --- ICONS COMPONENT ---
+        const MapIcon = ({ className }) => (
+          <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+            <path d="M20.5 3l-6 2-6-2-6 2v15l6-2 6 2 6-2V3zM6.5 17.5l-2 1v-12l2-1v12zm6-1l-4 1.33V5.83l4-1.33v11zm6 1l-2 1v-12l2-1v12z" opacity="0.8"/>
+          </svg>
+        );
+
+        const TreeIcon = ({ stage, biome, className }) => {
+          let trunkColor = "#3e2723";
+          let foliageColor = "#166534";
+          let animateClass = "";
+
+          if (biome === BiomeType.Boreal) {
+              foliageColor = "#0e7490"; trunkColor = "#4a4a4a"; animateClass = "origin-bottom animate-pulse"; 
+          } else if (biome === BiomeType.Savanna) {
+              foliageColor = "#d97706"; trunkColor = "#78350f"; animateClass = "origin-bottom transition-all duration-1000 ease-out";
+          } else if (biome === BiomeType.Jungle) {
+              foliageColor = "#15803d"; trunkColor = "#3f2c22"; animateClass = "origin-bottom animate-sway-fast";
+          } else if (biome === BiomeType.Mystic) {
+              foliageColor = "#86198f"; trunkColor = "#2e1065"; animateClass = "origin-center animate-spin-slow";
+          } else if (biome === BiomeType.Gods) {
+              foliageColor = "#fcd34d"; trunkColor = "#fffbeb"; animateClass = "origin-bottom animate-float";
+          } else {
+              animateClass = "origin-bottom animate-sway";
+          }
+
+          if (stage === 'EMPTY') return (
+            <div className={`w-full h-full flex items-center justify-center opacity-40 ${className}`}>
+                <div className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: trunkColor }}></div>
+            </div>
+          );
+
+          if (stage === 'STUMP') return (
+            <svg viewBox="0 0 24 24" className={`${className} drop-shadow-md`}>
+               <path d="M8 18 L7 22 L17 22 L16 18 Z" fill={trunkColor} />
+               <ellipse cx="12" cy="18" rx="4" ry="1.5" fill="#d7ccc8" stroke={trunkColor} strokeWidth="0.5" />
+            </svg>
+          );
+          
+          if (stage === 'SAPLING') {
+             if (biome === BiomeType.Boreal) {
+                return (
+                    <svg viewBox="0 0 24 24" className={`${className} drop-shadow-sm`} style={{ color: foliageColor }}>
+                      <path d="M12 22 V 18" stroke={trunkColor} strokeWidth="2" />
+                      <path d="M12 18 L10 14 M12 18 L14 14" stroke="#a5f3fc" strokeWidth="1.5" /> 
+                      <circle cx="12" cy="18" r="2" fill="white" opacity="0.5" />
+                    </svg>
+                );
+             }
+             if (biome === BiomeType.Gods) {
+                 return (
+                    <svg viewBox="0 0 24 24" className={`${className} drop-shadow-[0_0_10px_#facc15]`}>
+                        <line x1="12" y1="22" x2="12" y2="16" stroke="#fcd34d" strokeWidth="2" />
+                        <circle cx="12" cy="14" r="3" fill="#fffbeb" className="animate-ping" />
+                    </svg>
+                 );
+             }
+             return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-sm ${animateClass}`} style={{ color: foliageColor }}>
+                  <path d="M12 20 V 15" stroke={trunkColor} strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M12 15 Q 15 12 16 9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="16" cy="9" r="1.5" fill="currentColor" />
+                  <circle cx="8" cy="10" r="1.5" fill="currentColor" />
+                </svg>
+              );
+          }
+
+          if (stage === 'YOUNG') {
+              if (biome === BiomeType.Savanna) {
+                return (
+                    <svg viewBox="0 0 24 24" className={`${className} drop-shadow-md`} style={{ color: foliageColor }}>
+                       <line x1="12" y1="22" x2="12" y2="16" stroke={trunkColor} strokeWidth="2" />
+                       <path d="M12 16 L 8 12 M 12 16 L 16 12" stroke={trunkColor} strokeWidth="1.5" />
+                       <circle cx="8" cy="12" r="2.5" fill="#fcd34d" />
+                       <circle cx="16" cy="12" r="2.5" fill="#fcd34d" />
+                    </svg>
+                );
+              }
+              return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-md ${animateClass}`} style={{ color: foliageColor }}>
+                  <rect x="11" y="16" width="2" height="6" fill={trunkColor} />
+                  <circle cx="12" cy="13" r="5" fill="currentColor" opacity="0.9" />
+                </svg>
+              );
+          }
+          
+          // Mature
+          if (biome === BiomeType.Savanna) {
+            return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-lg ${animateClass}`} style={{ color: foliageColor }}>
+                    <path d="M12 22 V 12 M 12 16 L 9 13 M 12 14 L 15 11" stroke={trunkColor} strokeWidth="1.5" />
+                    <path d="M5 11 Q 12 6 19 11 Q 12 12 5 11 Z" fill="currentColor" />
+                </svg>
+            );
+          }
+          if (biome === BiomeType.Jungle) {
+            return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-lg ${animateClass}`} style={{ color: foliageColor }}>
+                     <path d="M12 22 Q 13 15 12 10" stroke={trunkColor} strokeWidth="2" fill="none"/>
+                     <path d="M12 10 Q 6 4 2 12" fill="none" stroke="currentColor" strokeWidth="2" />
+                     <path d="M12 10 Q 18 4 22 12" fill="none" stroke="currentColor" strokeWidth="2" />
+                     <circle cx="12" cy="10" r="1.5" fill="#4a3b32"/> 
+                </svg>
+            );
+          }
+          if (biome === BiomeType.Boreal) {
+              return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-lg ${animateClass}`} style={{ color: foliageColor }}>
+                    <rect x="11" y="18" width="2" height="4" fill={trunkColor} />
+                    <path d="M12 2 L5 18 H19 L12 2 Z" fill="currentColor" />
+                    <path d="M12 5 L7 14 H17 Z" fill="white" opacity="0.3" /> 
+                </svg>
+              );
+          }
+          if (biome === BiomeType.Mystic) {
+              return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-lg ${animateClass}`} style={{ color: foliageColor }}>
+                    <path d="M12 22 V 10" stroke={trunkColor} strokeWidth="2" />
+                    <path d="M12 10 Q 6 10 6 18 M 12 10 Q 18 10 18 18" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                    <circle cx="12" cy="10" r="2" fill={trunkColor} />
+                </svg>
+              );
+          }
+          if (biome === BiomeType.Gods) {
+              return (
+                <svg viewBox="0 0 24 24" className={`${className} drop-shadow-[0_0_15px_rgba(253,224,71,0.6)] ${animateClass}`} style={{ color: foliageColor }}>
+                    <rect x="11" y="18" width="2" height="4" fill={trunkColor} />
+                    <circle cx="12" cy="10" r="8" fill="gold" stroke="#f59e0b" strokeWidth="1" />
+                    <circle cx="12" cy="10" r="5" fill="#fef08a" opacity="0.5" />
+                </svg>
+              );
+          }
+          
+          return (
+            <svg viewBox="0 0 24 24" className={`${className} drop-shadow-lg ${animateClass}`} style={{ color: foliageColor }}>
+                <rect x="11" y="18" width="2" height="4" fill={trunkColor} />
+                <circle cx="12" cy="11" r="7" fill="currentColor" />
+                <circle cx="10" cy="10" r="2" fill="black" opacity="0.1" />
+            </svg>
+          );
+        };
+
+        const AxeIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+            <path d="M4 20 L8 16" stroke="#8d6e63" strokeWidth="3" strokeLinecap="round" />
+            <path d="M8 16 L18 6" stroke="#8d6e63" strokeWidth="3" strokeLinecap="round" />
+            <path d="M16 4 L20 8 L14 14 L10 10 Z" fill="#9ca3af" stroke="#4b5563" strokeWidth="1" />
+          </svg>
+        );
+
+        const CoinIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+            <circle cx="12" cy="12" r="9" fill="#fbbf24" stroke="#b45309" strokeWidth="1" />
+            <text x="12" y="16" fontSize="12" textAnchor="middle" fill="#92400e" fontWeight="bold" fontFamily="serif">$</text>
+          </svg>
+        );
+
+        const AmberIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+             <path d="M12 2 L4 8 L6 20 L12 22 L18 20 L20 8 Z" fill="#f59e0b" stroke="#b45309" strokeWidth="1" />
+             <path d="M12 2 L12 22 M4 8 L20 8 M6 20 L18 20" stroke="#fcd34d" strokeWidth="0.5" opacity="0.6"/>
+          </svg>
+        );
+
+        const WoodIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+            <g transform="rotate(45 12 12)">
+                <rect x="6" y="4" width="12" height="16" rx="1" fill="#8d6e63" stroke="#3e2723" strokeWidth="1" />
+                <path d="M6 4 H18" stroke="#5d4037" strokeWidth="2" />
+                <path d="M6 20 H18" stroke="#5d4037" strokeWidth="2" />
+            </g>
+          </svg>
+        );
+
+        const LumberjackIcon = ({ className, level = 1, biome, isIdle = false }) => {
+          let shirtColor = level > 5 ? "#b71c1c" : level > 2 ? "#1565c0" : "#e65100"; 
+          let hatColor = "#3e2723";
+          let skinColor = "#ffcc80";
+          let toolColor = "#94a3b8";
+          let idleAnim = "";
+
+          if (biome === BiomeType.Boreal) { shirtColor = "#0369a1"; hatColor = "#f1f5f9"; toolColor = "#cbd5e1"; if (isIdle) idleAnim = "animate-bounce"; } 
+          if (biome === BiomeType.Jungle) { shirtColor = "#3f6212"; hatColor = "#14532d"; if (isIdle) idleAnim = "animate-[ping_3s_infinite]"; } 
+          if (biome === BiomeType.Savanna) { shirtColor = "#d97706"; hatColor = "#fcd34d"; if (isIdle) idleAnim = "animate-sway"; } 
+          if (biome === BiomeType.Mystic) { shirtColor = "#6b21a8"; hatColor = "#4c1d95"; skinColor = "#e9d5ff"; toolColor = "#d8b4fe"; if (isIdle) idleAnim = "animate-float"; } 
+          if (biome === BiomeType.Gods) { shirtColor = "#ffffff"; hatColor = "#f59e0b"; skinColor = "#fef08a"; toolColor = "#fcd34d"; if (isIdle) idleAnim = "animate-[spin_4s_linear_infinite]"; } 
+
+          return (
+            <svg viewBox="0 0 24 24" className={`${className} ${idleAnim}`}>
+               <path d="M9 22 L9 18 L15 18 L15 22" stroke="#3e2723" strokeWidth="3" fill="none"/>
+               <rect x="7" y="11" width="10" height="9" rx="2" fill={shirtColor} stroke="black" strokeWidth="0.5" />
+               <circle cx="12" cy="7" r="3.5" fill={skinColor} />
+               {biome !== BiomeType.Jungle && <path d="M9 8 Q 12 13 15 8 A 3.5 3.5 0 0 1 9 8" fill={biome === BiomeType.Gods ? "#fff" : "#5d4037"} />}
+               {biome === BiomeType.Gods ? <path d="M7 5 L17 5 L12 1 Z" fill={hatColor} /> : <path d="M6 6 L18 6 L16 3 H8 Z" fill={hatColor} />}
+               <g transform="rotate(-20 18 12)">
+                 <rect x="18" y="6" width="1.5" height="14" fill="#8d6e63" />
+                 <path d="M17 6 L21 6 L22 10 L16 10 Z" fill={toolColor} />
+               </g>
+            </svg>
+          );
+        };
+
+        const HouseIcon = ({ className, biome }) => {
+            if (biome === BiomeType.Temperate) return (
+                <svg viewBox="0 0 100 100" className={className}>
+                    <rect x="10" y="40" width="80" height="50" fill="#795548" stroke="#3e2723" strokeWidth="2" />
+                    <path d="M5 40 L50 5 L95 40" fill="#5d4037" stroke="#3e2723" strokeWidth="3" />
+                    <rect x="35" y="60" width="30" height="30" fill="#3e2723" />
+                </svg>
+            );
+            if (biome === BiomeType.Gods) return (
+                <svg viewBox="0 0 100 100" className={className}>
+                    <rect x="10" y="40" width="80" height="50" fill="#f3f4f6" />
+                    <rect x="20" y="40" width="10" height="50" fill="#e5e7eb" />
+                    <path d="M5 40 L50 10 L95 40" fill="#fcd34d" stroke="#b45309" strokeWidth="2"/>
+                </svg>
+            );
+            return (
+                <svg viewBox="0 0 100 100" className={className}>
+                    <rect x="15" y="40" width="70" height="50" fill="#3e2723" />
+                    <path d="M10 40 L50 10 L90 40" fill="#5d4037" />
+                </svg>
+            );
+        };
+
+        const TruckIcon = ({ className, loadProgress = 0, totalLifetimeWood = 0 }) => {
+            const isBigRig = totalLifetimeWood >= 1000;
+            const cargoHeight = (loadProgress / 100) * 20;
+
+            if (isBigRig) {
+                return (
+                     <svg viewBox="0 0 120 60" className={className}>
+                        <rect x="80" y="15" width="30" height="30" fill="#b91c1c" rx="2" stroke="#7f1d1d" strokeWidth="1"/>
+                        <path d="M110 15 V35 L120 35 V45 H110" fill="#b91c1c" />
+                        <rect x="85" y="18" width="20" height="12" fill="#bae6fd" />
+                        <rect x="5" y="25" width="70" height="5" fill="#525252" />
+                        <rect x="5" y="30" width="70" height="15" fill="#b91c1c" stroke="#7f1d1d" strokeWidth="1" />
+                        <circle cx="20" cy="50" r="6" fill="#171717" stroke="#404040" strokeWidth="2" />
+                        <circle cx="35" cy="50" r="6" fill="#171717" />
+                        <circle cx="90" cy="50" r="6" fill="#171717" />
+                        <circle cx="105" cy="50" r="6" fill="#171717" />
+                        {loadProgress > 0 && (
+                             <g>
+                                <rect x="10" y={30 - Math.min(cargoHeight, 10)} width="60" height={Math.min(cargoHeight, 10)} fill="#5d4037" stroke="#3e2723" rx="1" />
+                                {loadProgress > 50 && (
+                                    <rect x="15" y={30 - cargoHeight} width="50" height={Math.max(0, cargoHeight - 10)} fill="#8d6e63" stroke="#5d4037" rx="1" />
+                                )}
+                             </g>
+                        )}
+                     </svg>
+                );
+            }
+            return (
+                <svg viewBox="0 0 100 60" className={className}>
+                    <path d="M10 35 L90 35 L90 45 L10 45 Z" fill="#263238" />
+                    <circle cx="25" cy="45" r="7" fill="#111" stroke="#444" strokeWidth="2"/>
+                    <circle cx="75" cy="45" r="7" fill="#111" stroke="#444" strokeWidth="2"/>
+                    <rect x="5" y="20" width="55" height="20" fill="#546e7a" rx="2" stroke="#263238" strokeWidth="1"/>
+                    {loadProgress > 0 && (
+                         <g>
+                            <rect x="10" y={35 - Math.min(cargoHeight, 10)} width="45" height={Math.min(cargoHeight, 10)} fill="#5d4037" rx="1" />
+                         </g>
+                    )}
+                    <path d="M60 20 H85 L95 35 V45 H60 V20" fill="#546e7a" stroke="#263238" strokeWidth="1"/>
+                    <path d="M65 22 H83 L88 32 H65 V22" fill="#81d4fa" opacity="0.8"/>
+                </svg>
+            );
+        };
+
+        // --- GAME COMPONENTS ---
+
+        const GameWorld = ({ zone, carState, carLoadProgress, weather, onInteract, growthModifier, woodAmount = 0, totalLifetimeWood = 0 }) => {
+          const GRID_COLS = 8;
+          const GRID_ROWS = 4;
+
+          if (!zone) return <div className="p-4 text-white">Loading zone...</div>;
+
+          const getPositionStyle = (x, y) => {
+            const xPct = (x + 0.5) * (85 / GRID_COLS); 
+            const yPct = (y + 0.5) * (70 / GRID_ROWS); 
+            return { left: `${xPct}%`, top: `${yPct}%` };
+          };
+
+          let bgClass = "bg-[#2e4a18]"; 
+          if (zone.id === BiomeType.Boreal) bgClass = "bg-[#1e293b]"; 
+          if (zone.id === BiomeType.Jungle) bgClass = "bg-[#064e3b]"; 
+          if (zone.id === BiomeType.Savanna) bgClass = "bg-[#78350f]"; 
+          if (zone.id === BiomeType.Mystic) bgClass = "bg-[#3b0764]"; 
+          if (zone.id === BiomeType.Gods) bgClass = "bg-[#fffbeb]"; 
+
+          let textureUrl = "https://www.transparenttextures.com/patterns/diagmonds-light.png";
+          if (zone.id === BiomeType.Savanna) textureUrl = "https://www.transparenttextures.com/patterns/dry-mud.png";
+          if (zone.id === BiomeType.Boreal) textureUrl = "https://www.transparenttextures.com/patterns/snow.png";
+          if (zone.id === BiomeType.Gods) textureUrl = "https://www.transparenttextures.com/patterns/cubes.png";
+
+          const truckCount = Math.max(1, 1 + Math.floor(totalLifetimeWood / 500));
+          const renderTrucks = Array.from({ length: Math.min(3, truckCount) });
+
+          return (
+            <div className={`relative w-full h-[500px] ${bgClass} rounded-xl overflow-hidden border-8 border-[#3e2723] shadow-2xl transition-colors duration-700 select-none group`}>
+                <style>
+                    {`
+                    @keyframes rainfall {
+                        0% { transform: translateY(-20px) translateX(0px); opacity: 0; }
+                        10% { opacity: 0.8; }
+                        90% { opacity: 0.8; }
+                        100% { transform: translateY(550px) translateX(20px); opacity: 0; }
+                    }
+                    @keyframes snowfall {
+                        0% { transform: translateY(-20px) translateX(-10px); opacity: 0; }
+                        20% { opacity: 0.8; }
+                        50% { transform: translateY(250px) translateX(15px); }
+                        100% { transform: translateY(550px) translateX(-10px); opacity: 0; }
+                    }
+                    @keyframes lightning {
+                        0%, 90%, 93%, 96%, 100% { opacity: 0; }
+                        91%, 94% { opacity: 0.6; }
+                        92%, 95% { opacity: 0.1; }
+                    }
+                    `}
+                </style>
+
+                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: `url(${textureUrl})` }}></div>
+                
+                {weather === WeatherType.Rain && (
+                     <div className="absolute inset-0 z-40 bg-blue-900/20 pointer-events-none overflow-hidden">
+                         {Array.from({length: 80}).map((_, i) => (
+                            <div key={i} className="absolute bg-blue-300 w-[1px] h-6 opacity-60 rounded-full" style={{
+                                left: `${Math.random() * 100}%`,
+                                top: `-${Math.random() * 20}%`,
+                                animation: `rainfall ${0.6 + Math.random() * 0.4}s linear infinite`,
+                                animationDelay: `-${Math.random()}s`
+                            }}></div>
+                         ))}
+                     </div>
+                )}
+                
+                {weather === WeatherType.Snow && (
+                     <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
+                         <div className="absolute inset-0 bg-white/5"></div>
+                         {Array.from({length: 50}).map((_, i) => (
+                            <div key={i} className="absolute bg-white rounded-full opacity-80 shadow-[0_0_2px_white]" style={{
+                                width: Math.random() > 0.5 ? '4px' : '2px',
+                                height: Math.random() > 0.5 ? '4px' : '2px',
+                                left: `${Math.random() * 100}%`,
+                                top: `-${Math.random() * 20}%`,
+                                animation: `snowfall ${4 + Math.random() * 3}s linear infinite`,
+                                animationDelay: `-${Math.random() * 5}s`
+                            }}></div>
+                         ))}
+                     </div>
+                )}
+                
+                {weather === WeatherType.Drought && (
+                     <div className="absolute inset-0 z-40 pointer-events-none mix-blend-overlay">
+                         <div className="absolute inset-0 bg-orange-600/30"></div>
+                     </div>
+                )}
+                
+                {weather === WeatherType.Storm && (
+                     <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
+                         <div className="absolute inset-0 bg-slate-900/60"></div>
+                         <div className="absolute inset-0 bg-white mix-blend-overlay" style={{ animation: 'lightning 5s infinite steps(1)' }}></div>
+                     </div>
+                )}
+
+                {zone.id === BiomeType.Gods && (
+                     <div className="absolute inset-0 bg-gradient-to-b from-yellow-100/30 to-transparent pointer-events-none"></div>
+                )}
+
+                <div className="absolute bottom-0 w-full h-24 bg-[#424242]/90 border-t-4 border-[#212121] flex items-center justify-center z-10 backdrop-blur-sm shadow-[0_-5px_10px_rgba(0,0,0,0.3)]">
+                     <div className="w-full border-t-2 border-dashed border-white/30"></div>
+                </div>
+
+                <div className="absolute bottom-16 right-4 w-32 h-32 z-20">
+                     <HouseIcon className="w-full h-full drop-shadow-2xl" biome={zone.id} />
+                     <div className="absolute -bottom-6 w-full text-center bg-[#3e2723] text-[#ffecb3] text-[10px] px-1 rounded border border-[#5d4037] font-bold z-30 shadow-md">
+                         {Math.floor(woodAmount)} WOOD
+                     </div>
+                </div>
+
+                {renderTrucks.map((_, index) => {
+                    const stagger = index * 0.5; 
+                    return (
+                        <div 
+                            key={`truck-${index}`}
+                            className={`absolute bottom-6 w-36 z-30`}
+                            style={{ 
+                                left: carState === CarState.HIDDEN ? '-20%' : 
+                                      carState === CarState.DEPARTING ? '120%' : `calc(100% - ${11 + (index * 6)}rem)`, 
+                                transition: carState === CarState.HIDDEN ? 'none' : `left ${2 + stagger}s ease-in-out, opacity 0.5s`,
+                                opacity: carState === CarState.HIDDEN ? 0 : 1
+                            }}
+                        >
+                            <TruckIcon 
+                                className="w-full h-full drop-shadow-2xl" 
+                                loadProgress={carLoadProgress} 
+                                totalLifetimeWood={totalLifetimeWood}
+                            />
+                            {carState === CarState.LOADING && index === 0 && (
+                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-white font-bold text-xs bg-green-600 px-2 py-1 rounded shadow-lg animate-bounce whitespace-nowrap">
+                                    LOADING...
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+
+                <div className="absolute inset-0 p-4 z-10">
+                    {(zone.trees || []).map((tree) => {
+                        const isInteractable = (tree.stage === TreeStage.Mature || tree.stage === TreeStage.Empty || tree.stage === TreeStage.Stump);
+                        const pos = getPositionStyle(tree.x, tree.y);
+
+                        return (
+                            <div 
+                                key={tree.id}
+                                onClick={() => onInteract(tree.id)}
+                                className={`absolute w-[10%] h-[15%] flex items-end justify-center group transition-all duration-500`}
+                                style={{ left: pos.left, top: pos.top }}
+                            >
+                                <div className="absolute bottom-1 w-8 h-2 bg-black/40 rounded-full blur-[2px]"></div>
+                                <div className={`
+                                    w-14 h-14 md:w-20 md:h-20 flex items-end justify-center transition-transform duration-200 
+                                    ${isInteractable ? 'cursor-pointer group-hover:scale-110 active:scale-95' : ''}
+                                `}>
+                                     <TreeIcon stage={tree.stage} biome={zone.id} className={`w-full h-full ${weather === WeatherType.Storm ? 'animate-sway-fast' : ''}`} />
+                                </div>
+                                {tree.stage !== TreeStage.Mature && tree.stage !== TreeStage.Empty && tree.stage !== TreeStage.Stump && (
+                                    <div className="absolute -bottom-1 w-10 h-1 bg-black/50 rounded-full overflow-hidden border border-black/20">
+                                        <div className="h-full bg-lime-500" style={{ width: `${tree.growthProgress}%` }}></div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {(zone.lumberjacks || []).map(jack => {
+                    const pos = getPositionStyle(jack.x, jack.y);
+                    const facingRight = (jack.state === LumberjackState.MOVING_TO_STORAGE); 
+                    const isMoving = jack.state === LumberjackState.MOVING_TO_TREE || jack.state === LumberjackState.MOVING_TO_STORAGE;
+                    const isChopping = jack.state === LumberjackState.CHOPPING;
+                    const isIdle = jack.state === LumberjackState.IDLE;
+
+                    return (
+                        <div 
+                            key={jack.id}
+                            className={`absolute w-10 h-10 z-20 transition-all duration-100 ease-linear pointer-events-none ${isMoving ? 'animate-bounce' : ''}`}
+                            style={{ 
+                                left: pos.left, 
+                                top: pos.top,
+                                marginLeft: '15px', 
+                                marginTop: '-10px',
+                                transform: `scale(${facingRight ? -1 : 1}, 1)` 
+                            }}
+                        >
+                            <div className={isChopping ? 'animate-pulse' : ''}>
+                                <LumberjackIcon className="w-full h-full drop-shadow-md" level={jack.level} biome={zone.id} isIdle={isIdle} />
+                            </div>
+                            {isChopping && (
+                                <div className="absolute bottom-0 right-0 w-full h-full pointer-events-none">
+                                    <div className="absolute bottom-0 right-0 w-1 h-1 bg-[#8d6e63] rounded-full animate-[ping_0.5s_infinite]"></div>
+                                    <div className="absolute bottom-2 right-2 w-1 h-1 bg-[#d7ccc8] rounded-full animate-[ping_0.6s_infinite]"></div>
+                                </div>
+                            )}
+                            {jack.state === LumberjackState.MOVING_TO_STORAGE && (
+                                <div className="absolute top-4 left-2 w-6 h-2 bg-yellow-800 rounded -rotate-12 border border-black shadow-sm"></div>
+                            )}
+                        </div>
+                    );
+                })}
+
+                <div className="absolute top-2 left-2 bg-black/70 backdrop-blur text-[#ffecb3] text-xs p-3 rounded-lg border border-[#5d4037] z-30 shadow-lg min-w-[150px]">
+                     <div className="font-bold mb-1 text-sm border-b border-white/20 pb-1 flex justify-between items-center">
+                        <span>{zone.name}</span>
+                        <span className="text-[10px] bg-yellow-900/50 px-1 rounded">LVL {zone.level || 1}</span>
+                     </div>
+                     
+                     <div className="w-full bg-gray-800 h-2 rounded-full mt-1 mb-2 overflow-hidden border border-gray-600">
+                        <div className="bg-yellow-500 h-full transition-all duration-300" style={{ width: `${((zone.xp || 0) / (zone.xpToNextLevel || 1000)) * 100}%` }}></div>
+                     </div>
+
+                     <div className="text-[10px] opacity-80 mt-1 space-y-1">
+                         <div className="flex justify-between"><span>Price:</span> <span className="text-yellow-400">${(zone.woodPrice || 20).toFixed(2)}</span></div>
+                         <div className="flex justify-between"><span>Growth:</span> <span className="text-blue-400">{Math.round(growthModifier * 100)}%</span></div>
+                     </div>
+                     {weather !== WeatherType.Sunny && (
+                         <div className="mt-1 text-[10px] text-cyan-300 font-bold uppercase tracking-wider animate-pulse">
+                             ⚠️ {weather}
+                         </div>
+                     )}
+                </div>
+            </div>
+          );
+        };
+
+        const UpgradeShop = ({ upgrades = [], money = 0, onBuy, skillDiscount = 0 }) => {
+          const [purchasedId, setPurchasedId] = React.useState(null);
+
+          const handleBuy = (id) => {
+            onBuy(id);
+            setPurchasedId(id);
+            setTimeout(() => setPurchasedId(null), 1000);
+          };
+
+          return (
+            <div className="bg-wood-pattern rounded-xl shadow-2xl flex flex-col h-full border-4 border-[#3e2723] relative">
+              <div className="p-4 bg-[#3e2723]/90 border-b-4 border-[#2d1b18]">
+                <h2 className="text-xl font-bold text-[#ffecb3] flex items-center justify-center gap-3 pixel-font text-shadow-sm">
+                    <span className="text-2xl">⚒️</span> TRADING POST
+                </h2>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#5d4037]/90 backdrop-blur-sm">
+                {upgrades.map((upgrade) => {
+                  let cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.level || 0));
+                  if (skillDiscount > 0) cost = Math.floor(cost * (1 - skillDiscount));
+                  
+                  const canAfford = money >= cost;
+                  const isJustPurchased = purchasedId === upgrade.id;
+
+                  return (
+                    <div 
+                      key={upgrade.id}
+                      className={`
+                        relative p-3 rounded-lg border-2 transition-all duration-200 group overflow-hidden
+                        ${canAfford 
+                          ? 'bg-[#8d6e63] border-[#a1887f] hover:bg-[#a1887f] hover:border-[#d7ccc8] cursor-pointer shadow-lg active:translate-y-1' 
+                          : 'bg-[#3e2723] border-[#2d1b18] opacity-70 cursor-not-allowed grayscale'}
+                      `}
+                      onClick={() => canAfford && handleBuy(upgrade.id)}
+                    >
+                      {isJustPurchased && (
+                        <div className="absolute inset-0 z-50 flex items-center justify-center bg-green-500/30 backdrop-blur-[2px] animate-pulse rounded-lg">
+                           <div className="bg-black/50 px-4 py-2 rounded border border-yellow-400 transform rotate-[-5deg] animate-bounce">
+                              <span className="text-yellow-300 font-bold text-xl drop-shadow-md pixel-font">LEVEL UP!</span>
+                           </div>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-start mb-2 relative z-10">
+                        <h3 className="font-bold text-[#fff8e1] text-lg font-serif tracking-wide group-hover:text-white">{upgrade.name}</h3>
+                        <span className="text-[10px] bg-[#3e2723] px-2 py-1 rounded-full text-[#ffecb3] border border-[#5d4037]">Lvl {upgrade.level || 0}</span>
+                      </div>
+                      
+                      <p className="text-sm text-[#efebe9] mb-4 italic leading-tight">{upgrade.description}</p>
+                      
+                      <div className="flex justify-between items-center relative z-10 border-t border-[#5d4037] pt-2">
+                         <div className="flex items-center gap-1 text-xs font-bold text-[#d7ccc8]">
+                            {upgrade.type === UpgradeType.ManualClick && `+${upgrade.effectValue} Power`}
+                            {upgrade.type === UpgradeType.AutoChopper && `+${upgrade.effectValue} Power/s`}
+                            {upgrade.type === UpgradeType.GrowthSpeed && `+${upgrade.effectValue}% Speed`}
+                            {upgrade.type === UpgradeType.Marketing && `+${Math.round(upgrade.effectValue * 100)}% Value`}
+                            {upgrade.type === UpgradeType.WorkerSpeed && `+${Math.round(upgrade.effectValue * 100)}% Speed`}
+                            {upgrade.type === UpgradeType.GlobalTech && `+${upgrade.effectValue}x Yield`}
+                         </div>
+                         
+                         <button 
+                           className={`
+                             flex items-center gap-1 px-3 py-1 rounded text-sm font-bold transition-colors border shadow-md
+                             ${canAfford ? 'bg-[#fbbf24] text-[#78350f] border-[#f59e0b] hover:bg-[#fcd34d]' : 'bg-[#4a4a4a] text-gray-400 border-gray-600'}
+                           `}
+                         >
+                           <CoinIcon className="w-4 h-4" />
+                           {cost.toLocaleString()}
+                         </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        };
+
+        const StatsPanel = ({ state, marketEvent, onSell, onPrestige }) => {
+          const activeZone = state.zones[state.activeZoneId] || state.zones[BiomeType.Temperate];
+          const localWood = (state.inventory && state.inventory[state.activeZoneId]) ? state.inventory[state.activeZoneId] : 0;
+          const canPrestige = (state.lifetimeEarnings || 0) >= 1000000;
+          
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-[#4e342e] p-1 rounded-xl shadow-xl border border-[#3e2723] relative group overflow-hidden">
+                <div className="relative bg-[#3e2723]/80 p-4 rounded-lg border border-[#5d4037] h-full flex flex-col justify-between backdrop-blur-sm">
+                    <div className="flex justify-between items-start">
+                        <p className="text-[#a1887f] text-xs font-bold tracking-widest uppercase">Company Treasury</p>
+                        <p className="text-xs text-[#8d6e63] font-mono">Day {state.day}</p>
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                        <div className="bg-[#ffb300] p-2 rounded-full border-2 border-[#ff6f00] shadow-inner">
+                            <CoinIcon className="w-6 h-6 text-[#fff8e1]" />
+                        </div>
+                        <div>
+                            <p className="text-3xl font-bold text-[#ffecb3] pixel-font drop-shadow-md">
+                                {(state.money || 0).toLocaleString()}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+              </div>
+
+              <div className="bg-[#4e342e] p-1 rounded-xl shadow-xl border border-[#3e2723] relative overflow-hidden">
+                <div className="relative bg-[#3e2723]/80 p-4 rounded-lg border border-[#5d4037] h-full flex flex-col justify-between backdrop-blur-sm">
+                    <div className="flex justify-between items-start">
+                        <p className="text-[#a1887f] text-xs font-bold tracking-widest uppercase truncate">{activeZone?.name || 'Forest'} Storage</p>
+                        <div className="bg-[#1a2e12] px-2 py-0.5 rounded text-[10px] text-[#a5d6a7] border border-[#2e7d32]">
+                            Price: ${(activeZone?.woodPrice || 20).toFixed(2)}
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-end justify-between mt-2">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-[#795548] p-2 rounded-full border-2 border-[#5d4037] shadow-inner">
+                                <WoodIcon className="w-6 h-6 text-[#d7ccc8]" />
+                            </div>
+                            <p className="text-3xl font-bold text-[#d7ccc8] pixel-font drop-shadow-md">
+                                {localWood.toLocaleString()}
+                            </p>
+                        </div>
+                        
+                        <button 
+                            onClick={onSell}
+                            disabled={localWood === 0 || state.carState !== 'HIDDEN'}
+                            className={`
+                                px-4 py-2 rounded font-bold text-sm shadow-lg transition-all border-b-4 active:border-b-0 active:translate-y-1
+                                ${localWood > 0 && state.carState === 'HIDDEN'
+                                    ? 'bg-[#2e7d32] border-[#1b5e20] text-white hover:bg-[#388e3c]' 
+                                    : 'bg-[#424242] border-[#212121] text-gray-500 cursor-not-allowed'}
+                            `}
+                        >
+                            {state.carState === 'HIDDEN' ? 'SELL' : 'BUSY'}
+                        </button>
+                    </div>
+                </div>
+              </div>
+
+              <div className="relative p-1 rounded-xl shadow-xl border border-opacity-50 overflow-hidden bg-[#263238] border-[#37474f]">
+                 <div className="relative bg-black/40 p-4 rounded-lg h-full flex flex-col justify-center backdrop-blur-md items-center">
+                     {canPrestige ? (
+                         <button 
+                            onClick={onPrestige}
+                            className="w-full h-full bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-bold rounded shadow-lg border-2 border-amber-500 animate-pulse flex flex-col items-center justify-center p-2"
+                         >
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-2xl">👑</span>
+                                <span className="text-lg">PRESTIGE AVAILABLE</span>
+                            </div>
+                            <span className="text-xs text-amber-200">Reset for Amber Gems</span>
+                         </button>
+                     ) : (
+                         <div className="w-full text-center">
+                            <p className="text-amber-500/50 font-bold text-xs tracking-widest uppercase mb-1">PRESTIGE STATUS</p>
+                            <p className="text-gray-500 text-xs italic mb-2">Requires 1M Lifetime Earnings</p>
+                            <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden">
+                                <div className="bg-amber-600 h-full" style={{ width: `${Math.min(100, ((state.lifetimeEarnings || 0) / 1000000) * 100)}%`}}></div>
+                            </div>
+                         </div>
+                     )}
+                 </div>
+              </div>
+            </div>
+          );
+        };
+
+        const SkillTree = ({ skills = {}, amber = 0, onUnlock, onClose }) => {
+            return (
+                <div className="absolute inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+                    <div className="relative w-full max-w-4xl h-[80vh] bg-[#2d1b18] rounded-xl border-4 border-[#f59e0b] shadow-[0_0_50px_rgba(245,158,11,0.2)] overflow-hidden flex flex-col">
+                        <div className="p-6 border-b border-[#5d4037] bg-[#3e2723] flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-[#fcd34d] pixel-font">ANCIENT KNOWLEDGE</h2>
+                            <div className="flex items-center gap-2 bg-black/40 px-4 py-2 rounded-full border border-[#f59e0b]">
+                                <AmberIcon className="w-6 h-6" />
+                                <span className="text-xl font-bold text-[#fcd34d]">{amber}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-8 relative">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {SKILL_TREE.map(skill => {
+                                    const currentLevel = skills[skill.id] || 0;
+                                    const isMaxed = currentLevel >= skill.maxLevel;
+                                    const canAfford = amber >= skill.cost;
+                                    
+                                    return (
+                                        <div key={skill.id} className={`
+                                            relative bg-[#3e2723] p-4 rounded-lg border-2 transition-all group
+                                            ${isMaxed ? 'border-[#fcd34d] shadow-[0_0_15px_#fcd34d]' : canAfford ? 'border-[#a1887f] hover:border-[#fcd34d]' : 'border-[#4a4a4a] opacity-60'}
+                                        `}>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="font-bold text-[#ffecb3]">{skill.name}</h3>
+                                                <span className={`text-xs px-2 py-1 rounded font-bold ${isMaxed ? 'bg-[#fcd34d] text-black' : 'bg-black/40 text-gray-400'}`}>
+                                                    {currentLevel} / {skill.maxLevel}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-400 mb-4 h-10">{skill.desc}</p>
+                                            
+                                            <button 
+                                                onClick={() => !isMaxed && canAfford && onUnlock(skill.id, skill.cost)}
+                                                disabled={isMaxed || !canAfford}
+                                                className={`
+                                                    w-full py-2 rounded font-bold flex items-center justify-center gap-2 transition-colors
+                                                    ${isMaxed ? 'bg-green-700 text-white cursor-default' : canAfford ? 'bg-[#f59e0b] hover:bg-[#fbbf24] text-black' : 'bg-[#1a1a1a] text-gray-500 cursor-not-allowed'}
+                                                `}
+                                            >
+                                                {isMaxed ? 'MAXED' : (
+                                                    <>
+                                                        <span>Unlock</span>
+                                                        <div className="flex items-center text-xs bg-black/20 px-1 rounded">
+                                                            {skill.cost} <AmberIcon className="w-3 h-3 ml-1" />
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <button onClick={onClose} className="absolute top-4 right-4 bg-red-800 hover:bg-red-700 text-white w-8 h-8 rounded flex items-center justify-center font-bold z-50">X</button>
+                    </div>
+                </div>
+            );
+        };
+
+        const WorldMap = ({ zones = {}, activeZoneId, money = 0, onTravel, onUnlock, onClose, getRequirements }) => {
+          const mapNodes = [
+            { id: BiomeType.Boreal, x: 20, y: 25, name: 'Frostbite Peaks', color: '#64748b', icon: '🏔️' },
+            { id: BiomeType.Gods, x: 50, y: 15, name: 'Olympus Grove', color: '#fcd34d', icon: '⚡' },
+            { id: BiomeType.Mystic, x: 80, y: 30, name: 'Ethereal Nexus', color: '#6b21a8', icon: '🔮' },
+            { id: BiomeType.Temperate, x: 45, y: 50, name: 'Whispering Woods', color: '#166534', icon: '🌲' },
+            { id: BiomeType.Savanna, x: 25, y: 75, name: 'Sun-Scorched Plains', color: '#d97706', icon: '🦁' },
+            { id: BiomeType.Jungle, x: 75, y: 70, name: 'Verdant Caverns', color: '#064e3b', icon: '🌿' },
+          ];
+
+          return (
+            <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+              <div className="relative w-full max-w-6xl aspect-[16/9] bg-[#e0c9a6] rounded-lg border-[12px] border-[#3e2723] shadow-2xl overflow-hidden group">
+                <button 
+                    onClick={onClose}
+                    className="absolute top-4 right-4 bg-[#a1887f] hover:bg-[#8d6e63] text-[#3e2723] px-3 py-1 rounded border-2 border-[#5d4037] font-bold z-50 shadow-lg"
+                >
+                    ✖
+                </button>
+
+                {mapNodes.map(node => {
+                    const zone = zones[node.id] || { isUnlocked: false, unlockCost: 0 };
+                    const isActive = activeZoneId === node.id;
+                    const reqs = getRequirements(node.id);
+                    const canAfford = money >= zone.unlockCost;
+                    const reqsMet = reqs.every(r => r.met);
+                    const style = { left: `${node.x}%`, top: `${node.y}%` };
+
+                    return (
+                        <div 
+                            key={node.id}
+                            className={`absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group z-10
+                                ${zone.isUnlocked ? 'cursor-pointer' : (reqsMet && canAfford) ? 'cursor-pointer' : 'cursor-not-allowed'}
+                            `}
+                            style={style}
+                            onClick={() => {
+                                if (zone.isUnlocked) onTravel(node.id);
+                                else if (reqsMet && canAfford) onUnlock(node.id);
+                            }}
+                        >
+                            <div className={`
+                                relative w-16 h-16 rounded-full border-4 shadow-[0_4px_10px_rgba(0,0,0,0.5)] flex items-center justify-center transition-transform duration-300
+                                ${isActive ? 'scale-125 border-yellow-400 z-20' : 'scale-100 hover:scale-110 border-[#3e2723]'}
+                                ${!zone.isUnlocked && (!reqsMet || !canAfford) ? 'grayscale opacity-70' : ''}
+                            `} style={{ backgroundColor: node.color }}>
+                                <span className="text-2xl drop-shadow-md">{node.icon}</span>
+                                {!zone.isUnlocked && (
+                                    <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center">
+                                        <span className="text-xl">🔒</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="mt-2 bg-[#eaddcf] border border-[#5d4037] px-3 py-2 rounded shadow-md text-center min-w-[140px] z-50">
+                                <div className="text-xs font-bold text-[#3e2723] font-serif mb-1">{node.name}</div>
+                                {!zone.isUnlocked && (
+                                    <div className="text-[9px] text-left space-y-1 bg-black/10 p-1 rounded">
+                                        <div className={`font-mono font-bold ${canAfford ? 'text-green-700' : 'text-red-700'}`}>
+                                            ${(zone.unlockCost || 0).toLocaleString()}
+                                        </div>
+                                        {reqs.map((r, i) => (
+                                            <div key={i} className={`${r.met ? 'text-green-800' : 'text-red-800'} flex items-center gap-1`}>
+                                                <span>{r.met ? '✓' : '✗'}</span> {r.text}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+              </div>
+            </div>
+          );
+        };
+
+        // --- SERVICE LOGIC (100% STANDALONE & OFFLINE) ---
+        const EVENTS = [
+          { title: "Construction Boom", description: "Global demand for timber skyrockets! Sell now!", effect: "BOOM", priceModifier: 2.0, growthModifier: 1.0 },
+          { title: "Market Crash", description: "Economic downturn hurts lumber prices. Hold your stock.", effect: "CRASH", priceModifier: 0.5, growthModifier: 1.0 },
+          { title: "Monsoon Season", description: "Heavy rains accelerate forest growth.", effect: "RAIN", priceModifier: 1.0, growthModifier: 3.0, forcedWeather: WeatherType.Rain },
+          { title: "Severe Drought", description: "Lack of water slows tree development significantly.", effect: "DROUGHT", priceModifier: 1.5, growthModifier: 0.2, forcedWeather: WeatherType.Drought },
+          { title: "Snow Storm", description: "Freezing temperatures slow operations.", effect: "STORM", priceModifier: 1.2, growthModifier: 0.8, forcedWeather: WeatherType.Snow },
+          { title: "Tranquility", description: "The markets are stable. Business as usual.", effect: "NORMAL", priceModifier: 1.0, growthModifier: 1.0, forcedWeather: WeatherType.Sunny },
+        ];
+
+        const fetchMarketEvent = async () => {
+          const rand = Math.random();
+          let eventTemplate;
+          if (rand < 0.4) eventTemplate = EVENTS[5];
+          else if (rand < 0.6) eventTemplate = EVENTS[2];
+          else if (rand < 0.75) eventTemplate = EVENTS[0];
+          else if (rand < 0.85) eventTemplate = EVENTS[3];
+          else if (rand < 0.95) eventTemplate = EVENTS[4];
+          else eventTemplate = EVENTS[1];
+
+          return {
+            title: eventTemplate.title,
+            description: eventTemplate.description,
+            effect: eventTemplate.effect,
+            duration: 60,
+            priceModifier: eventTemplate.priceModifier || 1.0,
+            growthModifier: eventTemplate.growthModifier || 1.0,
+            forcedWeather: eventTemplate.forcedWeather
+          };
+        };
+
+        const getZoneUpgrades = (zoneId) => {
+          const common = [
+              { id: 'axe_common', name: 'Iron Axe', description: 'Stronger manual clicks (Global).', type: UpgradeType.ManualClick, baseCost: 50, costMultiplier: 1.8, level: 0, effectValue: 1, scope: 'GLOBAL' },
+              { id: 'marketing', name: 'Trade Deals', description: 'Better timber prices.', type: UpgradeType.Marketing, baseCost: 1000, costMultiplier: 2.5, level: 0, effectValue: 0.1, scope: 'GLOBAL' },
+          ];
+
+          const zoneSpecific = {
+              [BiomeType.Temperate]: [
+                  { id: 'temp_worker', name: 'Hire Lumberjack', description: 'Standard worker.', type: UpgradeType.AutoChopper, baseCost: 100, costMultiplier: 1.6, level: 0, effectValue: 25, scope: 'LOCAL' },
+                  { id: 'temp_shed', name: 'Tool Shed', description: 'Local workers +20% speed.', type: UpgradeType.WorkerSpeed, baseCost: 500, costMultiplier: 1.8, level: 0, effectValue: 0.2, scope: 'LOCAL' },
+                  { id: 'temp_plant', name: 'Acorn Sower', description: 'Trees replant faster.', type: UpgradeType.AutoPlanter, baseCost: 2000, costMultiplier: 1.8, level: 0, effectValue: 1, scope: 'LOCAL' },
+                  { id: 'temp_fertilizer', name: 'Compost', description: 'Boost tree growth.', type: UpgradeType.GrowthSpeed, baseCost: 5000, costMultiplier: 2.0, level: 0, effectValue: 20, scope: 'LOCAL' },
+              ],
+              [BiomeType.Boreal]: [
+                  { id: 'bor_worker', name: 'Hire Snowman', description: 'Cold-resistant worker.', type: UpgradeType.AutoChopper, baseCost: 5000, costMultiplier: 1.6, level: 0, effectValue: 150, scope: 'LOCAL' },
+                  { id: 'bor_heat', name: 'Heated Cabins', description: 'Workers ignore snow slow.', type: UpgradeType.WorkerSpeed, baseCost: 15000, costMultiplier: 1.8, level: 0, effectValue: 0.3, scope: 'LOCAL' },
+                  { id: 'bor_hardy', name: 'Hardy Pines', description: 'Trees grow in storms.', type: UpgradeType.GrowthSpeed, baseCost: 50000, costMultiplier: 1.9, level: 0, effectValue: 30, scope: 'LOCAL' },
+              ],
+              [BiomeType.Savanna]: [
+                  { id: 'sav_worker', name: 'Hire Ranger', description: 'Plains specialist.', type: UpgradeType.AutoChopper, baseCost: 50000, costMultiplier: 1.6, level: 0, effectValue: 800, scope: 'LOCAL' },
+                  { id: 'sav_water', name: 'Irrigation', description: 'Combat drought effects.', type: UpgradeType.GrowthSpeed, baseCost: 75000, costMultiplier: 2.0, level: 0, effectValue: 50, scope: 'LOCAL' },
+                  { id: 'sav_safari', name: 'Safari Jeep', description: 'Workers move very fast.', type: UpgradeType.WorkerSpeed, baseCost: 120000, costMultiplier: 2.0, level: 0, effectValue: 1.0, scope: 'LOCAL' },
+              ],
+              [BiomeType.Jungle]: [
+                  { id: 'jun_worker', name: 'Hire Bot', description: 'Automated logger.', type: UpgradeType.AutoChopper, baseCost: 250000, costMultiplier: 1.6, level: 0, effectValue: 5000, scope: 'LOCAL' },
+                  { id: 'jun_machete', name: 'Laser Machete', description: 'Instantly clear vines.', type: UpgradeType.WorkerSpeed, baseCost: 600000, costMultiplier: 2.0, level: 0, effectValue: 1.0, scope: 'LOCAL' },
+                  { id: 'jun_humid', name: 'Humidifier', description: 'Super growth speed.', type: UpgradeType.GrowthSpeed, baseCost: 800000, costMultiplier: 2.2, level: 0, effectValue: 100, scope: 'LOCAL' },
+              ],
+              [BiomeType.Mystic]: [
+                  { id: 'mys_worker', name: 'Summon Spirit', description: 'Ethereal worker.', type: UpgradeType.AutoChopper, baseCost: 1500000, costMultiplier: 1.6, level: 0, effectValue: 40000, scope: 'LOCAL' },
+                  { id: 'mys_mana', name: 'Mana Well', description: 'Spirits warp instantly.', type: UpgradeType.WorkerSpeed, baseCost: 3000000, costMultiplier: 2.5, level: 0, effectValue: 1.0, scope: 'LOCAL' },
+                  { id: 'mys_timewarp', name: 'Time Warp', description: 'Trees grow in seconds.', type: UpgradeType.GrowthSpeed, baseCost: 8000000, costMultiplier: 3.0, level: 0, effectValue: 300, scope: 'LOCAL' },
+              ],
+              [BiomeType.Gods]: [
+                  { id: 'god_worker', name: 'Hire Titan', description: 'A worker of legend.', type: UpgradeType.AutoChopper, baseCost: 10000000, costMultiplier: 2.0, level: 0, effectValue: 1000000, scope: 'LOCAL' },
+                  { id: 'god_bless', name: 'Ambrosia', description: 'Massive growth boost.', type: UpgradeType.GrowthSpeed, baseCost: 50000000, costMultiplier: 3.0, level: 0, effectValue: 200, scope: 'LOCAL' },
+                  { id: 'god_ascend', name: 'Ascension', description: 'Become a Deity.', type: UpgradeType.Marketing, baseCost: 1000000000, costMultiplier: 10.0, level: 0, effectValue: 0.0, scope: 'LOCAL' },
+              ]
+          };
+          return [...common, ...(zoneSpecific[zoneId] || [])];
+        };
+
+        const generateTrees = (count) => {
+          return Array.from({ length: count }, (_, i) => ({
+            id: i,
+            stage: i < 5 ? TreeStage.Mature : i < 15 ? TreeStage.Young : TreeStage.Empty,
+            growthProgress: i < 5 ? 100 : i < 15 ? 50 : 0,
+            x: i % 8, 
+            y: Math.floor(i / 8)
+          }));
+        };
+
+        const createZone = (id, name, unlockCost, woodMult, growthMult, unlocked, color) => ({
+            id,
+            name,
+            isUnlocked: unlocked,
+            unlockCost,
+            woodMultiplier: woodMult,
+            growthMultiplier: growthMult,
+            woodPrice: BASE_WOOD_PRICES[id],
+            trees: generateTrees(TREES_PER_ZONE),
+            lumberjacks: [],
+            description: `A ${name} ecosystem.`,
+            themeColor: color,
+            level: 1,
+            xp: 0,
+            xpToNextLevel: 1000,
+            totalUpgradesBought: 0
+        });
+
+        const getDefaultZones = () => ({
+            [BiomeType.Temperate]: createZone(BiomeType.Temperate, "Whispering Woods", 0, 1, 1, true, "#2e4a18"),
+            [BiomeType.Boreal]: createZone(BiomeType.Boreal, "Frostbite Peaks", 20000, 1, 0.6, false, "#1e293b"),
+            [BiomeType.Savanna]: createZone(BiomeType.Savanna, "Sun-Scorched Plains", 150000, 1, 1.2, false, "#78350f"),
+            [BiomeType.Jungle]: createZone(BiomeType.Jungle, "Verdant Caverns", 2000000, 1, 2.0, false, "#064e3b"),
+            [BiomeType.Mystic]: createZone(BiomeType.Mystic, "Ethereal Nexus", 50000000, 1, 0.4, false, "#4c1d95"),
+            [BiomeType.Gods]: createZone(BiomeType.Gods, "Olympus Grove", 1000000000, 1, 0.1, false, "#fcd34d"),
+        });
+
+        const App = () => {
+          const [gameState, setGameState] = React.useState(() => ({
+            money: 0,
+            inventory: {
+                [BiomeType.Temperate]: 0,
+                [BiomeType.Boreal]: 0,
+                [BiomeType.Savanna]: 0,
+                [BiomeType.Jungle]: 0,
+                [BiomeType.Mystic]: 0,
+                [BiomeType.Gods]: 0,
+            },
+            totalWoodChopped: 0,
+            lifetimeEarnings: 0,
+            zones: getDefaultZones(),
+            activeZoneId: BiomeType.Temperate,
+            clickPower: 1,
+            globalGrowthMultiplier: 1,
+            day: 1,
+            carState: CarState.HIDDEN,
+            carLoadProgress: 0,
+            weather: WeatherType.Sunny,
+            isMapOpen: false,
+            prestigeCurrency: 0,
+            skills: {},
+            isSkillTreeOpen: false
+          }));
+
+          const [upgradeLevels, setUpgradeLevels] = React.useState({});
+          const [marketEvent, setMarketEvent] = React.useState(null);
+          const [logs, setLogs] = React.useState([]);
+          const [gameWon, setGameWon] = React.useState(false);
+          const [prestigeConfirm, setPrestigeConfirm] = React.useState(false);
+
+          // VEILIGE OPSLAG FUNCTIE
+          const saveTimberGame = (customState = gameState, customUpgrades = upgradeLevels) => {
+              try {
+                  const dataToSave = {
+                      money: customState.money || 0,
+                      inventory: customState.inventory || {},
+                      totalWoodChopped: customState.totalWoodChopped || 0,
+                      lifetimeEarnings: customState.lifetimeEarnings || 0,
+                      prestigeCurrency: customState.prestigeCurrency || 0,
+                      skills: customState.skills || {},
+                      activeZoneId: customState.activeZoneId || BiomeType.Temperate,
+                      upgradeLevels: customUpgrades || {},
+                      zones: Object.keys(customState.zones || {}).reduce((acc, key) => {
+                          const z = customState.zones[key];
+                          if (z) {
+                              acc[key] = {
+                                  id: z.id,
+                                  isUnlocked: z.isUnlocked,
+                                  level: z.level,
+                                  xp: z.xp,
+                                  xpToNextLevel: z.xpToNextLevel,
+                                  totalUpgradesBought: z.totalUpgradesBought || 0
+                              };
+                          }
+                          return acc;
+                      }, {}),
+                      lastSave: Date.now()
+                  };
+                  localStorage.setItem('timber_tycoon_save', JSON.stringify(dataToSave));
+                  if (window.saveGameData) window.saveGameData('timbertycoon', dataToSave);
+              } catch(e) {
+                  console.error("Save error:", e);
+              }
+          };
+
+          // INLADEN MET HERSTEL VAN ALLE HELPERS
+          React.useEffect(() => {
+              async function loadCloudTimber() {
+                  let loaded = null;
+                  try {
+                      const local = localStorage.getItem('timber_tycoon_save');
+                      if (local) loaded = JSON.parse(local);
+                  } catch(e) {
+                      console.warn("Corrupt local save");
+                  }
+
+                  // 1. Wacht tot Firebase klaar is met opstarten
+                  let attempts = 0;
+                  while (!window.loadGameData && attempts < 50) {
+                      await new Promise(r => setTimeout(r, 100));
+                      attempts++;
+                  }
+
+                  if (window.loadGameData) {
+                      try {
+                          const cloud = await window.loadGameData('timbertycoon');
+                          if (cloud && (!loaded || (cloud.lastSave || 0) > (loaded.lastSave || 0))) {
+                              loaded = cloud;
+                          }
+                      } catch(e) {}
+                  }
+
+                  if (loaded && typeof loaded === 'object') {
+                      const upgLevels = loaded.upgradeLevels || {};
+                      setUpgradeLevels(upgLevels);
+
+                      setGameState(prev => {
+                          const updatedZones = { ...prev.zones };
+                          if (loaded.zones && typeof loaded.zones === 'object') {
+                              Object.keys(loaded.zones).forEach(k => {
+                                  if (updatedZones[k]) {
+                                      updatedZones[k].isUnlocked = loaded.zones[k].isUnlocked ?? updatedZones[k].isUnlocked;
+                                      updatedZones[k].level = loaded.zones[k].level || 1;
+                                      updatedZones[k].xp = loaded.zones[k].xp || 0;
+                                      updatedZones[k].xpToNextLevel = loaded.zones[k].xpToNextLevel || 1000;
+                                      updatedZones[k].totalUpgradesBought = loaded.zones[k].totalUpgradesBought || 0;
+                                  }
+                              });
+                          }
+
+                          // 2. SPAWN DE GEKOCHTE HELPERS WEER NETJES IN
+                          const workerMap = {
+                              [BiomeType.Temperate]: { id: 'temp_worker', speedId: 'temp_shed', power: 25, speedBonus: 0.2 },
+                              [BiomeType.Boreal]: { id: 'bor_worker', speedId: 'bor_heat', power: 150, speedBonus: 0.3 },
+                              [BiomeType.Savanna]: { id: 'sav_worker', speedId: 'sav_safari', power: 800, speedBonus: 1.0 },
+                              [BiomeType.Jungle]: { id: 'jun_worker', speedId: 'jun_machete', power: 5000, speedBonus: 1.0 },
+                              [BiomeType.Mystic]: { id: 'mys_worker', speedId: 'mys_mana', power: 40000, speedBonus: 1.0 },
+                              [BiomeType.Gods]: { id: 'god_worker', speedId: 'god_bless', power: 1000000, speedBonus: 0.0 }
+                          };
+
+                          Object.keys(updatedZones).forEach(biomeKey => {
+                              const cfg = workerMap[biomeKey];
+                              if (cfg) {
+                                  const count = upgLevels[cfg.id] || 0;
+                                  const speedLvl = upgLevels[cfg.speedId] || 0;
+                                  const totalSpeed = 0.1 + (speedLvl * cfg.speedBonus);
+                                  const jacks = [];
+                                  for (let i = 0; i < count; i++) {
+                                      jacks.push({
+                                          id: Date.now() + Math.random() + i,
+                                          x: STORAGE_LOCATION.x,
+                                          y: STORAGE_LOCATION.y,
+                                          state: LumberjackState.IDLE,
+                                          targetTreeId: null,
+                                          speed: totalSpeed,
+                                          chopTimer: 0,
+                                          level: cfg.power
+                                      });
+                                  }
+                                  updatedZones[biomeKey].lumberjacks = jacks;
+                              }
+                          });
+
+                          const safeInventory = (typeof loaded.inventory === 'object' && loaded.inventory !== null)
+                              ? { ...prev.inventory, ...loaded.inventory }
+                              : prev.inventory;
+
+                          return {
+                              ...prev,
+                              money: typeof loaded.money === 'number' ? loaded.money : prev.money,
+                              inventory: safeInventory,
+                              totalWoodChopped: loaded.totalWoodChopped || prev.totalWoodChopped,
+                              lifetimeEarnings: loaded.lifetimeEarnings || prev.lifetimeEarnings,
+                              prestigeCurrency: loaded.prestigeCurrency || prev.prestigeCurrency,
+                              skills: loaded.skills || prev.skills,
+                              activeZoneId: (loaded.activeZoneId && updatedZones[loaded.activeZoneId]) ? loaded.activeZoneId : BiomeType.Temperate,
+                              zones: updatedZones
+                          };
+                      });
+
+                      addLog("Savegame & workers geladen!", "success");
+                  }
+              }
+              loadCloudTimber();
+          }, []);
+
+          // AUTOSAVE EXACT ELKE 1 MINUUT (60.000 ms)
+          React.useEffect(() => {
+              const autoSaveInterval = setInterval(() => {
+                  saveTimberGame();
+                  console.log("[Timber Tycoon] 1-minuut cloud save voltooid.");
+              }, 60000);
+              return () => clearInterval(autoSaveInterval);
+          }, [gameState, upgradeLevels]);
+
+          const addLog = (text, type = 'info') => {
+            setLogs(prev => [{ id: Date.now() + Math.random(), text, type }, ...prev].slice(0, 10));
+          };
+
+          const currentUpgrades = getZoneUpgrades(gameState.activeZoneId).map(u => ({
+              ...u,
+              level: upgradeLevels[u.id] || 0
+          }));
+
+          const getSkillBonus = (type) => {
+              let bonus = 0;
+              Object.keys(gameState.skills || {}).forEach(id => {
+                 const skillDef = SKILL_TREE.find(s => s.id === id);
+                 if (skillDef && skillDef.type === type) {
+                     const lvl = gameState.skills[id] || 0;
+                     if (type === SkillType.GlobalXP) bonus += lvl * 0.2;
+                     if (type === SkillType.MasterTrader) bonus += lvl * 0.1;
+                     if (type === SkillType.CheapUpgrades) bonus += lvl * 0.05;
+                     if (type === SkillType.AmberBoost) bonus += lvl * 0.1;
+                     if (type === SkillType.GrowthSurge) bonus += lvl * 0.5;
+                 }
+              });
+              return bonus;
+          };
+
+          const handleInteract = (treeId) => {
+            setGameState(prev => {
+              const activeZone = prev.zones[prev.activeZoneId] || prev.zones[BiomeType.Temperate];
+              const newTrees = [...activeZone.trees];
+              const treeIndex = newTrees.findIndex(t => t.id === treeId);
+              if (treeIndex === -1) return prev;
+
+              const targetTree = newTrees[treeIndex];
+              let woodGain = 0;
+              let xpGain = 0;
+
+              if (targetTree.stage === TreeStage.Mature) {
+                newTrees[treeIndex] = { ...targetTree, stage: TreeStage.Stump, growthProgress: 0 };
+                woodGain = prev.clickPower;
+                xpGain = woodGain * (1 + getSkillBonus(SkillType.GlobalXP)); 
+              } else if (targetTree.stage === TreeStage.Empty || targetTree.stage === TreeStage.Stump) {
+                newTrees[treeIndex] = { ...targetTree, stage: TreeStage.Sapling, growthProgress: 0 };
+              }
+
+              let newXp = (activeZone.xp || 0) + xpGain;
+              let newLevel = activeZone.level || 1;
+              let newXpReq = activeZone.xpToNextLevel || 1000;
+
+              if (newXp >= newXpReq) {
+                  newLevel += 1;
+                  newXp -= newXpReq;
+                  newXpReq = Math.floor(newXpReq * 1.5);
+                  addLog(`${activeZone.name} reached Level ${newLevel}!`, 'success');
+              }
+
+              const currentWood = prev.inventory[prev.activeZoneId] || 0;
+
+              return {
+                ...prev,
+                inventory: {
+                    ...prev.inventory,
+                    [prev.activeZoneId]: currentWood + woodGain
+                },
+                totalWoodChopped: prev.totalWoodChopped + woodGain,
+                zones: {
+                    ...prev.zones,
+                    [prev.activeZoneId]: { 
+                        ...activeZone, 
+                        trees: newTrees,
+                        xp: newXp,
+                        level: newLevel,
+                        xpToNextLevel: newXpReq
+                    }
+                }
+              };
+            });
+          };
+
+          const handleSell = () => {
+            if (gameState.carState !== CarState.HIDDEN) return;
+            const currentZoneId = gameState.activeZoneId;
+            const woodToSell = gameState.inventory[currentZoneId] || 0;
+
+            if (woodToSell <= 0) return;
+
+            setGameState(prev => ({ ...prev, carState: CarState.ARRIVING, carLoadProgress: 0 }));
+            addLog(`Fleet dispatched to ${gameState.zones[currentZoneId].name}`, "info");
+
+            setTimeout(() => {
+                setGameState(prev => ({ ...prev, carState: CarState.LOADING }));
+                let progress = 0;
+                const fillInterval = setInterval(() => {
+                    progress += 5;
+                    setGameState(p => ({ ...p, carLoadProgress: progress }));
+                    if (progress >= 100) clearInterval(fillInterval);
+                }, 100);
+
+                setTimeout(() => {
+                     setGameState(prev => ({ ...prev, carState: CarState.DEPARTING }));
+                     setTimeout(() => {
+                         setGameState(prev => {
+                            const tradeBonus = getSkillBonus(SkillType.MasterTrader);
+                            const price = (prev.zones[currentZoneId].woodPrice || 20) * (1 + tradeBonus);
+                            const earnings = Math.floor(woodToSell * price);
+                            addLog(`Sold ${woodToSell} wood for $${earnings.toLocaleString()}`, 'success');
+                            return {
+                                ...prev,
+                                money: prev.money + earnings,
+                                lifetimeEarnings: prev.lifetimeEarnings + earnings,
+                                inventory: {
+                                    ...prev.inventory,
+                                    [currentZoneId]: 0 
+                                },
+                                carState: CarState.HIDDEN,
+                                carLoadProgress: 0
+                            };
+                         });
+                     }, 2000); 
+                }, 2500); 
+            }, 2000); 
+          };
+
+          const handleBuyUpgrade = (upgradeId) => {
+            setGameState(prev => {
+              const upgradeList = getZoneUpgrades(prev.activeZoneId);
+              const upgrade = upgradeList.find(u => u.id === upgradeId);
+              if (!upgrade) return prev;
+              
+              const currentLevel = upgradeLevels[upgradeId] || 0;
+              let cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, currentLevel));
+              
+              const discount = getSkillBonus(SkillType.CheapUpgrades);
+              if (discount > 0) cost = Math.floor(cost * (1 - discount));
+              
+              if (prev.money < cost) return prev;
+
+              let newState = { ...prev, money: prev.money - cost };
+              setUpgradeLevels(curr => ({ ...curr, [upgradeId]: currentLevel + 1 }));
+
+              const updatedZone = { ...newState.zones[prev.activeZoneId] };
+              updatedZone.totalUpgradesBought = (updatedZone.totalUpgradesBought || 0) + 1;
+              newState.zones[prev.activeZoneId] = updatedZone;
+
+              if (upgrade.id === 'god_ascend') {
+                  setGameWon(true);
+              }
+
+              if (upgrade.type === UpgradeType.ManualClick) newState.clickPower += upgrade.effectValue;
+              if (upgrade.type === UpgradeType.GrowthSpeed) {
+                  if (upgrade.scope === 'GLOBAL') {
+                      newState.globalGrowthMultiplier = Math.min(newState.globalGrowthMultiplier + (upgrade.effectValue / 100), GROWTH_CAP_MULTIPLIER);
+                  }
+                  if (upgrade.scope === 'LOCAL') {
+                      const z = newState.zones[newState.activeZoneId];
+                      const newMult = Math.min(z.growthMultiplier * (1 + upgrade.effectValue/100), GROWTH_CAP_MULTIPLIER);
+                      newState.zones[newState.activeZoneId] = { ...z, growthMultiplier: newMult };
+                  }
+              }
+
+              if (upgrade.type === UpgradeType.AutoChopper) {
+                  const activeZone = { ...newState.zones[newState.activeZoneId] };
+                  activeZone.lumberjacks = [...(activeZone.lumberjacks || []), {
+                      id: Date.now() + Math.random(),
+                      x: STORAGE_LOCATION.x,
+                      y: STORAGE_LOCATION.y,
+                      state: LumberjackState.IDLE,
+                      targetTreeId: null,
+                      speed: 0.1, 
+                      chopTimer: 0,
+                      level: upgrade.effectValue 
+                  }];
+                  newState.zones = { ...newState.zones, [newState.activeZoneId]: activeZone };
+                  addLog(`Hired worker for ${activeZone.name}`, 'success');
+              }
+
+              if (upgrade.type === UpgradeType.WorkerSpeed) {
+                   const activeZone = { ...newState.zones[newState.activeZoneId] };
+                   activeZone.lumberjacks = (activeZone.lumberjacks || []).map(jack => ({
+                       ...jack,
+                       speed: jack.speed + upgrade.effectValue,
+                       level: jack.level * 1.5 
+                   }));
+                   newState.zones = { ...newState.zones, [newState.activeZoneId]: activeZone };
+                   addLog(`Upgraded workforce in ${activeZone.name}`, 'success');
+              }
+
+              return newState;
+            });
+          };
+
+          const handlePrestige = () => {
+              if (gameState.lifetimeEarnings < 1000000) return;
+              
+              const baseAmber = Math.floor(Math.pow(gameState.lifetimeEarnings / 1000000, 0.45) * 10);
+              const bonusAmber = Math.floor(baseAmber * getSkillBonus(SkillType.AmberBoost));
+              const totalAmber = baseAmber + bonusAmber;
+
+              setGameState(prev => ({
+                  money: 0,
+                  inventory: {
+                      [BiomeType.Temperate]: 0,
+                      [BiomeType.Boreal]: 0,
+                      [BiomeType.Savanna]: 0,
+                      [BiomeType.Jungle]: 0,
+                      [BiomeType.Mystic]: 0,
+                      [BiomeType.Gods]: 0,
+                  },
+                  totalWoodChopped: 0,
+                  lifetimeEarnings: 0,
+                  zones: getDefaultZones(),
+                  activeZoneId: BiomeType.Temperate,
+                  clickPower: 1,
+                  globalGrowthMultiplier: 1,
+                  day: 1,
+                  carState: CarState.HIDDEN,
+                  carLoadProgress: 0,
+                  weather: WeatherType.Sunny,
+                  isMapOpen: false,
+                  prestigeCurrency: prev.prestigeCurrency + totalAmber,
+                  skills: prev.skills,
+                  isSkillTreeOpen: false
+              }));
+              setUpgradeLevels({});
+              setPrestigeConfirm(false);
+              addLog(`PRESTIGE! World Reset. Gained ${totalAmber} Amber.`, 'info');
+              setTimeout(() => saveTimberGame(), 500);
+          };
+
+          const handleSkillUnlock = (skillId, cost) => {
+              setGameState(prev => {
+                  if (prev.prestigeCurrency < cost) return prev;
+                  const currentLevel = prev.skills[skillId] || 0;
+                  return {
+                      ...prev,
+                      prestigeCurrency: prev.prestigeCurrency - cost,
+                      skills: {
+                          ...prev.skills,
+                          [skillId]: currentLevel + 1
+                      }
+                  };
+              });
+          };
+
+          const getUnlockRequirements = (zoneId) => {
+              const z = gameState.zones;
+              const reqs = [];
+
+              if (zoneId === BiomeType.Boreal) {
+                  reqs.push({ text: "5 Upgrades Bought", met: (z[BiomeType.Temperate]?.totalUpgradesBought || 0) >= 5 });
+              }
+              else if (zoneId === BiomeType.Savanna) {
+                  reqs.push({ text: "10 Upgrades Bought", met: (z[BiomeType.Boreal]?.totalUpgradesBought || 0) >= 10 });
+              }
+              else if (zoneId === BiomeType.Jungle) {
+                  reqs.push({ text: "15 Upgrades Bought", met: (z[BiomeType.Savanna]?.totalUpgradesBought || 0) >= 15 });
+              }
+              else if (zoneId === BiomeType.Mystic) {
+                  reqs.push({ text: "20 Upgrades Bought", met: (z[BiomeType.Jungle]?.totalUpgradesBought || 0) >= 20 });
+              }
+              else if (zoneId === BiomeType.Gods) {
+                  reqs.push({ text: "Mystic Level 15", met: (z[BiomeType.Mystic]?.level || 0) >= 15 });
+                  reqs.push({ text: "All Zones Level 10+", met: Object.values(z).filter(zo => zo.id !== BiomeType.Gods).every(zo => (zo.level || 0) >= 10) });
+              }
+              return reqs;
+          };
+
+          // GAME LOOP
+          React.useEffect(() => {
+            const loop = setInterval(() => {
+              setGameState(prev => {
+                const updatedZones = { ...prev.zones };
+                const updatedInventory = { ...prev.inventory };
+                
+                let xpBonus = getSkillBonus(SkillType.GlobalXP);
+                let growthBonus = getSkillBonus(SkillType.GrowthSurge);
+
+                Object.keys(updatedZones).forEach(biome => {
+                    const zone = updatedZones[biome];
+                    if (!zone || (!zone.isUnlocked && prev.activeZoneId !== biome)) return;
+
+                    let weatherMod = 1;
+                    if (prev.weather === WeatherType.Rain) weatherMod = 1.5;
+                    if (prev.weather === WeatherType.Drought) weatherMod = 0.5;
+
+                    const totalGrowthMult = Math.min(prev.globalGrowthMultiplier * (1 + growthBonus) * zone.growthMultiplier, GROWTH_CAP_MULTIPLIER);
+                    const baseGrowth = 0.5 * (TICK_RATE_MS / 100) * totalGrowthMult * weatherMod;
+                    
+                    const newTrees = (zone.trees || []).map(tree => {
+                        if (tree.stage === TreeStage.Sapling || tree.stage === TreeStage.Young) {
+                            let newProgress = tree.growthProgress + baseGrowth;
+                            let newStage = tree.stage;
+                            if (newProgress >= 100) {
+                                newStage = tree.stage === TreeStage.Sapling ? TreeStage.Young : TreeStage.Mature;
+                                newProgress = 0;
+                            }
+                            return { ...tree, growthProgress: newProgress, stage: newStage };
+                        }
+                        if ((tree.stage === TreeStage.Empty || tree.stage === TreeStage.Stump) && Math.random() < 0.005) { 
+                            return { ...tree, stage: TreeStage.Sapling, growthProgress: 0 };
+                        }
+                        return tree;
+                    });
+
+                    let zoneXpGain = 0;
+
+                    const newLumberjacks = (zone.lumberjacks || []).map(jack => {
+                        const updatedJack = { ...jack };
+                        let currentSpeed = jack.speed;
+                        if (prev.weather === WeatherType.Snow && biome !== BiomeType.Boreal) currentSpeed *= 0.5;
+
+                        const moveTo = (tx, ty) => {
+                            const dx = tx - updatedJack.x;
+                            const dy = ty - updatedJack.y;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            
+                            if (dist <= currentSpeed) {
+                                updatedJack.x = tx;
+                                updatedJack.y = ty;
+                                return true;
+                            } else {
+                                updatedJack.x += (dx/dist)*currentSpeed;
+                                updatedJack.y += (dy/dist)*currentSpeed;
+                                return false; 
+                            }
+                        };
+
+                        if (updatedJack.state === LumberjackState.IDLE) {
+                            const mature = newTrees.filter(t => t.stage === TreeStage.Mature);
+                            if (mature.length > 0) {
+                                const target = mature[Math.floor(Math.random() * mature.length)];
+                                updatedJack.targetTreeId = target.id;
+                                updatedJack.state = LumberjackState.MOVING_TO_TREE;
+                            }
+                        } else if (updatedJack.state === LumberjackState.MOVING_TO_TREE) {
+                            const t = newTrees.find(tree => tree.id === updatedJack.targetTreeId);
+                            if (t && t.stage === TreeStage.Mature) {
+                                const arrived = moveTo(t.x, t.y);
+                                if (arrived) { 
+                                    updatedJack.state = LumberjackState.CHOPPING; 
+                                    updatedJack.chopTimer = 0; 
+                                }
+                            } else {
+                                updatedJack.state = LumberjackState.IDLE;
+                            }
+                        } else if (updatedJack.state === LumberjackState.CHOPPING) {
+                            updatedJack.chopTimer += TICK_RATE_MS;
+                            const chopTimeNeeded = Math.max(200, 1000 - (jack.level * 10)); 
+                            if (updatedJack.chopTimer >= chopTimeNeeded) {
+                                const tIndex = newTrees.findIndex(tr => tr.id === updatedJack.targetTreeId);
+                                if (tIndex !== -1 && newTrees[tIndex].stage === TreeStage.Mature) {
+                                    newTrees[tIndex] = { ...newTrees[tIndex], stage: TreeStage.Stump, growthProgress: 0 };
+                                    updatedJack.state = LumberjackState.MOVING_TO_STORAGE;
+                                } else { updatedJack.state = LumberjackState.IDLE; }
+                            }
+                        } else if (updatedJack.state === LumberjackState.MOVING_TO_STORAGE) {
+                            const arrived = moveTo(STORAGE_LOCATION.x, STORAGE_LOCATION.y);
+                            if (arrived) {
+                                const workerPower = jack.level; 
+                                updatedInventory[biome] = (updatedInventory[biome] || 0) + workerPower;
+                                zoneXpGain += workerPower * (1 + xpBonus);
+                                updatedJack.state = LumberjackState.IDLE;
+                            }
+                        }
+                        return updatedJack;
+                    });
+
+                    let newXp = (zone.xp || 0) + zoneXpGain;
+                    let newLevel = zone.level || 1;
+                    let newXpReq = zone.xpToNextLevel || 1000;
+                    if (newXp >= newXpReq) {
+                        newLevel += 1;
+                        newXp -= newXpReq;
+                        newXpReq = Math.floor(newXpReq * 1.5);
+                    }
+
+                    updatedZones[biome] = { 
+                        ...zone, 
+                        trees: newTrees, 
+                        lumberjacks: newLumberjacks,
+                        xp: newXp,
+                        level: newLevel,
+                        xpToNextLevel: newXpReq
+                    };
+                });
+
+                let diff = 0;
+                for (const b in updatedInventory) diff += (updatedInventory[b] || 0) - (prev.inventory[b] || 0);
+
+                return {
+                    ...prev,
+                    inventory: updatedInventory,
+                    totalWoodChopped: prev.totalWoodChopped + Math.max(0, diff),
+                    zones: updatedZones
+                };
+              });
+            }, TICK_RATE_MS);
+            return () => clearInterval(loop);
+          }, []);
+
+          // MARKET EVENT LOOP (OFFLINE)
+          React.useEffect(() => {
+            const eventLoop = setInterval(async () => {
+              const event = await fetchMarketEvent(); 
+              setMarketEvent(event);
+              addLog(`News: ${event.title}`, 'info');
+              
+              setGameState(p => {
+                  let newWeather = event.forcedWeather || WeatherType.Sunny;
+                  return { 
+                      ...p, 
+                      weather: newWeather,
+                      zones: Object.keys(p.zones).reduce((acc, key) => {
+                         const base = BASE_WOOD_PRICES[key] || 20;
+                         acc[key] = { ...p.zones[key], woodPrice: base * (event.priceModifier || 1) };
+                         return acc;
+                      }, {})
+                  };
+              });
+            }, EVENT_INTERVAL_MS);
+            return () => clearInterval(eventLoop);
+          }, []);
+
+          const activeZoneData = gameState.zones[gameState.activeZoneId] || gameState.zones[BiomeType.Temperate];
+
+          return (
+            <div className="h-screen w-full flex flex-col bg-[#1a1a1a] text-[#f1f8e9] overflow-hidden font-serif select-none relative">
+              {prestigeConfirm && (
+                   <div className="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center animate-fade-in p-8">
+                      <h2 className="text-4xl text-amber-500 font-bold mb-4 pixel-font">ASCEND?</h2>
+                      <p className="text-xl text-gray-300 text-center max-w-lg mb-8">
+                          Reset your world, inventory, and zone progress. <br/>
+                          Keep your <span className="text-amber-400 font-bold">Skills</span> and gain <span className="text-amber-400 font-bold">Amber</span>.
+                      </p>
+                      <div className="flex gap-4">
+                          <button onClick={() => setPrestigeConfirm(false)} className="px-6 py-3 border border-gray-600 rounded text-gray-400 hover:bg-gray-800">Cancel</button>
+                          <button onClick={handlePrestige} className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded shadow-[0_0_20px_#d97706]">CONFIRM RESET</button>
+                      </div>
+                   </div>
+              )}
+
+              {gameWon && (
+                  <div className="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center animate-fade-in text-center p-8">
+                      <h1 className="text-6xl text-yellow-400 font-bold mb-4 pixel-font animate-bounce">ASCENDED</h1>
+                      <p className="text-2xl text-white font-serif italic mb-8 max-w-2xl">
+                          You have conquered the mortal realms. The multiverse awaits your next harvest.
+                      </p>
+                      <button 
+                          onClick={() => setGameWon(false)}
+                          className="px-8 py-3 bg-white text-black font-bold text-xl rounded hover:scale-105 transition-transform"
+                      >
+                          CONTINUE ETERNAL HARVEST
+                      </button>
+                  </div>
+              )}
+
+              <header className="h-20 bg-[#2d1b18] border-b-4 border-[#3e2723] flex items-center justify-between px-6 z-20 shrink-0 shadow-xl relative">
+                 <div className="flex items-center gap-4 relative z-10">
+                     <div className="bg-[#4e342e] p-2 rounded-xl border-2 border-[#5d4037] shadow-lg">
+                        <AxeIcon className="w-8 h-8 text-[#d7ccc8]" />
+                     </div>
+                     <div>
+                        <h1 className="text-2xl font-bold text-[#ffecb3] pixel-font drop-shadow-md">TIMBER TYCOON</h1>
+                        <p className="text-xs text-[#a1887f]">Global Operations</p>
+                     </div>
+                 </div>
+                 <div className="flex gap-2">
+                     <button 
+                        onClick={() => setGameState(p => ({ ...p, isSkillTreeOpen: true }))}
+                        className="flex items-center gap-2 bg-[#3e2723] hover:bg-[#5d4037] text-amber-400 font-bold px-4 py-2 rounded shadow-lg border border-amber-900/50 relative z-10"
+                     >
+                         <AmberIcon className="w-5 h-5" />
+                         <span>{gameState.prestigeCurrency || 0}</span>
+                     </button>
+                     <button 
+                        onClick={() => setGameState(p => ({ ...p, isMapOpen: true }))}
+                        className="flex items-center gap-2 bg-[#ffb300] hover:bg-[#ffca28] text-[#3e2723] font-bold px-4 py-2 rounded shadow-lg border-2 border-[#ff6f00] relative z-10 animate-bounce"
+                     >
+                         <MapIcon className="w-5 h-5" />
+                         OPEN MAP
+                     </button>
+                 </div>
+              </header>
+
+              <div className="flex-1 flex overflow-hidden bg-[#263238] relative">
+                <div className="absolute inset-0 bg-[#0f190e]">
+                     <div className="absolute inset-0 bg-gradient-to-br from-[#1b3312] to-[#0a1109] opacity-80"></div>
+                </div>
+
+                <div className="flex-1 p-4 md:p-8 overflow-y-auto flex flex-col relative z-10">
+                   <StatsPanel 
+                     state={gameState} 
+                     marketEvent={marketEvent} 
+                     onSell={handleSell} 
+                     onPrestige={() => setPrestigeConfirm(true)}
+                   />
+                   
+                   <div className="flex-1 min-h-[500px] flex flex-col mb-4">
+                      <GameWorld 
+                        zone={activeZoneData}
+                        carState={gameState.carState}
+                        carLoadProgress={gameState.carLoadProgress}
+                        weather={gameState.weather}
+                        onInteract={handleInteract}
+                        growthModifier={gameState.globalGrowthMultiplier * (activeZoneData?.growthMultiplier || 1)}
+                        woodAmount={gameState.inventory[gameState.activeZoneId] || 0}
+                        totalLifetimeWood={gameState.totalWoodChopped || 0}
+                      />
+                   </div>
+
+                   <div className="mt-2 bg-[#1a1a1a]/80 backdrop-blur rounded-xl p-4 h-32 overflow-y-auto border-2 border-[#3e2723] shadow-lg font-mono text-sm shrink-0">
+                      <div className="text-[#8d6e63] text-xs mb-2 uppercase font-bold sticky top-0 bg-[#1a1a1a]/90 pb-1 w-full border-b border-[#3e2723]">Journal Entry</div>
+                      {logs.map((log) => (
+                          <div key={log.id} className="mb-1 text-gray-300">
+                              &gt; {log.text}
+                          </div>
+                      ))}
+                   </div>
+                </div>
+
+                <div className="w-80 lg:w-96 bg-[#2d1b18] border-l-4 border-[#3e2723] shrink-0 p-4 relative shadow-2xl z-20">
+                   <div className="relative z-10 h-full flex flex-col">
+                        <div className="mb-4 p-2 bg-black/30 rounded text-center border border-white/10">
+                            <p className="text-xs text-gray-400 uppercase">Current Region</p>
+                            <p className="text-xl font-bold text-white">{activeZoneData?.name || 'Forest'}</p>
+                        </div>
+                        <UpgradeShop 
+                            upgrades={currentUpgrades} 
+                            money={gameState.money || 0} 
+                            onBuy={handleBuyUpgrade} 
+                            skillDiscount={getSkillBonus(SkillType.CheapUpgrades)}
+                        />
+                   </div>
+                </div>
+              </div>
+
+              {gameState.isMapOpen && (
+                  <WorldMap 
+                    zones={gameState.zones}
+                    activeZoneId={gameState.activeZoneId}
+                    money={gameState.money || 0}
+                    getRequirements={getUnlockRequirements}
+                    onTravel={(id) => setGameState(p => ({ ...p, activeZoneId: id, isMapOpen: false }))}
+                    onUnlock={(id) => {
+                         setGameState(prev => {
+                            const zone = prev.zones[id];
+                            if (zone && prev.money >= zone.unlockCost) {
+                                return { ...prev, money: prev.money - zone.unlockCost, zones: { ...prev.zones, [id]: { ...zone, isUnlocked: true } } };
+                            }
+                            return prev;
+                         });
+                    }}
+                    onClose={() => setGameState(p => ({ ...p, isMapOpen: false }))}
+                  />
+              )}
+
+              {gameState.isSkillTreeOpen && (
+                  <SkillTree 
+                    skills={gameState.skills}
+                    amber={gameState.prestigeCurrency || 0}
+                    onUnlock={handleSkillUnlock}
+                    onClose={() => setGameState(p => ({ ...p, isSkillTreeOpen: false }))}
+                  />
+              )}
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

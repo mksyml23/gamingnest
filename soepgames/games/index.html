@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Online Browser Games | Play Instantly No Download - GamingNest</title>
+    <meta name="description" content="Play free online browser games instantly on GamingNest. No downloads needed. Action, idle, strategy and multiplayer games.">
+
+    <!-- Open Graph / Facebook / Discord -->
+    <meta property="og:title" content="GamingNest - Free Online Games">
+    <meta property="og:description" content="Play free browser games instantly. No downloads needed.">
+    <meta property="og:image" content="https://gamingnest.nl/assets/gamingnest-arcade-hero.png">
+    <meta property="og:url" content="https://gamingnest.nl">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GamingNest - Free Online Games">
+    <meta name="twitter:description" content="Play free browser games instantly. No downloads needed.">
+    <meta name="twitter:image" content="https://gamingnest.nl/assets/gamingnest-arcade-hero.png">
+
+
+    <!-- Enhanced discoverability and sharing metadata -->
+    <meta name="author" content="GamingNest">
+    <meta name="application-name" content="GamingNest">
+    <meta name="apple-mobile-web-app-title" content="GamingNest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="preload" href="/assets/gamingnest-arcade-hero.png" as="image" type="image/png">
+    <meta property="og:site_name" content="GamingNest">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image:alt" content="GamingNest's neon space arcade">
+    <meta name="twitter:image:alt" content="GamingNest's neon space arcade">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@graph":[
+      {"@type":"Organization","name":"GamingNest","url":"https://gamingnest.nl/","logo":"https://gamingnest.nl/logo.png"},
+      {"@type":"WebPage","name":"GamingNest | Free Online Browser Games","url":"https://gamingnest.nl/","description":"Play a hand-picked collection of free browser games instantly — no downloads required.","isPartOf":{"@id":"https://gamingnest.nl/#website"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://gamingnest.nl/assets/gamingnest-arcade-hero.png"}}
+    ]}
+    </script>
+    <meta name="theme-color" content="#06080d">
+    <link rel="icon" href="/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Preconnect for Google Fonts (SEO Pagespeed optimization) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="preload" href="logo.png" as="image">
+    <link rel="canonical" href="https://gamingnest.nl/">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5f408d48-7592-4cb0-a796-c0234493dd3e"></script>
+    <!-- Structured Data voor de Zoekmachine (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GamingNest",
+      "url": "https://gamingnest.nl",
+      "description": "Free online browser games you can play instantly without downloads.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://gamingnest.nl/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <style>
+        .hero-desc {
+            max-width: 700px;
+            margin: 12px auto 0;
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+        :root {
+            --p: #00bfff; 
+            --a: #ff0077; 
+            --bg: #06080d;
+            --card: #0f121a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; cursor: default; }
+        
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- OPTIMIZED SPACE BACKGROUND --- */
+        #space-bg {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(2px 2px at 150px 120px, rgba(0,191,255,0.3), transparent);
+            background-size: 200px 200px;
+            animation: spaceDrift 100s linear infinite;
+        }
+        @keyframes spaceDrift { 0% { background-position: 0 0; } 100% { background-position: 1000px 1000px; } }
+
+        /* --- CLICK PARTICLES --- */
+        .click-spark {
+            position: absolute; width: 6px; height: 6px; background: var(--p); border-radius: 50%;
+            pointer-events: none; z-index: 9999; animation: sparkOut 0.5s ease-out forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes sparkOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3) translateY(-10px); opacity: 0; } }
+
+        /* --- SMOOTH PAGE TRANSITION --- */
+        #page-transition {
+            position: fixed; inset: 0; background: var(--bg); z-index: 100000;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #page-transition.active { opacity: 1; pointer-events: all; }
+
+        /* --- SUPER FAST INTRO --- */
+        #intro-screen {
+            position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.3s ease-out; will-change: opacity;
+        }
+        .intro-logo { width: clamp(100px, 15vw, 130px); filter: drop-shadow(0 0 30px var(--p)); animation: popIn 0.4s cubic-bezier(0.17, 0.89, 0.32, 1.27); will-change: transform; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- SOCIAL DOCK --- */
+        .dock { position: absolute; top: 20px; right: 4%; display: flex; gap: 8px; z-index: 100; }
+        .dock-btn {
+            width: clamp(36px, 4vw, 42px); height: clamp(36px, 4vw, 42px); 
+            background: rgba(255,255,255,0.03); border: none; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            color: #888; font-size: 1.1rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-decoration: none; /* SEO Update: Verwijder underline van links */
+        }
+        .dock-btn:hover { background: var(--p); color: #000; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,191,255,0.4); }
+
+        /* --- NESTOR THE ROBOT --- */
+        #nestor-box { position: fixed; bottom: 20px; left: 20px; z-index: 1000; display: flex; align-items: flex-end; gap: 12px; }
+        .robot { width: clamp(50px, 6vw, 65px); height: auto; transition: 0.3s; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); animation: floatRobot 4s ease-in-out infinite; cursor: pointer; }
+        .robot:hover { transform: scale(1.1) rotate(-5deg); }
+        @keyframes floatRobot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        
+        .bubble {
+            background: #fff; color: #000; padding: 10px 15px; border-radius: 15px 15px 15px 0;
+            font-size: 0.8rem; font-weight: 800; margin-bottom: 50px; opacity: 0; transform: translateY(10px);
+            transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3); max-width: 220px; line-height: 1.4; pointer-events: none;
+        }
+        .bubble.show { opacity: 1; transform: translateY(0); }
+
+        /* --- HEADER --- */
+        header { text-align: center; padding: clamp(40px, 5vh, 60px) 5% clamp(20px, 3vh, 30px); position: relative; z-index: 2; }
+        .hero-logo { width: clamp(100px, 10vw, 130px); margin-bottom: 15px; transition: 0.3s; }
+        .hero-logo:hover { transform: scale(1.05) rotate(2deg); filter: drop-shadow(0 0 20px var(--p)); }
+        h1 { 
+            font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--p), #fff); background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.3)); animation: textShine 4s linear infinite;
+        }
+        @keyframes textShine { to { background-position: 200% center; } }
+        #funny-subtitle { color: #888; font-size: clamp(0.85rem, 1.5vw, 0.95rem); font-style: italic; }
+
+        /* --- MINIMAL SEARCH --- */
+        .controls-bar { display: flex; justify-content: center; margin-bottom: clamp(20px, 4vh, 40px); position: relative; z-index: 2; padding: 0 5%; }
+        .search-box {
+            background: rgba(255,255,255,0.03); border: none; border-radius: 30px;
+            padding: 10px 20px; color: #fff; font-size: 0.9rem; width: clamp(200px, 30vw, 240px); outline: none; transition: 0.4s; text-align: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .search-box:focus { width: clamp(250px, 40vw, 300px); background: rgba(0,191,255,0.05); box-shadow: inset 0 0 15px rgba(0,191,255,0.2), 0 0 15px rgba(0,191,255,0.1); }
+
+        /* --- GAME GRID --- */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 20px; width: 92%; max-width: 1100px; margin: 0 auto 100px; position: relative; z-index: 2;
+        }
+
+        /* --- FEATURED CARD --- */
+        .card.featured {
+            grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+            padding: clamp(20px, 4vw, 30px); background: linear-gradient(135deg, var(--card), #080a10); border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .card.featured .card-img-wrap { 
+            width: 45%; height: clamp(160px, 20vw, 220px); margin: 0; 
+            -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+            mask-image: linear-gradient(to right, black 70%, transparent 100%);
+        }
+        .card.featured .featured-info { width: 50%; text-align: left; }
+        .badge-recommended { display: inline-block; background: rgba(0,191,255,0.1); color: var(--p); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; }
+        .card.featured .card-title { font-size: clamp(1.8rem, 3vw, 2.2rem); text-align: left; margin-bottom: 8px; }
+        .card.featured .featured-desc { color: #aaa; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.4; }
+        .card.featured .btn-play { padding: 10px 25px; font-size: 1rem; width: auto; margin-top: 0; }
+
+        /* --- NORMAL CARDS --- */
+        .card {
+            background: var(--card); border-radius: 16px; padding: 15px; position: relative;
+            transition: 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.27); display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); cursor: pointer; border: 1px solid rgba(255,255,255,0.03);
+        }
+        .card:hover { transform: translateY(-6px); background: #131722; box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
+
+        .card::before {
+            content: ""; position: absolute; inset: -1px; border-radius: 16px; padding: 2px;
+            background: linear-gradient(135deg, rgba(0,191,255,0.6), transparent 40%, transparent 60%, rgba(255,0,119,0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0; transition: 0.3s ease-in-out; pointer-events: none; z-index: 10;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-img-wrap { 
+            width: 100%; height: 140px; display: flex; justify-content: center; align-items: center; 
+            margin-bottom: 12px; pointer-events: none; position: relative;
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+        .card-img-wrap::after {
+            content: ""; position: absolute; width: 80px; height: 80px;
+            background: var(--p); filter: blur(40px); opacity: 0.15; z-index: -1; border-radius: 50%;
+        }
+        .card img { max-width: 100%; max-height: 100%; object-fit: contain; transition: 0.4s; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+        .card:hover img { transform: scale(1.1) rotate(-2deg); }
+
+        .card-title { font-size: 1.05rem; font-weight: 800; text-align: center; margin-bottom: 15px; transition: 0.3s; z-index: 2; letter-spacing: 0.5px; }
+        
+        /* CLEAN PLAY BUTTON (Gewijzigd voor A-tags) */
+        .btn-play {
+            background: linear-gradient(135deg, var(--p), #0088ff); color: #fff; padding: 10px; border-radius: 10px; font-weight: 800;
+            text-align: center; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; 
+            margin-top: auto; z-index: 5; position: relative; display: flex; justify-content: center; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 191, 255, 0.25); border: none; cursor: pointer; font-size: 0.9rem;
+            text-decoration: none; /* SEO Update: Geen lelijke links */
+        }
+        .btn-play:hover { background: #fff; color: #000; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3); }
+
+        .card-hover-info {
+            position: absolute; top: 15px; left: 15px; right: 15px; height: 140px; 
+            background: rgba(8, 10, 15, 0.85); backdrop-filter: blur(8px); border-radius: 10px;
+            padding: 12px; opacity: 0; transform: translateY(-10px); transition: 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.27);
+            display: flex; flex-direction: column; justify-content: center; gap: 10px; z-index: 20;
+            pointer-events: none;
+        }
+        .card:hover .card-hover-info { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .card.featured .card-hover-info { display: none; }
+
+        .hover-stats { display: flex; justify-content: space-around; color: #aaa; font-size: 0.85rem; font-weight: bold; }
+        .hover-stats i { color: var(--p); margin-right: 5px; }
+        .hover-actions { display: flex; gap: 8px; }
+        .btn-mini { flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.08); color: #fff; font-size: 0.9rem; }
+        .btn-mini:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+        .btn-like.liked { color: #ff0077; background: rgba(255, 0, 119, 0.15); }
+        .btn-like.liked i { color: #ff0077; }
+
+        @media (max-width: 768px) {
+            .dock { right: 4%; top: 15px; }
+            .grid { width: 90%; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; } 
+            .card.featured { flex-direction: column; text-align: center; padding: 20px; }
+            .card.featured .card-img-wrap { width: 100%; height: 150px; margin-bottom: 15px; -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%); }
+            .card.featured .featured-info { width: 100%; text-align: center; }
+            .card.featured .card-title { font-size: 1.6rem; text-align: center; }
+            #nestor-box { bottom: 15px; left: 15px; }
+            .robot { width: 45px; }
+            .bubble { display: none !important; }
+            @media (hover: none) {
+                .card-hover-info {
+                    position: relative; top: auto; left: auto; right: auto; height: auto;
+                    transform: translateY(0); opacity: 1; pointer-events: all;
+                    background: transparent; backdrop-filter: none; padding: 0 0 10px 0; margin-top: -5px;
+                }
+            }
+        }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-box { background: #0f121a; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .admin-box { max-width: 700px; } 
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #888; transition: 0.3s; }
+        .close-modal:hover { color: #ff0077; }
+        .modal-box h2 { margin-bottom: 10px; font-weight: 900; }
+        input, textarea { width: 100%; background: #000; border: none; padding: 12px; color: #fff; margin-bottom: 15px; border-radius: 10px; outline: none; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); font-family: 'Poppins'; }
+        input:focus, textarea:focus { background: rgba(0,191,255,0.05); }
+        .submit-btn { width: 100%; padding: 12px; background: var(--p); border: none; font-weight: 800; border-radius: 10px; cursor: pointer; transition: 0.3s; color: #000; text-transform: uppercase; }
+        .submit-btn:hover { background: #fff; }
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .admin-stat-card { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; text-align: center; }
+        .admin-stat-card h4 { font-size: 0.75rem; color: #aaa; text-transform: uppercase; margin-bottom: 5px; }
+        .admin-stat-card span { font-size: 1.3rem; font-weight: 900; color: #fff; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { color: var(--p); font-weight: bold; text-transform: uppercase; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+		.hero-stats{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:15px;
+    flex-wrap:wrap;
+}
+
+.hero-stats div{
+    background:rgba(255,255,255,0.05);
+    padding:10px 15px;
+    border-radius:12px;
+    font-weight:600;
+}
+.categories{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.categories button{
+    background:#0f121a;
+    color:white;
+    border:1px solid rgba(255,255,255,0.08);
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+}
+
+.categories button:hover{
+    border-color:#00bfff;
+}
+.featured-stats{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+    color:#aaa;
+    font-weight:700;
+}
+
+.featured-stats span{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.featured-stats i{
+    color:var(--p);
+}
+.featured-stats .btn-like {
+    flex: none;
+    width: auto;
+    padding: 8px 12px;
+}
+.account-box {
+    max-width: 420px;
+    padding: 35px;
+    text-align: center;
+}
+
+.account-logo {
+    width: 65px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 15px var(--p));
+}
+
+.account-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.account-subtitle {
+    color: #777;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.google-btn:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+}
+
+.account-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #555;
+    font-size: 0.75rem;
+    margin: 20px 0;
+}
+
+.account-divider::before,
+.account-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+}
+
+.account-switch {
+    margin-top: 18px;
+    color: #777;
+    font-size: 0.8rem;
+}
+
+.account-switch span {
+    color: var(--p);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.account-switch span:hover {
+    text-decoration: underline;
+}
+
+.account-error {
+    color: #ff477e;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+    display: none;
+}
+.account-switch {
+    margin-top: 18px;
+    color: #777;
+    font-size: 0.8rem;
+}
+
+.account-switch-button {
+    color: var(--p);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#account-switch-button {
+    color: var(--p);
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#account-switch-button:hover {
+    text-decoration: underline;
+}
+
+        /* --- DISCOVERABILITY & ACCESSIBILITY UPGRADE --- */
+        .arcade-hero { width: min(1100px, 92%); min-height: 290px; margin: 4px auto 28px; border: 1px solid rgba(0,191,255,.25); border-radius: 24px; overflow: hidden; position: relative; display: flex; align-items: end; background: #0b1126 url('../assets/gamingnest-arcade-hero.png') center/cover no-repeat; box-shadow: 0 22px 60px rgba(0,0,0,.42); }
+        .arcade-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(6,8,13,.92) 0%, rgba(6,8,13,.36) 56%, rgba(6,8,13,.1) 100%), linear-gradient(0deg, rgba(6,8,13,.82), transparent 60%); }
+        .arcade-hero__copy { position: relative; padding: clamp(24px,5vw,48px); max-width: 620px; }
+        .eyebrow { color: #75ddff; letter-spacing: .14em; font-size: .75rem; font-weight: 800; text-transform: uppercase; }
+        .arcade-hero h2 { font-size: clamp(1.55rem,3.5vw,2.5rem); line-height: 1.1; margin: 8px 0 10px; color: #fff; }
+        .arcade-hero p { color: #d7dfec; line-height: 1.6; max-width: 54ch; }
+        .language-select { position: absolute; left: 4%; top: 20px; z-index: 100; appearance: none; background: rgba(6,8,13,.75); color: #d9f7ff; border: 1px solid rgba(0,191,255,.42); padding: 8px 32px 8px 11px; border-radius: 999px; font: 700 .78rem 'Poppins', sans-serif; cursor: pointer; }
+        .language-select:focus-visible, .search-box:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+        .results-summary { width: 92%; max-width: 1100px; margin: 0 auto 14px; color: #9ca9bb; font-size: .86rem; }
+        .empty-results { grid-column: 1/-1; padding: 42px; text-align:center; background: rgba(15,18,26,.82); border: 1px dashed rgba(0,191,255,.4); border-radius: 16px; color: #c8d6e7; }
+        @media (max-width: 650px) { .arcade-hero { min-height: 350px; background-position: 57% center; } .arcade-hero::before { background: linear-gradient(0deg, rgba(6,8,13,.96), rgba(6,8,13,.12) 86%); } .language-select { top: 15px; left: 4%; } }
+
+    </style>
+</head>
+<body>
+    <label class="sr-only" for="language-select">Language</label>
+    <select id="language-select" class="language-select" aria-label="Choose language">
+        <option value="en">EN</option><option value="nl">NL</option>
+    </select>
+
+    <div id="space-bg"></div>
+
+    <div id="intro-screen">
+        <img src="logo.png" class="intro-logo" alt="GamingNest Logo - Loading">
+    </div>
+
+    <!-- Smooth Page Transition Overlay -->
+    <div id="page-transition"></div>
+
+<nav class="dock" aria-label="Social Media Links">
+    <a href="https://youtube.com/@GamingNest-Dev" class="dock-btn" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-youtube"></i>
+    </a>
+
+    <a href="https://whatsapp.com/channel/0029Vb7FDrcEwEk29ZSv7k44" class="dock-btn" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+<button class="dock-btn" onclick="openAccount()">
+    <i class="fas fa-user"></i>
+</button>
+</nav>
+
+<header>
+    <img src="logo.png" class="hero-logo" alt="GamingNest Logo" width="130" height="130">
+
+    <h1>GamingNest</h1>
+
+    <p id="funny-subtitle">Because you should be doing your homework.</p>
+
+<div class="hero-desc">
+  <h2 style="text-align:center;color:#fff;margin-top:20px;">
+    Play Free Games Online Without Downloading
+  </h2>
+  <p>
+    Play <strong style="color:#00bfff;">free online browser games</strong> instantly.
+    No downloads. Just click and play action, idle, strategy and multiplayer games.
+  </p>
+</div>
+<div class="hero-stats">
+    <div>🎮 18 Games</div>
+    <div>👥 3600+ Plays</div>
+    <div>❤️ 500+ Likes</div>
+</div>
+</header>
+
+<!-- Main content wrapper added for SEO semantics -->
+<main id="main-content">
+<div class="categories">
+    <button onclick="setCategory('popular')">🔥 Popular</button>
+    <button onclick="setCategory('liked')">❤️ Most Liked</button>
+    <button onclick="setCategory('new')">🆕 New</button>
+    <button onclick="setCategory('all')">🎮 All Games</button>
+</div>
+    <div class="controls-bar">
+        <input type="text" id="search" class="search-box" placeholder="Search free browser games..." aria-label="Search for games">
+    </div>
+
+
+<section class="arcade-hero" aria-labelledby="arcade-hero-title">
+  <div class="arcade-hero__copy">
+    <p class="eyebrow" data-i18n="heroEyebrow">Instant browser games</p>
+    <h2 id="arcade-hero-title" data-i18n="heroTitle">Your next favourite game is already loaded.</h2>
+    <p data-i18n="heroText">Pick a game, hit play, and jump straight in. No installs, no account required.</p>
+  </div>
+</section>
+    <p id="results-summary" class="results-summary" aria-live="polite"></p>
+    <!-- The grid is now populated with <article> tags via JS -->
+    <div class="grid" id="game-grid"></div>
+
+    <section style="max-width:800px;margin:40px auto 100px;color:#aaa;font-size:0.95rem;line-height:1.7;text-align:center;">
+      <h2 style="color:#fff;">Play Free Browser Games Online</h2>
+      <p>
+        GamingNest is a free online gaming platform where you can play browser games instantly without downloads.
+        Discover action games, idle games, strategy games and multiplayer games all in one place.
+      </p>
+      <p>
+        Our games load directly in your browser, meaning you can start playing in seconds.
+        No installation, no registration required, just click and play.
+      </p>
+      <p>
+        Whether you enjoy fast-paced action, relaxing idle games, or competitive multiplayer experiences,
+        GamingNest offers a growing collection of free games optimized for desktop and mobile.
+      </p>
+    </section>
+</main>
+
+<div id="nestor-box" aria-hidden="true">
+        <svg class="robot" id="nestor-bot" viewBox="0 0 100 100" aria-label="Nestor the Robot">
+            <line x1="50" y1="25" x2="50" y2="10" stroke="#fff" stroke-width="3"/>
+            <circle cx="50" cy="8" r="4" fill="var(--a)"/>
+            <rect x="20" y="25" width="60" height="55" rx="15" fill="#1e293b" stroke="#333" stroke-width="2"/>
+            <rect x="28" y="35" width="44" height="25" rx="5" fill="#000"/>
+            <circle class="bot-eye" id="eye-l" cx="40" cy="47" r="4" fill="var(--p)"/>
+            <circle class="bot-eye" id="eye-r" cx="60" cy="47" r="4" fill="var(--p)"/>
+        </svg>
+        <div class="bubble" id="nestor-msg">Welcome. I am Nestor.</div>
+    </div>
+
+    <!-- FEEDBACK MODAL -->
+    <div id="modal-contact" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-box">
+            <i class="fas fa-times close-modal" onclick="closeModal('modal-contact')" aria-label="Close modal"></i>
+            <h2>Feedback</h2>
+            <p id="modal-subtitle">What's on your mind?</p>
+            <form action="https://formspree.io/f/mpwkaeod" method="POST">
+                <input type="hidden" name="_subject" id="form-subject" value="GamingNest Message">
+                <input type="text" name="name" placeholder="Your Name" required aria-label="Your Name">
+                <input type="email" name="email" placeholder="Your Email" required aria-label="Your Email">
+                <textarea name="message" rows="4" placeholder="Type here..." required aria-label="Your Message"></textarea>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </div>
+    </div>
+<div id="modal-account" class="modal-overlay" aria-modal="true" role="dialog">
+
+    <div class="modal-box account-box">
+
+        <i class="fas fa-times close-modal"
+           onclick="closeModal('modal-account')"
+           aria-label="Close account"></i>
+
+        <img src="logo.png" class="account-logo" alt="GamingNest">
+
+        <h2 id="account-title">Create your account</h2>
+
+        <p class="account-subtitle" id="account-subtitle">
+            Save your progress across GamingNest.
+        </p>
+
+        <button id="google-login" class="google-btn">
+            <i class="fab fa-google"></i>
+            &nbsp; Continue with Google
+        </button>
+
+        <div class="account-divider">
+            OR
+        </div>
+
+        <div id="account-error" class="account-error"></div>
+
+        <input
+            id="account-email"
+            type="email"
+            placeholder="Email"
+            autocomplete="email"
+        >
+
+        <input
+            id="account-password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+        >
+
+        <button id="account-submit" class="submit-btn">
+            Create Account
+        </button>
+
+        <p class="account-switch">
+            <span id="account-switch-text">Already have an account?</span>
+            <span
+                id="account-switch-button"
+                class="account-switch-button"
+                onclick="switchAccountMode()"
+            >Log in</span>
+        </p>
+
+    </div>
+
+</div>
+
+
+    <!-- ADMIN MODAL -->
+    <div id="modal-admin" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-box admin-box">
+            <i class="fas fa-times close-modal" onclick="closeModal('modal-admin')" aria-label="Close admin modal"></i>
+            <h2>System Admin</h2>
+            <p style="color:#888; margin-bottom: 20px;">Statistics</p>
+            <div id="admin-content"></div>
+        </div>
+    </div>
+<script type="module" src="/firebase-app.js"></script>
+    <script>
+        // --- DATA SECURITY PUZZLE ---
+        const _sec = (function() {
+            // Arrays met strings in willekeurige volgorde
+            const b = ["6a58bd", "c9f5f4", "af5e29", "97155c"];
+            const k = ["$2a$10$", "mSYL9V/Jov", "PT1JnrU.Vk", "K.WfssmGPA", "xhG2IGGXDs", "P1OysWiyWjX6m"];
+            return {
+                i: b[0] + b[1] + b[2] + b[3],
+                k: k[0] + k[1] + k[2] + k[3] + k[4] + k[5]
+            };
+        })();
+
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${_sec.i}`;
+        const _getH = (isPut = false) => {
+            let h = { "X-Access-Key": _sec.k };
+            if(isPut) h["Content-Type"] = "application/json";
+            return h;
+        };
+
+const GAMES = [
+  { id: 'strikezone', title: 'Strikezone', img: 'strikezone logo.png', url: '/games/strikezone' },
+  { id: 'tag', title: 'Game of Tag', img: 'tag logo.webp', url: '/games/tag' },
+  { id: 'neon-breach', title: 'Neon Breach', img: 'NEONBREACHLOGO.webp', url: '/games/neon-breach' },
+  { id: 'angryflap', title: 'Space Jumper', img: 'angryflap logo.jpg', url: '/games/spacejumper' },
+  { id: 'paddleboss', title: 'Paddle Boss', img: 'pixelbosslogo.webp', url: '/games/paddleboss' },
+  { id: 'stockmarket', title: 'Marketflip', img: 'stockmarketlogo.webp', url: '/games/stockmarket' },
+  { id: 'pixelstack', title: 'Pixelstack', img: 'tetrislogo.webp', url: '/games/pixelstack' },
+  { id: 'idlegamedev', title: 'Idle Game Dev', img: 'idledevgamelogo.webp', url: '/games/idlegamedev' },
+  { id: 'spendthemoney', title: 'Spend Money', img: 'SpendTheMoneyLogo.webp', url: '/games/spendthemoney' },
+  { id: 'parcour', title: 'Parcour', img: 'parcourlogo.webp', url: '/games/parcour' },
+  { id: 'aces', title: 'ACES', img: 'ACESLOGO.webp', url: '/games/aces' },
+  { id: 'battlecore', title: 'Battle Core', img: 'battlecore.webp', url: '/games/battlecore' },
+  { id: 'timbertycoon', title: 'Timber Tycoon', img: 'timbertycoonlogo.jpg', url: '/games/timbertycoon' },
+  { id: 'justclick', title: 'Just Click', img: 'justclicklogo.png', url: '/games/justclick' },
+  { id: 'scp-foundation', title: 'SCP Foundation', img: 'scplogo.webp', url: '/games/scp-foundation' },
+  { id: 'chronocore', title: 'Chrono Core', img: 'Chronologo.webp', url: '/games/Chrono-core' },
+  { id: 'tictac', title: 'Tic Tac Chaos', img: 'tictaclogo.webp', url: '/games/tictac' },
+  { id: 'soulreaper', title: 'Soul Reaper', img: 'soulreaperlogo.webp', url: '/games/soulreaper' }
+];
+
+        let db = { likes: {} };
+let currentCategory = 'popular';
+const subtitles = [
+    "Because you should be doing your homework.",
+    "Don't sit too close to the screen.",
+    "The place where your productivity dies.",
+    "Better than going outside.",
+    "Nestor is judging your choices.",
+    "Alt-Tab is your best friend.",
+    "Your teacher knows you are here.",
+    "Warning: Highly addictive protocols.",
+    "Escaping reality since 2024.",
+
+    "Definitely educational.",
+    "100% bug-free. Probably.",
+    "Touching grass is optional.",
+    "One more game won't hurt.",
+    "Loading your next bad decision.",
+    "Works on my computer.",
+    "Sleep is overrated.",
+    "Ctrl+S your homework first.",
+    "Powered by caffeine.",
+    "No NFTs. We promise.",
+    "Your GPU is crying.",
+    "Parents hate this website.",
+    "Just five more minutes.",
+    "Please don't tell your boss.",
+    "404: Productivity not found.",
+    "Now with extra pixels.",
+    "Made by teenagers somehow.",
+    "Your internet survived this.",
+    "Professional time wasting.",
+    "Achievement unlocked: Procrastination.",
+    "Still easier than math.",
+    "No microtransactions... yet.",
+    "Probably better than TikTok.",
+    "The loading screen is lying.",
+    "Your browser can handle this. Hopefully.",
+    "This looked easier in VS Code.",
+    "If it crashes, it's a feature.",
+    "Your FPS may vary.",
+    "Don't blame the mascot.",
+    "Certified keyboard destroyer.",
+    "Now featuring questionable life choices.",
+    "Touching grass DLC sold separately.",
+    "Gaming during school? I won't tell.",
+    "Works better than expected.",
+    "Why are you reading these?",
+    "The mascot is watching.",
+    "You found the subtitles!",
+    "May contain rage quits.",
+    "Loading... still loading...",
+    "Skill issue detected.",
+    "Good luck beating the leaderboard.",
+    "Insert gaming joke here.",
+    "Please hydrate.",
+    "There is no secret button.",
+    "Don't click everything.",
+    "Your grades can wait... right?",
+    "The games are free. Your time isn't.",
+    "Less talking, more gaming.",
+    "Fun not guaranteed. Addiction is.",
+    "If you're bored, you're doing it wrong."
+];
+        document.getElementById('funny-subtitle').innerText = subtitles[Math.floor(Math.random() * subtitles.length)];
+
+        // --- AUDIO ENGINE ---
+        let audioCtx;
+        function initAudio() { if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } }
+        function playBloop() {
+            if(!audioCtx || window.innerWidth <= 768) return; 
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.03, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        document.addEventListener('click', (e) => {
+            initAudio(); 
+            const spark = document.createElement('div');
+            spark.className = 'click-spark';
+            spark.style.left = e.pageX - 3 + 'px';
+            spark.style.top = e.pageY - 3 + 'px';
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 500);
+        });
+
+        // --- INIT & DB ---
+        window.addEventListener('load', async () => {
+            await fetchDB();
+            render();
+            
+            setTimeout(() => {
+                const intro = document.getElementById('intro-screen');
+                intro.style.opacity = '0';
+                setTimeout(() => { intro.style.display = 'none'; }, 300); 
+            }, 200);
+            
+            if (!sessionStorage.getItem('visited_gn')) {
+                db.index = (db.index || 0) + 1;
+                sessionStorage.setItem('visited_gn', 'true');
+                saveDB();
+            }
+        });
+
+        async function fetchDB() {
+            try {
+                const r = await fetch(JSONBIN_URL, { headers: _getH() });
+                db = (await r.json()).record;
+                if(!db.likes) db.likes = {};
+            } catch (e) { console.error("Database offline."); }
+        }
+        function saveDB() { fetch(JSONBIN_URL, { method: 'PUT', headers: _getH(true), body: JSON.stringify(db) }); }
+
+        // --- SMOOTH GAME CLICK TRANSITION ---
+        function handleGameClick(e, gameId, url) {
+            e.preventDefault(); // Prevents instant jumping so transition works
+            trackView(gameId);
+            
+            document.getElementById('page-transition').classList.add('active');
+            
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+
+        // --- RENDER CARDS (SEO OPTIMIZED) ---
+		let gameOfTheDay = null;
+
+function getGameOfTheDay() {
+    const today = new Date().toISOString().split('T')[0];
+
+    let saved = localStorage.getItem('gameOfTheDay');
+
+    if (saved) {
+        const data = JSON.parse(saved);
+
+        if (data.date === today && GAMES.some(g => g.id === data.id)) {
+            return GAMES.find(g => g.id === data.id);
+        }
+    }
+
+    const randomGame = GAMES[Math.floor(Math.random() * GAMES.length)];
+
+    localStorage.setItem('gameOfTheDay', JSON.stringify({
+        date: today,
+        id: randomGame.id
+    }));
+
+    return randomGame;
+}
+
+gameOfTheDay = getGameOfTheDay();
+        document.getElementById('search').addEventListener('input', render);
+
+        function render() {
+            const grid = document.getElementById('game-grid');
+            const search = document.getElementById('search').value.toLowerCase();
+            grid.innerHTML = '';
+
+let filtered = GAMES.filter(g => g.title.toLowerCase().includes(search));
+
+if (currentCategory === 'popular') {
+    filtered.sort((a, b) => (db[b.id] || 0) - (db[a.id] || 0));
+}
+
+if (currentCategory === 'liked') {
+    filtered.sort((a, b) => (db.likes[b.id] || 0) - (db.likes[a.id] || 0));
+}
+
+if (currentCategory === 'new') {
+    filtered = [...filtered].reverse();
+}
+
+// Game of the Day altijd bovenaan
+if (search === '') {
+    const featuredIndex = filtered.findIndex(g => g.id === gameOfTheDay.id);
+
+    if (featuredIndex !== -1) {
+        const featuredGame = filtered.splice(featuredIndex, 1)[0];
+        filtered.unshift(featuredGame);
+    }
+}
+
+            const summary = document.getElementById('results-summary');
+            if (summary) summary.textContent = t('results', {count: filtered.length});
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="empty-results"><strong>${t('noResults')}</strong><br><span>${t('noResultsHint')}</span></div>`;
+                return;
+            }
+
+            filtered.forEach((game) => {
+                const views = db[game.id] || 0;
+                const likes = db.likes[game.id] || 0;
+                const isLiked = localStorage.getItem('like_' + game.id) === 'true';
+                const isFeatured = game.id === gameOfTheDay.id && search === '';
+
+                // Veranderd naar <article> voor SEO betekenis
+                const card = document.createElement('article');
+                card.className = `card ${isFeatured ? 'featured' : ''}`;
+                card.dataset.game = game.id;
+                
+                card.addEventListener('mouseenter', () => {
+                    playBloop();
+                    triggerNestorComment(game.id);
+                });
+
+                // SEO Updates hierin: 
+                // 1. loading="lazy" voor images
+                // 2. <a> tags in plaats van buttons voor links!
+                if(isFeatured) {
+                    card.innerHTML = `
+                        <div class="card-img-wrap"><img src="${game.img}" alt="Play ${game.title} - Free Online Browser Game" loading="lazy"></div>
+<div class="featured-info">
+
+    <div class="badge-recommended">
+        <i class="fas fa-trophy"></i> ${t('gameOfDay').toUpperCase()}
+    </div>
+
+    <h3 class="card-title">${game.title}</h3>
+
+    <p class="featured-desc">
+        ${t('featured')}
+    </p>
+
+<div class="featured-stats">
+    <span>
+        <i class="fas fa-eye"></i>
+        ${views}
+    </span>
+
+    <button 
+        class="btn-mini btn-like ${isLiked ? 'liked' : ''}" 
+        onclick="toggleLike(event, '${game.id}', this)"
+        aria-label="Like ${game.title}"
+    >
+        <i class="fas fa-heart"></i>
+        <span id="count-${game.id}">${likes}</span>
+    </button>
+</div>
+
+    <a href="${game.url}"
+       class="btn-play"
+       onclick="handleGameClick(event, '${game.id}', '${game.url}')">
+       <i class="fas fa-play"></i> ${t('playNow')}
+    </a>
+
+</div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="card-img-wrap"><img src="${game.img}" alt="Play ${game.title} - Free Browser Game" loading="lazy"></div>
+                        <h3 class="card-title">${game.title}</h3>
+                        
+                        <div class="card-hover-info">
+                            <div class="hover-stats">
+                                <span><i class="fas fa-eye"></i> ${views}</span>
+                                <span><i class="fas fa-heart"></i> <span id="count-${game.id}">${likes}</span></span>
+                            </div>
+                            <div class="hover-actions">
+                                <button class="btn-mini btn-like ${isLiked ? 'liked' : ''}" onclick="toggleLike(event, '${game.id}', this)" aria-label="Like ${game.title}"><i class="fas fa-heart"></i></button>
+                                <button class="btn-mini" onclick="openFeedback('${game.title}', event)" aria-label="Give feedback on ${game.title}"><i class="fas fa-comment-dots"></i></button>
+                            </div>
+                        </div>
+
+                        <a href="${game.url}" class="btn-play" onclick="handleGameClick(event, '${game.id}', '${game.url}')"><i class="fas fa-play"></i> ${t('play')}</a>
+                    `;
+                }
+                grid.appendChild(card);
+            });
+        }
+function setCategory(category) {
+    currentCategory = category;
+    render();
+}
+        // --- LIKES ---
+        function toggleLike(e, id, btn) {
+            e.preventDefault(); e.stopPropagation();
+            const isLiked = localStorage.getItem('like_' + id) === 'true';
+            const countSpan = document.getElementById(`count-${id}`);
+            let currentLikes = db.likes[id] || 0;
+
+            if (isLiked) {
+                db.likes[id] = Math.max(0, currentLikes - 1);
+                localStorage.setItem('like_' + id, 'false');
+                btn.classList.remove('liked');
+            } else {
+                db.likes[id] = currentLikes + 1;
+                localStorage.setItem('like_' + id, 'true');
+                btn.classList.add('liked');
+                showNestorText("Oh, so you like that one?");
+            }
+            countSpan.innerText = db.likes[id];
+            fetch(JSONBIN_URL, { method: 'PUT', headers: _getH(true), body: JSON.stringify(db) });
+        }
+
+        function trackView(id) { 
+            db[id] = (db[id] || 0) + 1; 
+            fetch(JSONBIN_URL, { method: 'PUT', headers: _getH(true), body: JSON.stringify(db) });
+        }
+
+        // --- MODAL SYSTEM ---
+        function openFeedback(gameName, e) {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            document.getElementById('modal-contact').style.display = 'flex';
+            document.getElementById('modal-subtitle').innerText = `Feedback for: ${gameName}`;
+            document.getElementById('form-subject').value = `Feedback: ${gameName}`;
+        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) { if(e.target === this) this.style.display = 'none'; });
+        });
+
+        // --- NESTOR LOGIC & EYE TRACKING ---
+        const bubble = document.getElementById('nestor-msg');
+        let bubbleTimeout;
+
+        function showNestorText(text) {
+            if(window.innerWidth <= 768) return; 
+            bubble.innerText = text;
+            bubble.classList.add('show');
+            clearTimeout(bubbleTimeout);
+            bubbleTimeout = setTimeout(() => bubble.classList.remove('show'), 3500);
+        }
+
+        function triggerNestorComment(gameId) {
+            const comments = {
+                'aces': "This analyzes your playstyle and gives you an archetype. Scary accurate.",
+                'neon-breach': "Yet another addictive cookie clicker...",
+                'parcour': "3D parkour. Don't look down.",
+                'tag': "Literally 2-player tag. Don't you have friends outside?",
+                'angryflap': "A rocketship between pipes. Sounds frustrating.",
+                'pixelstack': "Stacking blocks... pure chaos. Definitely not Tetris.",
+                'battlecore': "Tanks, upgrades, levels and bosses. Destroy them all.",
+                'strikezone': "Class-based PvP. Time to see who's actually good.",
+                'idlegamedev': "Making a game about making games... Inception.",
+                'paddleboss': "It's just pong until a boss shows up out of nowhere.",
+                'scp-foundation': "Story game with classes. Don't play this in the dark.",
+                'stockmarket': "Just the stock market. Buy low, sell high.",
+                'justclick': "Click online against others within a time limit. With cosmetics!",
+                'spendthemoney': "Watch them waste rich people's money.",
+                'timbertycoon': "The name says it all. Chopping trees in different worlds.",
+				'chronocore': "Tower defense through time. Build, upgrade, survive."
+            };
+            
+            if(comments[gameId]) {
+                showNestorText(comments[gameId]);
+            }
+        }
+
+        document.getElementById('nestor-bot').addEventListener('click', () => {
+            const randomQuotes = [
+                "Don't you have anything better to do?",
+                "I was programmed to annoy you.",
+                "Click one more time and I'll take the site offline.",
+                "Error 404: Motivation not found.",
+                "Just play a game already.",
+                "I see you judging my antenna.",
+                "Are you actually going to play, or just stare at me?",
+                "My optical sensors indicate you are bored.",
+                "Sector 7 is secure. For now.",
+                "I track everything. Even your bad choices."
+            ];
+            showNestorText(randomQuotes[Math.floor(Math.random() * randomQuotes.length)]);
+        });
+
+        // Nestor Eye Tracking
+        document.addEventListener('mousemove', (e) => {
+            if(window.innerWidth <= 768) return; 
+            const eyes = [
+                { el: document.getElementById('eye-l'), baseX: 40, baseY: 47 },
+                { el: document.getElementById('eye-r'), baseX: 60, baseY: 47 }
+            ];
+            eyes.forEach(eye => {
+                if(!eye.el) return;
+                const rect = eye.el.getBoundingClientRect();
+                const eyeCenterX = rect.left + rect.width / 2;
+                const eyeCenterY = rect.top + rect.height / 2;
+                const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+                
+                const distance = 3;
+                eye.el.setAttribute('cx', eye.baseX + Math.cos(angle) * distance);
+                eye.el.setAttribute('cy', eye.baseY + Math.sin(angle) * distance);
+            });
+        });
+
+        // --- HIDDEN KEYBOARD COMMANDS ---
+        // They intentionally have no visible links. Ignore search/form fields so normal typing is never hijacked.
+        let commandBuffer = '';
+        window.addEventListener('keydown', (e) => {
+            const field = e.target.closest('input, textarea, select, [contenteditable="true"]');
+            if (field || e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return;
+            commandBuffer = (commandBuffer + e.key.toLowerCase()).slice(-8);
+            if (commandBuffer.endsWith('admin')) {
+                openAdminPanel();
+                commandBuffer = '';
+            } else if (commandBuffer.endsWith('latijn')) {
+                window.location.assign('/games/latijn-leren-coniunctivus.html');
+                commandBuffer = '';
+            }
+        });
+function openAccount() {
+    document.getElementById('modal-account').style.display = 'flex';
+}
+
+let accountMode = "signup";
+
+function switchAccountMode() {
+
+    const title = document.getElementById("account-title");
+    const subtitle = document.getElementById("account-subtitle");
+    const submit = document.getElementById("account-submit");
+    const switchText = document.getElementById("account-switch-text");
+    const switchButton = document.getElementById("account-switch-button");
+
+    if (accountMode === "signup") {
+
+        accountMode = "login";
+
+        title.innerText = "Welcome back";
+        subtitle.innerText = "Log in to continue your GamingNest journey.";
+        submit.innerText = "Log In";
+
+        switchText.innerText = "Don't have an account?";
+        switchButton.innerText = "Create account";
+
+    } else {
+
+        accountMode = "signup";
+
+        title.innerText = "Create your account";
+        subtitle.innerText = "Save your progress across GamingNest.";
+        submit.innerText = "Create Account";
+
+        switchText.innerText = "Already have an account?";
+        switchButton.innerText = "Log in";
+    }
+}
+        function openAdminPanel() {
+            let totalViews = db.index || 0;
+            let totalGameViews = 0;
+            let totalLikes = 0;
+            let gamesStats = [];
+
+            GAMES.forEach(g => {
+                let v = db[g.id] || 0;
+                let l = db.likes[g.id] || 0;
+                totalGameViews += v;
+                totalLikes += l;
+                let ratio = v > 0 ? ((l / v) * 100).toFixed(1) : 0;
+                gamesStats.push({ name: g.title, views: v, likes: l, ratio: ratio });
+            });
+
+            gamesStats.sort((a, b) => b.views - a.views);
+
+            let html = `
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card"><h4>Site Visits</h4><span>${totalViews}</span></div>
+                    <div class="admin-stat-card"><h4>Game Plays</h4><span>${totalGameViews}</span></div>
+                    <div class="admin-stat-card"><h4>Total Likes</h4><span>${totalLikes}</span></div>
+                </div>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table>
+                        <thead><tr><th>Game</th><th>Views</th><th>Likes</th><th>Like Ratio</th></tr></thead>
+                        <tbody>
+                            ${gamesStats.map(gs => `
+                                <tr>
+                                    <td>${gs.name}</td>
+                                    <td>${gs.views}</td>
+                                    <td>${gs.likes}</td>
+                                    <td style="color:${gs.ratio > 10 ? 'var(--g)' : 'var(--p)'}">${gs.ratio}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('admin-content').innerHTML = html;
+            document.getElementById('modal-admin').style.display = 'flex';
+        }
+
+
+        // --- UI LOCALIZATION (English and Dutch) ---
+        const translations = {
+          en: {heroEyebrow:'Instant browser games', heroTitle:'Your next favourite game is already loaded.', heroText:'Pick a game, hit play, and jump straight in. No installs, no account required.', subtitle:'Because you should be doing your homework.', popular:'Popular', liked:'Most Liked', newest:'New', all:'All Games', search:'Search free browser games...', play:'Play', playNow:'Play Now', gameOfDay:'Game of the Day', featured:'One of GamingNest’s featured games. Jump in and see what makes it special.', results:'{count} games ready to play', noResults:'No games found. Try another title.', noResultsHint:'Nestor checked everywhere. Even behind the arcade cabinet.'},
+          nl: {heroEyebrow:'Direct in je browser', heroTitle:'Je volgende favoriete game staat al klaar.', heroText:'Kies een game, druk op spelen en ga meteen los. Geen installatie en geen account nodig.', subtitle:'Omdat je eigenlijk huiswerk hoort te maken.', popular:'Populair', liked:'Meest geliket', newest:'Nieuw', all:'Alle games', search:'Zoek gratis browsergames...', play:'Spelen', playNow:'Nu spelen', gameOfDay:'Game van de dag', featured:'Een uitgelichte GamingNest-game. Start hem en ontdek waarom.', results:'{count} games klaar om te spelen', noResults:'Geen games gevonden. Probeer een andere titel.', noResultsHint:'Nestor heeft overal gekeken. Zelfs achter de arcadekast.'}
+        };
+        let locale = localStorage.getItem('gn_locale') || ((navigator.language || '').toLowerCase().startsWith('nl') ? 'nl' : 'en');
+        function t(key, vars={}) { return (translations[locale][key] || translations.en[key] || key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? ''); }
+        function applyLocale() {
+          document.documentElement.lang = locale;
+          document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+          document.querySelectorAll('.categories button').forEach((el, i) => el.textContent = [t('popular'),t('liked'),t('newest'),t('all')][i]);
+          const searchBox = document.getElementById('search'); if(searchBox) searchBox.placeholder = t('search');
+          const picker = document.getElementById('language-select'); if(picker) picker.value = locale;
+          render();
+        }
+        document.getElementById('language-select').addEventListener('change', (e) => { locale = e.target.value; localStorage.setItem('gn_locale', locale); applyLocale(); });
+        window.addEventListener('load', applyLocale);
+    </script>
+
+
+    <noscript>
+        <div style="padding: 20px; background: #000; color: #fff;">
+            <h2>All Free Games</h2>
+            <ul>
+                <li><a href="/games/strikezone.html">Play Strikezone</a></li>
+                <li><a href="/games/tag.html">Play Game of Tag</a></li>
+                <li><a href="/games/neon-breach.html">Play Neon Breach</a></li>
+                <li><a href="/games/angryflap.html">Play Space Jumper</a></li>
+                <li><a href="/games/paddleboss.html">Play Paddle Boss</a></li>
+                <li><a href="/games/stockmarket.html">Play Stock Market</a></li>
+                <li><a href="/games/pixelstack.html">Play Pixelstack</a></li>
+                <li><a href="/games/idlegamedev.html">Play Idle Game Dev</a></li>
+                <li><a href="/games/spendthemoney.html">Play Spend Money</a></li>
+                <li><a href="/games/parcour.html">Play Parcour</a></li>
+                <li><a href="/games/aces.html">Play ACES</a></li>
+                <li><a href="/games/battlecore.html">Play Battle Core</a></li>
+                <li><a href="/games/timbertycoon.html">Play Timber Tycoon</a></li>
+                <li><a href="/games/justclick.html">Play Just Click</a></li>
+                <li><a href="/games/scp-foundation.html">Play SCP Foundation</a></li>
+				<li><a href="/games/chrono-core/">Play Chrono Core</a></li>
+				<li><a href="/games/tictac/">Play Tic Tac Chaos</a></li>
+				<li><a href="/games/soulreaper/">Play Soul Reaper</a></li>
+            </ul>
+        </div>
+    </noscript>
+
+<script async id="netlify-rum-container" src="/.netlify/scripts/rum" data-netlify-rum-site-id="05963755-b13f-4cc0-a8f3-8c1e87e39139" data-netlify-deploy-branch="" data-netlify-deploy-context="production" data-netlify-cwv-token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaXRlX2lkIjoiMDU5NjM3NTUtYjEzZi00Y2MwLWE4ZjMtOGMxZTg3ZTM5MTM5IiwiYWNjb3VudF9pZCI6IjY4ZDQxMTYzMWVlZTNjMTM1MDZmZGViNiIsImRlcGxveV9pZCI6IjZhMTVlMTE3MDk5YzVhYThjMDBkMzcyMSIsImlzc3VlciI6Im5mc2VydmVyIn0.FyLq80-nLHJsqPhaC-w9B4OHd4u8lpTgpm-IgFNJCsE"></script>
+</body>
+</html>

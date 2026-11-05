@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GamingNest – Gratis Online Games & Project Updates</title>
+<style>
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  background: radial-gradient(circle at center, #0f0f1a, #0a0a14);
+  overflow-x: hidden;
+  color: #fff;
+}
+
+/* Subtiele bewegende achtergrond */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(270deg, #161627, #1c1c31, #161627);
+  background-size: 600% 600%;
+  animation: bgMove 25s ease infinite;
+  z-index: -2;
+}
+
+/* YouTube link */
+#yt-link {
+  position: fixed;
+  top: 20px;
+  right: 25px;
+  z-index: 10000;
+}
+#yt-link img {
+  width: 100px;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+#yt-link img:hover {
+  transform: scale(1.1);
+}
+
+/* Intro */
+.intro-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.intro-logo img {
+  width: 200px;
+  opacity: 0;
+  transform: scale(0.6) rotate(-15deg);
+  animation: logoIntro 2s ease forwards;
+  filter: drop-shadow(0 0 20px #00bfff);
+}
+@keyframes logoIntro {
+  0% { opacity: 0; transform: scale(0.6) rotate(-15deg); }
+  60% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+h1 {
+  font-size: 3rem;
+  color: #00bfff;
+  text-shadow: 0 0 12px rgba(0,191,255,0.7);
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInUp 1.8s ease forwards 1s;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Games sectie */
+.game-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin: 100px auto;
+  max-width: 1100px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+.game-container.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Game cards */
+.game-card {
+  width: 220px;
+  background: linear-gradient(145deg,#0e1425,#1d2340);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  padding: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,191,255,0.2);
+}
+.game-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 25px rgba(0,191,255,0.3);
+  border-color: rgba(0,191,255,0.6);
+}
+.game-card img {
+  width: 150px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.game-card:hover img {
+  transform: scale(1.12) rotate(-3deg);
+  filter: drop-shadow(0 0 8px rgba(0,191,255,0.6));
+}
+.game-card p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+}
+.view-count {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #00bfff;
+  background: rgba(0,191,255,0.1);
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+/* Index counter */
+.index-counter {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #00bfff, #0077ff);
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 12px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.index-counter:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,191,255,0.6);
+}
+</style>
+</head>
+<body>
+
+<!-- YouTube -->
+<a href="https://www.youtube.com/@GamingNest-Dev/shorts" target="_blank" id="yt-link">
+  <img src="youtube-icon.png" alt="YouTube" />
+</a>
+
+<!-- Intro -->
+<div class="intro-logo">
+  <img src="logo.png" alt="GamingNest Logo">
+  <h1>Welcome to GamingNest!</h1>
+</div>
+
+<!-- Games -->
+<div id="games" class="game-container">
+  <a class="game-card" href="game1.html" data-game="strikezone">
+    <img src="strikezone logo.png" alt="Strikezone">
+    <p>Strikezone</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game2.html" data-game="tag">
+    <img src="tag logo.webp" alt="Game of Tag">
+    <p>Game of Tag</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game3.html" data-game="cookieclicker">
+    <img src="cookie.png" alt="Cookie Clicker">
+    <p>Cookie Tapper</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game4.html" data-game="angryflap">
+    <img src="angryflap logo.png" alt="Angry Flap">
+    <p>Angry Flap</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game5.html" data-game="Paddle Boss">
+    <img src="pixelbosslogo.png" alt="Paddle Boss">
+    <p>Paddle Boss</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game6.html" data-game="Stock Market">
+    <img src="stockmarketlogo.png" alt="Stock Market">
+    <p>Stock Market</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game7.html" data-game="Tetris">
+    <img src="tetrislogo.png" alt="Tetris">
+    <p>Tetris</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+  <a class="game-card" href="game8.html" data-game="idle game dev">
+    <img src="idledevgamelogo.png" alt="Idle Game Dev">
+    <p>Idle Game Dev</p>
+    <span class="view-count">Views: 0</span>
+  </a>
+</div>
+
+<!-- Index counter -->
+<div id="index-views" class="index-counter">🏠 Index views: Loading...</div>
+
+<!-- Umami analytics -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5f408d48-7592-4cb0-a796-c0234493dd3e"></script>
+
+<script>
+const BIN_ID = "68da8fa043b1c97be9543af9";
+const API_KEY = "$2a$10$ilneJ1cdpFgE2FpCkKA5oOHLSt/E6cu8YHhUtGVHf6cMj2nG8Sx2a";
+const URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const cards = document.querySelectorAll(".game-card");
+
+async function loadViews() {
+  try {
+    const res = await fetch(URL, { headers: { "X-Master-Key": API_KEY } });
+    const json = await res.json();
+    const data = json.record;
+    cards.forEach(card => {
+      const game = card.dataset.game;
+      card.querySelector(".view-count").textContent = `Views: ${data[game] || 0}`;
+    });
+  } catch {
+    cards.forEach(c => c.querySelector(".view-count").textContent = "Views: 0");
+  }
+}
+
+async function addView(game, el, link) {
+  try {
+    const res = await fetch(URL, { headers: { "X-Master-Key": API_KEY } });
+    const json = await res.json();
+    const data = json.record;
+    data[game] = (data[game] || 0) + 1;
+    await fetch(URL, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
+      body: JSON.stringify(data)
+    });
+    el.textContent = `Views: ${data[game]}`;
+    window.location.href = link;
+  } catch { window.location.href = link; }
+}
+
+cards.forEach(card => {
+  const game = card.dataset.game;
+  const counterEl = card.querySelector(".view-count");
+  const link = card.getAttribute("href");
+  card.addEventListener("click", evt => {
+    evt.preventDefault();
+    addView(game, counterEl, link);
+  });
+});
+
+async function addIndexView() {
+  try {
+    const res = await fetch(URL, { headers: { "X-Master-Key": API_KEY } });
+    const json = await res.json();
+    const data = json.record;
+    data.index = (data.index || 0) + 1;
+    await fetch(URL, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "X-Master-Key": API_KEY },
+      body: JSON.stringify(data)
+    });
+  } catch (err) { console.error(err); }
+}
+
+function animateIndexCounter(oldValue, newValue) {
+  let current = oldValue;
+  const el = document.getElementById("index-views");
+  const step = newValue > oldValue ? 1 : -1;
+  const interval = setInterval(() => {
+    current += step;
+    el.textContent = `🏠 Index views: ${current}`;
+    if (current === newValue) clearInterval(interval);
+  }, 20);
+}
+
+async function showIndexViews() {
+  try {
+    const res = await fetch(URL, { headers: { "X-Master-Key": API_KEY } });
+    const json = await res.json();
+    const data = json.record;
+    animateIndexCounter(250, data.index || 0);
+  } catch {
+    document.getElementById("index-views").textContent = "🏠 Index views: N/A";
+  }
+}
+
+window.addEventListener('load', () => {
+  loadViews();
+  addIndexView();
+  showIndexViews();
+  setTimeout(() => {
+    document.getElementById("games").classList.add("show");
+    document.getElementById("games").scrollIntoView({ behavior: "smooth" });
+  }, 3000);
+});
+</script>
+</body>
+</html>

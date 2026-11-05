@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speel Game – GamingNest</title>
+body {
+  margin: 0;
+  background: #0e0e18;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden; /* voorkomt scrollen van hele body */
+}
+
+/* Hoofdgedeelte met de game */
+#game-container {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  position: relative;
+}
+
+/* Plaats voor likes/dislikes bovenaan links */
+#game-info {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+#game-info span {
+  font-size: 14px;
+  color: #00e0ff;
+  background: rgba(0,191,255,0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Het iframe van de game */
+#game-frame {
+  width: 100%;
+  max-width: 100%;
+  height: 75vh;
+  border: none;
+  border-radius: 12px;
+  background: #000;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Fullscreen knop */
+#fullscreen-btn {
+  margin-top: 12px;
+  background: #00bfff25;
+  color: #00e0ff;
+  padding: 10px 18px;
+  border: 1px solid #00bfff55;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#fullscreen-btn:hover {
+  background: #00bfff50;
+  transform: scale(1.05);
+}
+
+/* Sidebar met aanbevolen games */
+#sidebar {
+  flex: 1;
+  background: #141425;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Header van sidebar */
+#sidebar h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #00bfff;
+}
+
+/* Elke aanbevolen game */
+.suggested-game {
+  background: #1a1a2d;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.suggested-game:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0,191,255,0.5);
+}
+.suggested-game img {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid #00bfff20;
+}
+.suggested-game p {
+  margin: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Scrollbar styling sidebar */
+#sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+#sidebar::-webkit-scrollbar-track {
+  background: #141425;
+}
+#sidebar::-webkit-scrollbar-thumb {
+  background-color: #00bfff50;
+  border-radius: 4px;
+}
+
+/* Optioneel: kleine responsive aanpassing */
+@media(max-width: 900px){
+  body {
+    flex-direction: column;
+  }
+  #game-container {
+    width: 100%;
+  }
+  #sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px;
+  }
+  .suggested-game {
+    min-width: 120px;
+  }
+}
+
+
+<meta name="description" content="Play Speel Game – GamingNest free in your browser on GamingNest. No download required.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Speel Game – GamingNest | GamingNest">
+<meta property="og:description" content="Play Speel Game – GamingNest free in your browser on GamingNest. No download required.">
+<meta name="theme-color" content="#06080d">
+</head>
+<body>
+  <div id="game-container">
+    <iframe id="game-frame" allowfullscreen></iframe>
+    <button id="fullscreen-btn">⛶ Volledig scherm</button>
+  </div>
+
+  <div id="sidebar">
+    <h3>Aanbevolen games</h3>
+    <div id="suggested-list"></div>
+  </div>
+
+<script>
+  // Lees de game-URL uit de query (zoals game.html?url=linkvanjouwgame)
+  const params = new URLSearchParams(window.location.search);
+  const gameUrl = params.get("url");
+  document.getElementById("game-frame").src = gameUrl;
+
+  // Fullscreen knop
+  const btn = document.getElementById("fullscreen-btn");
+  const frame = document.getElementById("game-frame");
+  btn.addEventListener("click", () => {
+    if (frame.requestFullscreen) frame.requestFullscreen();
+  });
+
+  // Voorbeeld van aanbevolen games
+  const games = [
+    { name: "Pixel Stack", img: "thumbs/pixelstack.jpg", url: "game.html?url=games/pixelstack/index.html" },
+    { name: "Angry Flap", img: "thumbs/angryflap.jpg", url: "game.html?url=games/angryflap/index.html" },
+    { name: "Tower Drop", img: "thumbs/towerdrop.jpg", url: "game.html?url=games/towerdrop/index.html" }
+  ];
+
+  const list = document.getElementById("suggested-list");
+  games.forEach(g => {
+    const el = document.createElement("div");
+    el.className = "suggested-game";
+    el.innerHTML = `<img src="${g.img}" alt="${g.name}"><p>${g.name}</p>`;
+    el.onclick = () => (window.location.href = g.url);
+    list.appendChild(el);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magister Latinus | Adaptive Trainer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;    /* Donkerblauw/Grijs - Zakelijk */
+            --accent: #c0392b;     /* Romeins Rood */
+            --bg: #f4f6f8;         /* Modern Grijs */
+            --surface: #ffffff;
+            --text: #2d3436;
+            --success: #27ae60;
+            --error: #c0392b;
+            --radius: 8px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- HEADER --- */
+        header {
+            width: 100%;
+            background: var(--surface);
+            border-bottom: 4px solid var(--accent);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 10;
+            position: sticky;
+            top: 0;
+        }
+
+        .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .brand i { color: var(--accent); margin-right: 10px; }
+
+        /* --- CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- SCREENS --- */
+        .screen { display: none; animation: fadeIn 0.3s ease; width: 100%; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- MENU GRID --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .menu-card {
+            background: var(--surface);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            border-left: 5px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            border-left-color: var(--accent);
+        }
+
+        .menu-icon { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
+        .menu-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+        .menu-desc { color: #636e72; line-height: 1.5; font-size: 0.95rem; }
+
+        /* --- GAME UI --- */
+        .game-panel {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            position: relative;
+        }
+
+        .top-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mastery-container {
+            flex-grow: 1;
+            margin: 0 30px;
+        }
+
+        .mastery-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .mastery-track {
+            height: 12px;
+            background: #dfe6e9;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .mastery-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .category-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .question {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options-grid { display: grid; gap: 15px; }
+
+        .opt-btn {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            padding: 18px 20px;
+            text-align: left;
+            border-radius: var(--radius);
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .opt-btn:hover { background: #fff; border-color: var(--primary); }
+        .opt-btn.correct { background: #e8f5e9; border-color: var(--success); color: #1b5e20; }
+        .opt-btn.wrong { background: #ffebee; border-color: var(--error); color: #b71c1c; opacity: 0.8; }
+
+        /* --- FEEDBACK --- */
+        .feedback {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-left: 5px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .feedback.correct { border-left-color: var(--success); background: #f0fdf4; }
+        .feedback.wrong { border-left-color: var(--error); background: #fef2f2; }
+
+        .grammar-table {
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #444;
+            white-space: pre-wrap;
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
+            transition: background 0.2s;
+        }
+        .next-btn:hover { background: #34495e; }
+
+        /* --- RESULTS --- */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-val { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .stat-label { color: #636e72; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase; }
+
+        /* Progress Bars in Results */
+        .cat-result-row { margin-bottom: 20px; }
+        .cat-result-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; font-weight: 600; }
+        .cat-result-track { height: 10px; background: #eee; border-radius: 5px; overflow: hidden; }
+        .cat-result-bar { height: 100%; background: var(--primary); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+    <meta name="description" content="Oefen de Latijnse coniunctivus met korte, interactieve opdrachten.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://gamingnest.nl/games/latijn-leren-coniunctivus.html">
+</head>
+<body>
+
+<header>
+    <div class="brand"><i class="fas fa-university"></i> Magister Latinus</div>
+    <div id="score-display" style="font-weight: bold; color: var(--primary);">Meesterschap: 0%</div>
+</header>
+
+<div class="container">
+
+    <!-- 1. DASHBOARD -->
+    <div id="screen-menu" class="screen active">
+        <h2 style="color: var(--primary); margin-bottom: 10px;">Selecteer Trainingsmodule</h2>
+        <p style="color: #666; margin-bottom: 30px;">Het algoritme past zich aan. Fouten in een categorie zorgen direct voor meer vragen uit die categorie.</p>
+        
+        <div class="menu-grid">
+            <div class="menu-card" onclick="startSession('all')">
+                <div class="menu-icon"><i class="fas fa-infinity"></i></div>
+                <div class="menu-title">Volledige Training</div>
+                <div class="menu-desc">Mix van Vorming, Determinatie en Syntaxis. Doel: 100% Meesterschap.</div>
+            </div>
+            <div class="menu-card" onclick="startSession('Vorming')">
+                <div class="menu-icon"><i class="fas fa-pen-fancy"></i></div>
+                <div class="menu-title">Focus: Vorming</div>
+                <div class="menu-desc">Alleen stamtijden en rijtjes. (Praesens, Perf, PQP)</div>
+            </div>
+            <div class="menu-card" onclick="startSession('Determinatie')">
+                <div class="menu-icon"><i class="fas fa-search"></i></div>
+                <div class="menu-title">Focus: Determinatie</div>
+                <div class="menu-desc">Herken de vorm en tijd. Is het een Coniunctivus?</div>
+            </div>
+            <div class="menu-card" onclick="startSession('Syntaxis')">
+                <div class="menu-icon"><i class="fas fa-comments"></i></div>
+                <div class="menu-title">Focus: Syntaxis</div>
+                <div class="menu-desc">Vertalen van Ut, Cum, Si en hoofdzinnen.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. GAME SCREEN -->
+    <div id="screen-game" class="screen">
+        <div class="game-panel">
+            <div class="top-stats">
+                <button onclick="stopSession()" style="border:none; background:none; cursor:pointer; color:#999; font-weight: 600;">
+                    <i class="fas fa-times"></i> Stop
+                </button>
+                
+                <div class="mastery-container">
+                    <div class="mastery-label">
+                        <span>MEESTERSCHAP</span>
+                        <span id="score-text">0%</span>
+                    </div>
+                    <div class="mastery-track">
+                        <div class="mastery-fill" id="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="category-badge" id="cat-badge">CATEGORIE</div>
+            </div>
+
+            <div class="question" id="q-text">Laden...</div>
+            <div class="options-grid" id="opt-area"></div>
+
+            <div class="feedback" id="fb-area">
+                <h3 id="fb-title" style="margin: 0 0 10px 0; color: var(--primary);">Feedback</h3>
+                <p id="fb-msg" style="margin-bottom: 10px;">Uitleg...</p>
+                <div class="grammar-table" id="fb-gram">Grammatica regel...</div>
+                <button class="next-btn" onclick="nextQuestion()">Volgende <i class="fas fa-chevron-right"></i></button>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+        <div class="game-panel" style="text-align: center;">
+            <h2 style="color:var(--primary); margin-bottom: 5px;">Sessie Voltooid</h2>
+            <p style="color: #666; margin-bottom: 30px;">Je hebt de 100% bereikt. Hier is je prestatie per categorie.</p>
+
+            <div class="chart-grid">
+                <div class="stat-card">
+                    <div class="stat-val" id="res-questions">0</div>
+                    <div class="stat-label">Vragen</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="res-accuracy">0%</div>
+                    <div class="stat-label">Nauwkeurigheid</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="res-time">0m</div>
+                    <div class="stat-label">Tijd</div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 20px; text-align: left; color: var(--primary);">Detail Analyse</h3>
+            <div id="breakdown-container" style="text-align: left;">
+                <!-- Wordt gevuld door JS -->
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button class="next-btn" onclick="location.reload()" style="float:none;">Nieuwe Sessie Starten</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* 
+       ================================================================
+       DATABASE CONFIGURATIE
+       ================================================================
+    */
+    
+    // 1. Vaste vragen (Syntaxis & Determinatie)
+    const staticQuestions = [
+        // DETERMINATIE
+        { c: 'Determinatie', q: "Wat is 'fuisset'?", a: "Con. PQP", opts: ["Con. Perf", "Con. PQP", "Ind. PQP"], g: "fu-isse-t (isse = PQP)" },
+        { c: 'Determinatie', q: "Wat is 'moneat'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Con. Praesens", "Con. Imperf"], g: "mone-a-t (a = Con. Praes)" },
+        { c: 'Determinatie', q: "Wat is 'audiretur'?", a: "Con. Imperf Passief", opts: ["Con. Praes Passief", "Con. Imperf Passief", "Futurum"], g: "audire-tur (hele ww + uitgang = Imperf)" },
+        { c: 'Determinatie', q: "Wat is 'sis'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Con. Praesens", "Imperativus"], g: "esse -> sim, sis, sit..." },
+        { c: 'Determinatie', q: "Wat is 'duxissemus'?", a: "Con. PQP Actief", opts: ["Con. Perf Actief", "Con. PQP Actief", "Ind. PQP Actief"], g: "dux-isse-mus" },
+        { c: 'Determinatie', q: "Wat is 'fuerimus'?", a: "Con. Perf (of Fut Ex)", opts: ["Con. PQP", "Ind. Perf", "Con. Perf (of Fut Ex)"], g: "fu-eri-mus" },
+        { c: 'Determinatie', q: "Wat is 'ponatur'?", a: "Con. Praes. Passief", opts: ["Con. Praes. Actief", "Con. Praes. Passief", "Ind. Futurum"], g: "pon-a-tur (a = Con. Praes)" },
+        { c: 'Determinatie', q: "Wat is 'stet'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Con. Praesens", "Ind. Perfectum"], g: "stare -> stet" },
+        { c: 'Determinatie', q: "Wat is 'let'?", a: "Geen Latijn", opts: ["Con. Praesens", "Ind. Praesens", "Geen Latijn"], g: "Instinker!" },
+        { c: 'Determinatie', q: "Wat is 'caperem'?", a: "Con. Imperfectum", opts: ["Con. Praesens", "Con. Imperfectum", "Futurum"], g: "capere + m" },
+        { c: 'Determinatie', q: "Is 'laudamus' een coniunctivus?", a: "Nee, Ind. Praesens", opts: ["Ja, Con. Praesens", "Nee, Ind. Praesens", "Ja, Futurum"], g: "Geen klinkerverandering" },
+        { c: 'Determinatie', q: "Wat is 'dixerit'?", a: "Con. Perf / Fut. Ex", opts: ["Alleen Con. Perf", "Alleen Fut. Ex", "Con. Perf / Fut. Ex"], g: "3e pers. is dubbelzinnig" },
+        { c: 'Determinatie', q: "Wat is 'laudem'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Con. Praesens", "Ind. Futurum"], g: "laudare (a-stam) -> laudem" },
+        { c: 'Determinatie', q: "Wat is 'tulisse'?", a: "Infinitivus Perf.", opts: ["Con. PQP", "Infinitivus Perf.", "Ind. Perf."], g: "Eindigt op -isse zonder persoonsuitgang" },
+        { c: 'Determinatie', q: "Wat is 'agere'?", a: "Infinitivus Praesens", opts: ["Con. Imperf", "Infinitivus Praesens", "Ind. Praesens Passief"], g: "Hele werkwoord" },
+        { c: 'Determinatie', q: "Wat is 'eamus'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Futurum", "Con. Praesens"], g: "Van ire (gaan)" },
+        { c: 'Determinatie', q: "Wat is 'amatus sit'?", a: "Con. Perf Passief", opts: ["Con. PQP Passief", "Con. Perf Passief", "Ind. Perf Passief"], g: "PPP + sit" },
+        { c: 'Determinatie', q: "Wat is 'vellet'?", a: "Con. Imperfectum", opts: ["Con. Praesens", "Con. Imperfectum", "Ind. Futurum"], g: "vellet" },
+        { c: 'Determinatie', q: "Wat is 'velint'?", a: "Con. Praesens", opts: ["Ind. Praesens", "Con. Praesens", "Con. Perf"], g: "Onregelmatig (velle)" },
+        { c: 'Determinatie', q: "Wat is 'tulisset'?", a: "Con. PQP", opts: ["Con. Perf", "Con. PQP", "Ind. Perfectum"], g: "ferre (tuli) -> tul-isse-t" },
+
+        // SYNTAXIS
+        { c: "Syntaxis", q: "Vertaal: 'Cum dormiret...'", a: "Toen hij sliep", opts: ["Omdat hij sliep", "Toen hij sliep", "Hoewel hij sliep"], g: "Cum narrativum (verleden)" },
+        { c: "Syntaxis", q: "Vertaal: 'Utinam adesset!'", a: "Was hij maar hier!", opts: ["Moge hij hier zijn.", "Was hij maar hier!", "Zodat hij er is."], g: "Optativus Irrealis" },
+        { c: "Syntaxis", q: "Vertaal: 'Veniunt ut spectent.'", a: "Ze komen om te kijken.", opts: ["Ze komen zodat ze kijken.", "Ze komen om te kijken.", "Ze komen als ze kijken."], g: "Ut Finalis (doel)" },
+        { c: "Syntaxis", q: "Vertaal: 'Si scirem, dicerem.'", a: "Als ik het wist, zou ik het zeggen.", opts: ["Als ik het weet, zeg ik het.", "Als ik het wist, zou ik het zeggen.", "Toen ik het wist, zei ik het."], g: "Irrealis Heden (imperf)" },
+        { c: "Syntaxis", q: "Vertaal: 'Timeo ne veniat.'", a: "Ik vrees dat hij komt.", opts: ["Ik vrees dat hij niet komt.", "Ik vrees dat hij komt.", "Ik vrees om te komen."], g: "Verba Timendi: ne = dat" },
+        { c: "Syntaxis", q: "Vertaal: 'Quid faciam?'", a: "Wat moet ik doen?", opts: ["Wat doe ik?", "Wat moet ik doen?", "Wat zal ik doen?"], g: "Dubitativus (Twijfel)" },
+        { c: "Syntaxis", q: "Vertaal: 'Si dives essem, ...'", a: "Als ik rijk zou zijn (nu)", opts: ["Als ik rijk was (vroeger)", "Als ik rijk zou zijn (nu)", "Als ik rijk ben (feit)"], g: "Irrealis van het heden (Imperfectum)" },
+        { c: "Syntaxis", q: "Vertaal: 'Si id scivissem, ...'", a: "Als ik dit geweten had", opts: ["Als ik dit zou weten", "Als ik dit geweten had", "Toen ik dit wist"], g: "Irrealis van het verleden (PQP)" },
+        { c: "Syntaxis", q: "Vertaal: 'Gaudeamus!'", a: "Laten we blij zijn!", opts: ["Wij zijn blij.", "Laten we blij zijn!", "Zijn we blij?"], g: "Adhortativus" },
+        { c: "Syntaxis", q: "Vertaal: 'Quis hoc credat?'", a: "Wie zou dit geloven?", opts: ["Wie gelooft dit?", "Wie zou dit geloven?", "Wie moet dit geloven?"], g: "Potentialis" },
+        { c: "Syntaxis", q: "Vertaal: 'Tam stultus est ut...'", a: "Zo dom dat...", opts: ["Zo dom opdat...", "Zo dom dat...", "Zo dom als..."], g: "Ut Consecutivus (gevolg)" },
+        { c: "Syntaxis", q: "Vertaal 'ut': 'Veniunt ut spectent.'", a: "om te", opts: ["zodat", "om te", "als"], g: "Ut Finalis (Doel)" },
+        { c: "Syntaxis", q: "Vertaal 'ut': 'Tam fortis est ut vincat.'", a: "zodat", opts: ["opdat", "zodat", "als"], g: "Ut Consecutivus (Gevolg, let op 'Tam')" },
+        { c: "Syntaxis", q: "Vertaal: 'Rogo quid facias.'", a: "Ik vraag wat je doet.", opts: ["Ik vraag wat je zou doen.", "Ik vraag wat je doet.", "Ik vraag wat je deed."], g: "Indirecte Vraag = Indicatief NL" },
+        { c: "Syntaxis", q: "Vertaal: 'Ne feceris!'", a: "Doe het niet!", opts: ["Je zou het niet doen.", "Doe het niet!", "Om het niet te doen."], g: "Prohibitivus (Verbod)" },
+        { c: "Syntaxis", q: "Vertaal 'cum' in: 'Cum aeger sit, non venit.'", a: "Omdat", opts: ["Toen", "Omdat", "Hoewel"], g: "Cum causale (reden)" },
+        { c: "Syntaxis", q: "Vertaal 'ut' in: 'Fiat lux.'", a: "Laat er licht zijn.", opts: ["Er is licht.", "Laat er licht zijn.", "Er zou licht zijn."], g: "Iussivus" },
+        { c: "Syntaxis", q: "Vertaal 'cum': 'Cum Caesar veniret...'", a: "Toen", opts: ["Omdat", "Toen", "Hoewel"], g: "Cum Narrativum (+Imperf)" },
+        { c: "Syntaxis", q: "Vertaal 'ne': 'Timeo ne erres.'", a: "dat", opts: ["dat niet", "dat", "om niet"], g: "Na ww van vrezen: ne = dat" },
+        { c: "Syntaxis", q: "Vertaal: 'Rogo quid agas.'", a: "Ik vraag wat jij doet.", opts: ["Ik vraag wat jij zou doen.", "Ik vraag wat jij doet.", "Ik vraag wat jij deed."], g: "Indirecte vraag: vertaal als indicativus" },
+        { c: "Syntaxis", q: "Vertaal: 'Nemo est qui hoc nesciat.'", a: "...die dit niet weet.", opts: ["...die dit niet zou weten.", "...die dit niet weet.", "...om dit niet te weten."], g: "Conjunctivus in betrekkelijke bijzin" },
+        { c: "Syntaxis", q: "Welke tijd gebruik je voor een wens in het verleden?", a: "Plusquamperfectum", opts: ["Imperfectum", "Perfectum", "Plusquamperfectum"], g: "Utinam + PQP (Was ik maar geweest...)" },
+        { c: "Syntaxis", q: "Vertaal: 'Ne timueris.'", a: "Vrees niet.", opts: ["Je vreest niet.", "Vrees niet.", "Om niet te vrezen."], g: "Prohibitivus (Verbod, ne + perf)" },
+        { c: "Syntaxis", q: "Vertaal: 'Eamus'", a: "Laten we gaan.", opts: ["Wij gaan.", "Laten we gaan.", "Jullie moeten gaan."], g: "Adhortativus (Aansporing)" },
+        { c: "Syntaxis", q: "Vertaal: 'Vivat Rex!'", a: "Leve de koning!", opts: ["De koning leeft.", "Leve de koning!", "De koning zal leven."], g: "Optativus (Wens)" }
+    ];
+
+    // 2. Generator Data voor Vorming
+    const VERBS = [
+        { word: 'vocare', stem: 'voca', p_stem: 'vocav', type: 'a', trans: 'roepen' },
+        { word: 'audire', stem: 'audi', p_stem: 'audiv', type: 'i', trans: 'horen' },
+        { word: 'regere', stem: 'reg', p_stem: 'rex', type: 'mk', trans: 'besturen' },
+        { word: 'monere', stem: 'mone', p_stem: 'monu', type: 'e', trans: 'waarschuwen' },
+        { word: 'capere', stem: 'capi', p_stem: 'cep', type: 'io', trans: 'pakken' },
+        // Onregelmatig
+        { word: 'esse', stem: '', p_stem: 'fu', type: 'irr', trans: 'zijn' },
+        { word: 'posse', stem: '', p_stem: 'potu', type: 'irr', trans: 'kunnen' },
+        { word: 'ire', stem: '', p_stem: 'i', type: 'irr', trans: 'gaan' },
+        { word: 'ferre', stem: '', p_stem: 'tul', type: 'irr', trans: 'dragen' }
+    ];
+
+    const ENDINGS = {
+        act: ['m', 's', 't', 'mus', 'tis', 'nt'],
+        pass: ['r', 'ris', 'tur', 'mur', 'mini', 'ntur']
+    };
+
+    /* 
+       ================================================================
+       APP LOGIC
+       ================================================================
+    */
+    
+    let state = {
+        mastery: 0,
+        questionsAnswered: 0,
+        startTime: 0,
+        currentMode: 'all',
+        stats: {
+            'Vorming': { correct: 0, total: 0 },
+            'Determinatie': { correct: 0, total: 0 },
+            'Syntaxis': { correct: 0, total: 0 }
+        },
+        weights: {
+            'Vorming': 10,
+            'Determinatie': 10,
+            'Syntaxis': 10
+        }
+    };
+
+    let currentQuestion = null;
+    let questionQueue = [];
+
+    // --- UI HELPERS ---
+    const screens = {
+        menu: document.getElementById('screen-menu'),
+        game: document.getElementById('screen-game'),
+        result: document.getElementById('screen-result')
+    };
+
+    function switchScreen(name) {
+        Object.values(screens).forEach(s => s.classList.remove('active'));
+        screens[name].classList.add('active');
+    }
+
+    function updateHUD() {
+        // Mastery Bar
+        const pct = Math.round(state.mastery);
+        document.getElementById('score-text').innerText = pct + "%";
+        document.getElementById('score-display').innerText = "Meesterschap: " + pct + "%";
+        
+        const bar = document.getElementById('progress-bar');
+        bar.style.width = pct + "%";
+        
+        if(pct < 30) bar.style.backgroundColor = "var(--error)";
+        else if(pct < 70) bar.style.backgroundColor = "#f39c12";
+        else bar.style.backgroundColor = "var(--success)";
+    }
+
+    // --- GENERATORS ---
+    function generateMorphologyQuestion() {
+        const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
+        const persons = ['ik', 'jij', 'hij/zij', 'wij', 'jullie', 'zij'];
+        const persIdx = Math.floor(Math.random() * 6);
+        const person = persons[persIdx];
+        
+        const tenses = ['Praesens', 'Imperfectum', 'Perfectum', 'Plusquamperfectum'];
+        const tense = tenses[Math.floor(Math.random() * tenses.length)];
+        
+        let answer = "";
+        let rule = "";
+
+        // Logic (Simplified for stability)
+        if (tense === 'Praesens') {
+            if(verb.word === 'esse') {
+                const forms = ['sim', 'sis', 'sit', 'simus', 'sitis', 'sint'];
+                answer = forms[persIdx];
+                rule = "Esse con. praes: sim, sis, sit...";
+            } else if (verb.word === 'posse') {
+                const forms = ['possim', 'possis', 'possit', 'possimus', 'possitis', 'possint'];
+                answer = forms[persIdx];
+                rule = "Posse con. praes: possim...";
+            } else {
+                let vowel = '';
+                if(verb.type === 'a') vowel = 'e';
+                else if(verb.type === 'e') vowel = 'ea';
+                else if(verb.type === 'i') vowel = 'ia';
+                else vowel = 'a'; // mk
+                
+                answer = verb.stem.replace(/a$|e$|i$/, '') + vowel + ENDINGS.act[persIdx];
+                rule = `Stamverandering: ${verb.type}-stam -> ${vowel}`;
+            }
+        } else if (tense === 'Imperfectum') {
+            answer = verb.word + ENDINGS.act[persIdx];
+            rule = "Infinitivus + uitgang (m, s, t...)";
+        } else if (tense === 'Perfectum') {
+            answer = verb.p_stem + 'eri' + ENDINGS.act[persIdx];
+            rule = "Perfectumstam + eri + uitgang";
+        } else if (tense === 'Plusquamperfectum') {
+            answer = verb.p_stem + 'isse' + ENDINGS.act[persIdx];
+            rule = "Perfectumstam + isse + uitgang";
+        }
+
+        // Fake options
+        let opts = [answer];
+        while(opts.length < 3) {
+            let fake = answer.replace('e', 'a').replace('i', 'e');
+            if(Math.random() > 0.5) fake += 't';
+            if(!opts.includes(fake) && fake !== answer) opts.push(fake);
+            else opts.push(answer + 's'); // fallback
+        }
+
+        return {
+            c: 'Vorming',
+            q: `Vorm de <strong>Coniunctivus ${tense}</strong> van <em>${verb.word}</em> (${person}).`,
+            a: answer,
+            opts: opts.sort(() => Math.random() - 0.5),
+            g: rule
+        };
+    }
+
+    // --- GAME LOOP ---
+    function startSession(mode) {
+        state.currentMode = mode;
+        state.mastery = 0;
+        state.questionsAnswered = 0;
+        state.startTime = Date.now();
+        
+        // Reset Stats
+        for(let k in state.stats) {
+            state.stats[k] = { correct: 0, total: 0 };
+        }
+        
+        // Reset Weights
+        state.weights = { 'Vorming': 10, 'Determinatie': 10, 'Syntaxis': 10 };
+        if (mode !== 'all') {
+            for(let k in state.weights) state.weights[k] = 0;
+            state.weights[mode] = 100;
+        }
+
+        questionQueue = [];
+        switchScreen('game');
+        updateHUD();
+        nextQuestion();
+    }
+
+    function stopSession() {
+        if(confirm("Stoppen? Je voortgang gaat verloren.")) {
+            switchScreen('menu');
+        }
+    }
+
+    function getNextQuestion() {
+        // 1. Check queue (from errors)
+        if (questionQueue.length > 0) {
+            return questionQueue.shift();
+        }
+
+        // 2. Determine Category based on weights
+        let targetCat = 'Vorming';
+        
+        if (state.currentMode === 'all') {
+            const totalWeight = Object.values(state.weights).reduce((a,b) => a+b, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let cat in state.weights) {
+                if (random < state.weights[cat]) {
+                    targetCat = cat;
+                    break;
+                }
+                random -= state.weights[cat];
+            }
+        } else {
+            targetCat = state.currentMode;
+        }
+
+        // 3. Generate or Fetch
+        if (targetCat === 'Vorming') {
+            return generateMorphologyQuestion();
+        } else {
+            // Filter static questions
+            const pool = staticQuestions.filter(q => q.c === targetCat);
+            if (pool.length === 0) return generateMorphologyQuestion(); // Fallback
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+    }
+
+    function nextQuestion() {
+        if (state.mastery >= 100) {
+            finishSession();
+            return;
+        }
+
+        currentQuestion = getNextQuestion();
+        
+        // Render
+        document.getElementById('cat-badge').innerText = currentQuestion.c;
+        document.getElementById('q-text').innerHTML = currentQuestion.q;
+        document.getElementById('fb-area').style.display = 'none';
+        
+        const grid = document.getElementById('opt-area');
+        grid.innerHTML = '';
+        
+        // Shuffle options again just to be safe
+        let opts = [...currentQuestion.opts].sort(() => Math.random() - 0.5);
+        
+        opts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerHTML = opt;
+            btn.onclick = () => handleAnswer(opt, btn);
+            grid.appendChild(btn);
+        });
+    }
+
+    function handleAnswer(selected, btn) {
+        // Prevent double click
+        if (document.querySelector('.opt-btn[disabled]')) return;
+        
+        // Disable all
+        document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+
+        const isCorrect = selected === currentQuestion.a;
+        const cat = currentQuestion.c;
+
+        // Update Stats
+        state.stats[cat].total++;
+        if (isCorrect) state.stats[cat].correct++;
+
+        // UI Feedback
+        if (isCorrect) {
+            btn.classList.add('correct');
+            state.mastery = Math.min(100, state.mastery + 4); // +4% per correct
+            
+            // Reduce weight slightly if correct (less practice needed)
+            if (state.currentMode === 'all' && state.weights[cat] > 5) {
+                state.weights[cat] -= 1;
+            }
+        } else {
+            btn.classList.add('wrong');
+            // Highlight correct one
+            document.querySelectorAll('.opt-btn').forEach(b => {
+                if (b.innerText === currentQuestion.a) b.classList.add('correct');
+            });
+            
+            state.mastery = Math.max(0, state.mastery - 2); // -2% per error
+            
+            // ADAPTIVE: Increase weight & add to queue
+            if (state.currentMode === 'all') {
+                state.weights[cat] += 5;
+            }
+            
+            // Add similar question to queue immediately
+            if (cat === 'Vorming') {
+                questionQueue.push(generateMorphologyQuestion());
+            } else {
+                // Add specific static question again later
+                questionQueue.push(currentQuestion); 
+            }
+        }
+
+        updateHUD();
+
+        // Show Feedback Panel
+        const fb = document.getElementById('fb-area');
+        fb.className = isCorrect ? 'feedback correct' : 'feedback wrong';
+        fb.style.display = 'block';
+        document.getElementById('fb-title').innerText = isCorrect ? "Correct" : "Fout";
+        document.getElementById('fb-msg').innerHTML = isCorrect ? "Goed gedaan!" : `Het juiste antwoord was: <strong>${currentQuestion.a}</strong>`;
+        document.getElementById('fb-gram').innerText = currentQuestion.g;
+
+        // Scroll to bottom
+        setTimeout(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 100);
+    }
+
+    function finishSession() {
+        switchScreen('result');
+        
+        // Render Stats
+        document.getElementById('res-questions').innerText = state.questionsAnswered;
+        
+        let totalCorrect = 0;
+        let totalTotal = 0;
+        for(let k in state.stats) {
+            totalCorrect += state.stats[k].correct;
+            totalTotal += state.stats[k].total;
+        }
+        const acc = totalTotal === 0 ? 0 : Math.round((totalCorrect / totalTotal) * 100);
+        document.getElementById('res-accuracy').innerText = acc + "%";
+        
+        const time = Math.round((Date.now() - state.startTime) / 60000);
+        document.getElementById('res-time').innerText = time + "m";
+
+        // Render Breakdown
+        const container = document.getElementById('breakdown-container');
+        container.innerHTML = '';
+        
+        for(let cat in state.stats) {
+            const s = state.stats[cat];
+            if (s.total === 0) continue;
+            
+            const p = Math.round((s.correct / s.total) * 100);
+            const row = document.createElement('div');
+            row.className = 'cat-result-row';
+            row.innerHTML = `
+                <div class="cat-result-header">
+                    <span>${cat}</span>
+                    <span>${s.correct}/${s.total} (${p}%)</span>
+                </div>
+                <div class="cat-result-track">
+                    <div class="cat-result-bar" style="width: ${p}%; background: ${p < 50 ? 'var(--error)' : 'var(--success)'}"></div>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+    }
+
+</script>
+</body>
+</html>

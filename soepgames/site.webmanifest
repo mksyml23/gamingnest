@@ -1,0 +1,9 @@
+{
+  "name": "GamingNest \u2014 Free Browser Games",
+  "short_name": "GamingNest",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06080d",
+  "theme_color": "#06080d",
+  "description": "Free browser games. Play instantly."
+}

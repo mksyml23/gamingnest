@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <!-- SEO & Meta Tags -->
+  <title>Spend The Money — Billionaire Simulator & Quest Game</title>
+  <meta name="description" content="Play 'Spend The Money', the ultimate billionaire simulator game! Complete timed quests for famous billionaires, buy 60+ luxury items, and see how fast you can spend your fortune." />
+  <meta name="keywords" content="spend money game, billionaire simulator, mr beast game, elon musk game, buy items game, Gamingnest, web game, casual game, money clicker" />
+  <meta name="author" content="GamingNest" />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Spend The Money — Billionaire Simulator" />
+  <meta property="og:description" content="Can you spend 10 Billion Dollars before the time runs out? Complete quests for VIPs and buy private jets, mansions, and more!" />
+  <meta property="og:image" content="https://ui-avatars.com/api/?name=SG&background=00c2a8&color=fff&size=512" />
+  <meta property="og:url" content="https://gamingnest.nl/" />
+  <meta property="og:type" content="website" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0f1724;
+      --panel: #0b1220;
+      --accent: #00c2a8;
+      --accent-hover: #00e0c2;
+      --muted: #98a1b2;
+      --card: rgba(255, 255, 255, 0.05);
+      --glass: rgba(255, 255, 255, 0.03);
+      --danger: #ff6b6b;
+      --danger-hover: #ff4747;
+      --gold: #ffd700;
+    }
+
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    html, body {
+      margin: 0; padding: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(0,194,168,0.15), transparent 40%),
+                  linear-gradient(180deg, #071026 0%, #071826 100%);
+      color: #e6eef3; overflow-x: hidden; min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--panel); }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Floating money */
+    #moneyContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
+    .bill { position: absolute; font-size: 24px; opacity: 0.8; animation: floatBill linear forwards; filter: drop-shadow(0 0 5px rgba(0, 194, 168, 0.5)); }
+    @keyframes floatBill {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .wrap { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+    header {
+      position: sticky; top: 10px; background: rgba(11, 18, 32, 0.85); backdrop-filter: blur(12px);
+      padding: 15px 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); gap: 15px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .header-left img { border-radius: 12px; transition: transform 0.3s; box-shadow: 0 0 15px rgba(0,194,168,0.3); }
+    .header-left img:hover { transform: scale(1.1) rotate(-5deg); box-shadow: 0 0 25px rgba(0,194,168,0.6); }
+
+    h1 { margin: 0; font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .sub { color: var(--muted); font-size: 14px; }
+    
+    .topbar { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+    .balance-container { display: flex; flex-direction: column; gap: 5px; }
+    .balance {
+      background: var(--card); padding: 10px 20px; border-radius: 12px; min-width: 250px; text-align: center;
+      border: 1px solid rgba(0,194,168,0.3);
+    }
+    .balance .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .balance .amount { font-size: 24px; font-weight: 800; color: var(--accent); transition: color 0.3s, transform 0.1s; }
+    
+    .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent); width: 100%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    .btn { background: var(--card); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 10px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+
+    .main { display: grid; grid-template-columns: 1fr 350px; gap: 24px; margin-top: 24px; align-items: start; }
+    .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 110px; }
+
+    .panel { background: rgba(11, 18, 32, 0.6); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 16px; backdrop-filter: blur(5px); }
+    .panel-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Quest System */
+    .quest-box { background: rgba(0, 194, 168, 0.1); border: 1px solid var(--accent); border-radius: 12px; padding: 15px; position: relative; overflow: hidden; }
+    .quest-giver { font-weight: 800; color: var(--gold); margin-bottom: 5px; font-size: 15px; }
+    .quest-desc { font-size: 13px; color: #ddd; margin-bottom: 15px; }
+    .timer { font-size: 24px; font-weight: 800; color: #fff; text-align: center; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+    .timer.urgent { color: var(--danger); animation: pulse 1s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    .quest-items { list-style: none; padding: 0; margin: 0 0 15px 0; font-size: 13px; }
+    .quest-items li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+    .quest-items li.done { color: var(--accent); text-decoration: line-through; opacity: 0.7; }
+    .btn-quest { width: 100%; background: var(--accent); color: #000; font-weight: 800; border: none; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .btn-quest:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,194,168,0.4); }
+
+    /* Products Grid */
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .product { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; position: relative; }
+    .product:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); background: rgba(255,255,255,0.08); }
+
+    .qty-badge { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #003d34; font-weight: 800; font-size: 14px; padding: 4px 10px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0; transform: scale(0.5); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; }
+    .qty-badge.active { opacity: 1; transform: scale(1); }
+
+    .product img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; background: #000; }
+    .pname { font-weight: 600; font-size: 15px; margin-bottom: 4px; line-height: 1.2; }
+    .price { font-size: 15px; color: var(--accent); font-weight: 800; margin-bottom: 12px; }
+    
+    .pfoot { margin-top: auto; display: flex; gap: 8px; }
+    .btn-buy, .btn-sell { flex: 1; padding: 10px 0; font-size: 13px; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; text-transform: uppercase; }
+    .btn-buy { background-color: var(--accent); color: #003d34; }
+    .btn-sell { background-color: rgba(255, 107, 107, 0.1); color: var(--danger); border: 1px solid rgba(255, 107, 107, 0.3); }
+    .btn-buy:hover:not(:disabled) { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 194, 168, 0.3); }
+    .btn-sell:hover:not(:disabled) { background-color: var(--danger); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3); }
+    .btn-buy:active:not(:disabled), .btn-sell:active:not(:disabled) { transform: translateY(1px); }
+    .btn-sell:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-buy:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(100%); }
+
+    /* Receipt */
+    .history { max-height: 350px; overflow-y: auto; font-size: 13px; padding-right: 5px; }
+    .history .item { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--accent); animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .item-info { display: flex; flex-direction: column; }
+    .item-name { font-weight: 600; }
+    .item-qty { color: var(--muted); font-size: 11px; }
+    .item-total { font-weight: 800; color: var(--accent); }
+    .receipt-total { margin-top: 15px; padding-top: 15px; border-top: 2px dashed rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; }
+
+    /* Modals */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 0.3s; }
+    .modal.hidden { opacity: 0; pointer-events: none; }
+    .modal-content { background: var(--panel); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: center; width: 90%; max-width: 500px; transform: scale(1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .modal.hidden .modal-content { transform: scale(0.8); }
+    .modal-content h3 { margin-top: 0; margin-bottom: 10px; font-size: 24px; color: var(--gold); }
+    .modal-content p { color: var(--muted); margin-bottom: 20px; }
+
+    .preset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .preset-buttons button { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 12px; font-weight: 600; }
+    .preset-buttons button:hover { background: var(--accent); color: #003d34; border-color: var(--accent); }
+    
+    input[type="number"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; margin-bottom: 20px; text-align: center; font-size: 16px; font-weight: 600; outline: none; }
+    input[type="number"]:focus { border-color: var(--accent); }
+
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
+    .modal-actions button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; transition: all 0.2s; text-transform: uppercase; }
+    .btn-primary { background: var(--accent); color: #003d34; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { position: relative; top: 0; }
+      header { flex-direction: column; gap: 15px; }
+      .topbar { width: 100%; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="moneyContainer"></div>
+
+<div class="wrap">
+  <header>
+    <div class="header-left">
+     
+      <a href="https://gamingnest.nl/" target="_blank" title="Go to Gamingnest">
+        <img src="https://gamingnest.nl/logo.png" width="60" height="60" alt="gamingnest logo" onerror="this.style.display='none'">
+      </a>
+      <div>
+        <h1>Spend The Money 💸</h1>
+        <div class="sub">Buy anything — you're a billionaire!</div>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="balance-container">
+        <div class="balance">
+          <div class="label">Current Balance</div>
+          <div class="amount" id="balanceAmount">$10,000,000,000</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="setBalanceBtn">⚙️ Setup</button>
+        <button class="btn" id="resetBtn">🔄 Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Links: Producten -->
+    <section class="panel">
+      <span class="panel-title">🛒 Market Catalog</span>
+      <div class="products" id="productsGrid"></div>
+    </section>
+
+    <!-- Rechts: Sidebar met Quests en Bonnetjes -->
+    <aside class="sidebar">
+      
+      <!-- Quest Paneel -->
+      <div class="panel">
+        <span class="panel-title">🎯 VIP Quests</span>
+        <div id="questContainer">
+          <div class="quest-box" id="questBox">
+            <div class="quest-giver" id="questGiver">No active quest</div>
+            <div class="quest-desc" id="questDesc">Rich VIPs need your help buying stuff fast. Are you ready?</div>
+            <div class="timer" id="questTimer" style="display:none;">00:00</div>
+            <ul class="quest-items" id="questItemsList"></ul>
+            <button class="btn-quest" id="startQuestBtn">Start Random Quest</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bonnetje -->
+      <div class="panel">
+        <span class="panel-title">🧾 Receipt</span>
+        <div class="history" id="historyList">
+          <div style="text-align: center; color: var(--muted); margin-top: 20px;">Cart is empty. Buy something!</div>
+        </div>
+        <div class="receipt-total" style="display: none;" id="receiptTotalContainer">
+          <span>Total Spent:</span>
+          <span id="receiptTotalAmount">$0</span>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+</div>
+
+<!-- Balance Setup Modal -->
+<div id="balanceModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Choose Starting Balance</h3>
+    <p>Select a billionaire or enter your own amount.</p>
+    <div class="preset-buttons">
+      <button data-value="258000000000">Mark Zuckerberg</button>
+      <button data-value="243000000000">Jeff Bezos</button>
+      <button data-value="122000000000">Bill Gates</button>
+      <button data-value="1000000000">Mr Beast</button>
+      <button data-value="200000000">Max Verstappen</button>
+      <button data-value="150000000000">Warren Buffett</button>
+      <button data-value="15">Me (Broke)</button>
+    </div>
+    <input type="number" id="customBalance" placeholder="Or enter custom amount ($)" />
+    <div class="modal-actions">
+      <button class="btn-primary" id="applyBalance">Apply Balance</button>
+      <button class="btn-secondary" id="closeModal">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert/Quest Result Modal -->
+<div id="alertModal" class="modal hidden">
+  <div class="modal-content">
+    <h3 id="alertTitle">Quest Complete!</h3>
+    <p id="alertDesc" style="font-size: 16px; margin-bottom: 30px;">You earned a huge bonus!</p>
+    <div class="modal-actions">
+      <button class="btn-primary" id="closeAlertBtn" style="width: 100%;">Awesome!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- CORE DATA ---
+let STARTING_BALANCE = 10_000_000_000;
+let balance = STARTING_BALANCE;
+let historyData = {}; // { productId: { name, price, qty } }
+
+// 60 ITEMS CATALOGUS
+const initialProducts = [
+  // Tier 1: Cheap (< $100)
+  { id: 'banana', name: 'Banana', price: 1, img: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=400&q=80' },
+  { id: 'water', name: 'Bottle of Water', price: 2, img: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80' },
+  { id: 'coffee', name: 'Starbucks Coffee', price: 5, img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=400&q=80' },
+  { id: 'pizza', name: 'Pizza Margherita', price: 12, img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80' },
+  { id: 'bigmac', name: 'Burger Meal', price: 15, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80' },
+  { id: 'cinema', name: 'Cinema Ticket', price: 20, img: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'book', name: 'Bestseller Book', price: 25, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80' },
+  { id: 'netflix', name: 'Netflix 1 Year', price: 180, img: 'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=400&q=80' },
+  { id: 'shoes', name: 'Nike Air Jordans', price: 200, img: 'https://images.unsplash.com/photo-1552346154-21d32810baa3?auto=format&fit=crop&w=400&q=80' },
+  { id: 'headphones', name: 'AirPods Pro', price: 250, img: 'https://images.unsplash.com/photo-1606220588913-b3aecb4b455b?auto=format&fit=crop&w=400&q=80' },
+
+  // Tier 2: Electronics & Mid-range ($400 - $10,000)
+  { id: 'ps5', name: 'PlayStation 5', price: 500, img: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80' },
+  { id: 'xbox', name: 'Xbox Series X', price: 500, img: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80' },
+  { id: 'switch', name: 'Nintendo Switch 2', price: 450, img: 'https://images.unsplash.com/photo-1578306059298-5082161ce38f?auto=format&fit=crop&w=400&q=80' },
+  { id: 'iphone', name: 'iPhone 15 Pro Max', price: 1200, img: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=400&q=80' },
+  { id: 'samsung', name: 'Samsung S24 Ultra', price: 1300, img: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=400&q=80' },
+  { id: 'macbook', name: 'MacBook Pro M3', price: 2500, img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80' },
+  { id: 'pigeon', name: 'Designer Pigeon', price: 1000, img: 'https://images.unsplash.com/photo-1555660897-fdf142b93081?auto=format&fit=crop&w=400&q=80' },
+  { id: 'dog', name: 'Pedigree Puppy', price: 3000, img: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80' },
+  { id: 'pc', name: 'High-End Gaming PC', price: 5000, img: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'rolex', name: 'Rolex Watch', price: 15000, img: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=400&q=80' },
+
+  // Tier 3: Luxury & Vehicles ($20,000 - $500,000)
+  { id: 'horse', name: 'Race Horse', price: 50000, img: 'https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?auto=format&fit=crop&w=400&q=80' },
+  { id: 'tesla', name: 'Tesla Model S', price: 90000, img: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=400&q=80' },
+  { id: 'bmwi8', name: 'BMW i8', price: 150000, img: 'https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?auto=format&fit=crop&w=400&q=80' },
+  { id: 'porsche', name: 'Porsche 911', price: 200000, img: 'https://images.unsplash.com/photo-1503376760367-13eea7dfd671?auto=format&fit=crop&w=400&q=80' },
+  { id: 'amg', name: 'Mercedes AMG GT', price: 250000, img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=400&q=80' },
+  { id: 'lambo', name: 'Lamborghini Huracan', price: 300000, img: 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=400&q=80' },
+  { id: 'ferrari', name: 'Ferrari LaFerrari', price: 350000, img: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=400&q=80' },
+  { id: 'rollsroyce', name: 'Rolls Royce Phantom', price: 450000, img: 'https://images.unsplash.com/photo-1631835771891-95eb03e1e921?auto=format&fit=crop&w=400&q=80' },
+  { id: 'diamond', name: 'Flawless Diamond', price: 500000, img: 'https://images.unsplash.com/photo-1573408301145-b98c46544405?auto=format&fit=crop&w=400&q=80' },
+
+  // Tier 4: Real Estate & Millions ($1M - $50M)
+  { id: 'tank', name: 'M1 Abrams Tank', price: 8000000, img: 'https://images.unsplash.com/photo-1595183492723-5e933ebce4fb?auto=format&fit=crop&w=400&q=80' },
+  { id: 'bugatti', name: 'Bugatti Chiron', price: 3000000, img: 'https://images.unsplash.com/photo-1608836585108-963d41098522?auto=format&fit=crop&w=400&q=80' },
+  { id: 'heli', name: 'Private Helicopter', price: 5000000, img: 'https://images.unsplash.com/photo-1517409217616-981881dc1c2c?auto=format&fit=crop&w=400&q=80' },
+  { id: 'island', name: 'Private Island', price: 10000000, img: 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=400&q=80' },
+  { id: 'penthouse', name: 'NY Penthouse', price: 20000000, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=400&q=80' },
+  { id: 'mansion', name: 'LA Mega Mansion', price: 45000000, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80' },
+  { id: 'jet', name: 'Private Jet', price: 50000000, img: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=400&q=80' },
+  
+  // Tier 5: Billionaire Stuff ($100M - $1B+)
+  { id: 'yacht', name: 'Super Yacht', price: 150000000, img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=400&q=80' },
+  { id: 'boeing', name: 'Boeing 747', price: 400000000, img: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=400&q=80' },
+  { id: 'monalisa', name: 'The Mona Lisa', price: 860000000, img: 'https://images.unsplash.com/photo-1580136608260-4eb11f4b24fe?auto=format&fit=crop&w=400&q=80' },
+  { id: 'nba', name: 'NBA Team', price: 2500000000, img: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=400&q=80' },
+  { id: 'skyscraper', name: 'Skyscraper', price: 3000000000, img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80' },
+  { id: 'twitter', name: 'Twitter / X', price: 44000000000, img: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=400&q=80' },
+  { id: 'rocket', name: 'Space Rocket', price: 1500000000, img: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=400&q=80' },
+  { id: 'moon', name: 'Trip to the Moon', price: 25000000000, img: 'https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=400&q=80' },
+  
+  // Generating the rest to hit 60 items programmatically using reliable generic placehold APIs or repeated high-quality themes
+  { id: 'goldbar', name: '10kg Gold Bar', price: 650000, img: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=400&q=80' },
+  { id: 'cruise', name: 'Cruise Ship', price: 1200000000, img: 'https://images.unsplash.com/photo-1599640842225-85d111c60e6b?auto=format&fit=crop&w=400&q=80' },
+  { id: 'submarine', name: 'Military Submarine', price: 2000000000, img: 'https://images.unsplash.com/photo-1580982335142-b941544a0b22?auto=format&fit=crop&w=400&q=80' },
+  { id: 'stadium', name: 'Football Stadium', price: 1500000000, img: 'https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=400&q=80' },
+  { id: 'pyramid', name: 'Great Pyramid', price: 5000000000, img: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2b50?auto=format&fit=crop&w=400&q=80' },
+  { id: 'amazon', name: 'The Amazon River', price: 50000000000, img: 'https://images.unsplash.com/photo-1532300481631-0bc14f3b7699?auto=format&fit=crop&w=400&q=80' },
+  { id: 'mars', name: 'Planet Mars', price: 500000000000, img: 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=400&q=80' }
+];
+
+// Voeg extra items toe om precies op 60 te komen
+const fillItems = [
+  ['Sneakers', 150], ['Designer Shirt', 500], ['Gaming Chair', 400], ['VR Headset', 1000],
+  ['Electric Bike', 2500], ['Jetski', 15000], ['Grand Piano', 40000], ['Motorcycle', 25000],
+  ['Vintage Wine', 50000], ['Gold Watch', 75000], ['Armored Car', 500000], ['Private Concert', 1000000],
+  ['Dinosaur Fossil', 2000000], ['Meteoriot', 5000000], ['Castle in Europe', 30000000],
+  ['Film Studio', 500000000], ['Tech Startup', 1000000000], ['Private Army', 5000000000],
+  ['Country (Small)', 100000000000], ['Moon Base', 250000000000]
+];
+fillItems.forEach((item, index) => {
+  if (initialProducts.length < 60) {
+    initialProducts.push({
+      id: `extra_${index}`, name: item[0], price: item[1],
+      img: `https://placehold.co/400x300/0b1220/00c2a8?text=${encodeURIComponent(item[0])}&font=Montserrat`
+    });
+  }
+});
+// Sorteer op prijs
+initialProducts.sort((a,b) => a.price - b.price);
+
+// --- QUEST SYSTEM ---
+const VIPs = ["Mr. Beast", "Elon Musk", "Jeff Bezos", "Snoop Dogg", "Mark Zuckerberg"];
+let currentQuest = {
+  active: false,
+  targetItems: {}, // { id: targetQty }
+  progressItems: {}, // { id: currentQty }
+  timeLeft: 0,
+  timerId: null,
+  reward: 0
+};
+
+const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+const DOM = {
+  balanceAmount: document.getElementById('balanceAmount'),
+  progressBar: document.getElementById('progressBar'),
+  productsGrid: document.getElementById('productsGrid'),
+  historyList: document.getElementById('historyList'),
+  receiptTotalContainer: document.getElementById('receiptTotalContainer'),
+  receiptTotalAmount: document.getElementById('receiptTotalAmount'),
+  
+  // Quest
+  qGiver: document.getElementById('questGiver'),
+  qDesc: document.getElementById('questDesc'),
+  qTimer: document.getElementById('questTimer'),
+  qList: document.getElementById('questItemsList'),
+  qBtn: document.getElementById('startQuestBtn'),
+
+  // Modals
+  alertModal: document.getElementById('alertModal'),
+  alertTitle: document.getElementById('alertTitle'),
+  alertDesc: document.getElementById('alertDesc'),
+};
+
+function initGame() {
+  renderProducts();
+  updateUI();
+}
+
+function updateUI() {
+  DOM.balanceAmount.textContent = fmt.format(balance);
+  DOM.balanceAmount.style.color = balance === 0 ? 'var(--gold)' : (balance < 0 ? 'var(--danger)' : 'var(--accent)');
+  
+  // Animate balance bounce
+  DOM.balanceAmount.style.transform = "scale(1.1)";
+  setTimeout(() => DOM.balanceAmount.style.transform = "scale(1)", 100);
+
+  const percentage = Math.max(0, Math.min(100, (balance / STARTING_BALANCE) * 100));
+  DOM.progressBar.style.width = `${percentage}%`;
+  DOM.progressBar.style.background = percentage < 20 ? 'var(--danger)' : 'var(--accent)';
+
+  updateMoneyAnimation(); 
+  updateProductButtonsAndBadges();
+  renderHistory();
+}
+
+function renderProducts() {
+  DOM.productsGrid.innerHTML = '';
+  initialProducts.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product';
+    card.innerHTML = `
+      <div class="qty-badge" id="badge-${p.id}">x0</div>
+      <img src="${p.img}" alt="${p.name}" onerror="this.src='https://placehold.co/400x300/111/fff?text=No+Image'">
+      <div class="pname">${p.name}</div>
+      <div class="price">${fmt.format(p.price)}</div>
+      <div class="pfoot">
+        <button class="btn-buy" id="buy-${p.id}">Buy</button>
+        <button class="btn-sell" id="sell-${p.id}" disabled>Sell</button>
+      </div>`;
+    DOM.productsGrid.appendChild(card);
+
+    document.getElementById(`buy-${p.id}`).onclick = () => buyProduct(p);
+    document.getElementById(`sell-${p.id}`).onclick = () => sellProduct(p);
+  });
+}
+
+function updateProductButtonsAndBadges() {
+  initialProducts.forEach(p => {
+    const qty = historyData[p.id] ? historyData[p.id].qty : 0;
+    const badge = document.getElementById(`badge-${p.id}`);
+    badge.textContent = `x${qty}`;
+    if(qty > 0) badge.classList.add('active'); else badge.classList.remove('active');
+
+    document.getElementById(`buy-${p.id}`).disabled = balance < p.price;
+    document.getElementById(`sell-${p.id}`).disabled = qty === 0;
+  });
+}
+
+function buyProduct(p) {
+  if (balance < p.price) return;
+  balance -= p.price;
+  
+  if (!historyData[p.id]) historyData[p.id] = { name: p.name, price: p.price, qty: 0 };
+  historyData[p.id].qty++;
+  
+  checkQuestProgress(p.id, 1);
+  updateUI();
+}
+
+function sellProduct(p) {
+  if (!historyData[p.id] || historyData[p.id].qty === 0) return;
+  balance += p.price;
+  historyData[p.id].qty--;
+  if (historyData[p.id].qty === 0) delete historyData[p.id];
+  
+  checkQuestProgress(p.id, -1);
+  updateUI();
+}
+
+function renderHistory() {
+  const items = Object.values(historyData);
+  if (items.length === 0) {
+    DOM.historyList.innerHTML = '<div style="text-align: center; color: var(--muted); margin-top: 20px;">Cart is empty. Buy something!</div>';
+    DOM.receiptTotalContainer.style.display = 'none';
+    return;
+  }
+
+  DOM.historyList.innerHTML = '';
+  let totalSpent = 0;
+  items.forEach(h => {
+    const totalItemPrice = h.price * h.qty;
+    totalSpent += totalItemPrice;
+    const row = document.createElement('div');
+    row.className = 'item';
+    row.innerHTML = `<div class="item-info"><span class="item-name">${h.name}</span><span class="item-qty">${fmt.format(h.price)} x ${h.qty}</span></div><div class="item-total">${fmt.format(totalItemPrice)}</div>`;
+    DOM.historyList.appendChild(row);
+  });
+  DOM.receiptTotalContainer.style.display = 'flex';
+  DOM.receiptTotalAmount.textContent = fmt.format(totalSpent);
+  DOM.historyList.scrollTop = DOM.historyList.scrollHeight;
+}
+
+// --- QUEST LOGIC ---
+DOM.qBtn.onclick = startRandomQuest;
+
+function startRandomQuest() {
+  if (currentQuest.active) return;
+  
+  // Genereer willekeurige items gebaseerd op balans
+  const affordable = initialProducts.filter(p => p.price <= (balance / 4));
+  if(affordable.length < 3) {
+    showAlert("Oops", "You are too broke for a quest. Restart game!");
+    return;
+  }
+
+  // Kies 2 tot 4 willekeurige items
+  const numItems = Math.floor(Math.random() * 3) + 2; 
+  let selected = [];
+  for(let i=0; i<numItems; i++) {
+    selected.push(affordable[Math.floor(Math.random() * affordable.length)]);
+  }
+
+  currentQuest.targetItems = {};
+  currentQuest.progressItems = {};
+  let totalQuestCost = 0;
+
+  selected.forEach(p => {
+    let targetQty = Math.floor(Math.random() * 3) + 1;
+    if(p.price > 1000000) targetQty = 1; // max 1 voor dure dingen
+    currentQuest.targetItems[p.id] = (currentQuest.targetItems[p.id] || 0) + targetQty;
+    currentQuest.progressItems[p.id] = 0;
+    totalQuestCost += (p.price * targetQty);
+  });
+
+  const vip = VIPs[Math.floor(Math.random() * VIPs.length)];
+  currentQuest.reward = Math.floor(totalQuestCost * 1.5); // 50% profit
+  currentQuest.timeLeft = 30 + (numItems * 10); // 30s + 10s per item
+  currentQuest.active = true;
+
+  DOM.qGiver.textContent = `Client: ${vip}`;
+  DOM.qDesc.innerHTML = `Buy these items before time runs out! Reward: <strong style="color:var(--accent)">${fmt.format(currentQuest.reward)}</strong>`;
+  DOM.qBtn.style.display = 'none';
+  DOM.qTimer.style.display = 'block';
+  
+  renderQuestList();
+  
+  clearInterval(currentQuest.timerId);
+  currentQuest.timerId = setInterval(questTick, 1000);
+  questTick();
+}
+
+function renderQuestList() {
+  DOM.qList.innerHTML = '';
+  for (let id in currentQuest.targetItems) {
+    const product = initialProducts.find(p => p.id === id);
+    const target = currentQuest.targetItems[id];
+    const current = currentQuest.progressItems[id];
+    const isDone = current >= target;
+    
+    const li = document.createElement('li');
+    if(isDone) li.className = 'done';
+    li.innerHTML = `<span>${product.name}</span> <span>${current}/${target}</span>`;
+    DOM.qList.appendChild(li);
+  }
+}
+
+function checkQuestProgress(prodId, change) {
+  if (!currentQuest.active) return;
+  if (currentQuest.targetItems[prodId] !== undefined) {
+    // Verander progressie (buy = +1, sell = -1)
+    currentQuest.progressItems[prodId] += change;
+    if(currentQuest.progressItems[prodId] < 0) currentQuest.progressItems[prodId] = 0;
+    renderQuestList();
+
+    // Check Win
+    let won = true;
+    for (let id in currentQuest.targetItems) {
+      if (currentQuest.progressItems[id] < currentQuest.targetItems[id]) won = false;
+    }
+    
+    if (won) {
+      completeQuest();
+    }
+  }
+}
+
+function questTick() {
+  currentQuest.timeLeft--;
+  DOM.qTimer.textContent = `00:${currentQuest.timeLeft.toString().padStart(2, '0')}`;
+  
+  if(currentQuest.timeLeft <= 10) DOM.qTimer.classList.add('urgent');
+  else DOM.qTimer.classList.remove('urgent');
+
+  if (currentQuest.timeLeft <= 0) {
+    failQuest();
+  }
+}
+
+function completeQuest() {
+  clearInterval(currentQuest.timerId);
+  currentQuest.active = false;
+  balance += currentQuest.reward;
+  updateUI();
+  showAlert("Quest Completed! 🎉", `You delivered the items and earned a bonus of ${fmt.format(currentQuest.reward)}!`);
+  resetQuestUI();
+}
+
+function failQuest() {
+  clearInterval(currentQuest.timerId);
+  currentQuest.active = false;
+  showAlert("Quest Failed! ⏰", "You ran out of time! The VIP found another buyer.");
+  resetQuestUI();
+}
+
+function resetQuestUI() {
+  DOM.qTimer.style.display = 'none';
+  DOM.qTimer.classList.remove('urgent');
+  DOM.qBtn.style.display = 'block';
+  DOM.qGiver.textContent = "No active quest";
+  DOM.qDesc.textContent = "Rich VIPs need your help buying stuff fast. Are you ready?";
+  DOM.qList.innerHTML = '';
+}
+
+function showAlert(title, desc) {
+  DOM.alertTitle.textContent = title;
+  DOM.alertDesc.textContent = desc;
+  DOM.alertModal.classList.remove('hidden');
+}
+document.getElementById('closeAlertBtn').onclick = () => DOM.alertModal.classList.add('hidden');
+
+// --- SETUP / RESET ---
+document.getElementById('resetBtn').onclick = () => { balance = STARTING_BALANCE; historyData = {}; if(currentQuest.active){ clearInterval(currentQuest.timerId); currentQuest.active=false; resetQuestUI();} updateUI(); };
+const modal = document.getElementById('balanceModal');
+const customBalanceInput = document.getElementById('customBalance');
+
+document.getElementById('setBalanceBtn').onclick = () => modal.classList.remove('hidden');
+document.getElementById('closeModal').onclick = () => { modal.classList.add('hidden'); customBalanceInput.value = ''; };
+
+document.querySelectorAll('.preset-buttons button').forEach(btn => {
+  btn.addEventListener('click', () => { setNewStartingBalance(parseFloat(btn.dataset.value)); });
+});
+
+document.getElementById('applyBalance').onclick = () => {
+  const val = parseFloat(customBalanceInput.value);
+  if (!isNaN(val) && val > 0) setNewStartingBalance(val);
+  else alert("Please enter a valid amount!");
+};
+
+function setNewStartingBalance(amount) {
+  STARTING_BALANCE = amount; balance = amount; historyData = {}; modal.classList.add('hidden'); customBalanceInput.value = '';
+  if(currentQuest.active){ clearInterval(currentQuest.timerId); currentQuest.active=false; resetQuestUI(); }
+  updateUI();
+}
+
+// Background Money Animation
+const moneyContainer = document.getElementById('moneyContainer');
+function createBill() {
+  const bill = document.createElement('div');
+  bill.className = 'bill'; bill.textContent = '💸';
+  bill.style.left = Math.random() * 100 + '%';
+  bill.style.animationDuration = (4 + Math.random() * 5) + 's';
+  bill.style.fontSize = (16 + Math.random() * 24) + 'px';
+  moneyContainer.appendChild(bill);
+  bill.addEventListener('animationend', () => bill.remove());
+}
+
+let moneyInterval;
+function updateMoneyAnimation() {
+  const ratio = Math.max(balance / STARTING_BALANCE, 0);
+  const count = Math.floor(ratio * 5); 
+  if (moneyInterval) clearInterval(moneyInterval);
+  if (count > 0 && balance > 0) moneyInterval = setInterval(() => { for (let i = 0; i < count; i++) createBill(); }, 1000);
+}
+
+// Start Game
+initGame();
+</script>
+</body>
+</html>

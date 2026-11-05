@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- 1. Basis SEO & Meta Tags -->
+    <title>Neon Breach: Expansion — Free Cyberpunk Idle Game | GamingNest</title>
+	<!-- FIREBASE CLOUD SAVE -->
+<script type="module" src="/firebase-app.js"></script>
+    <meta name="description" content="Play Neon Breach: Expansion on GamingNest.nl! Hack the system, buy servers, unlock the massive Kernel skill tree, and prestige in this epic cyberpunk incremental idle game." />
+    <meta name="keywords" content="neon breach expansion, idle game, incremental game, cyberpunk clicker, hacking game, browser idle game, prestige tree, free online game, gamingnest" />
+    <meta name="author" content="GamingNest" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- 2. Canonical Link -->
+    <link rel="canonical" href="https://gamingnest.nl/neon-breach" />
+
+    <!-- 3. Open Graph (Discord, WhatsApp, Facebook) -->
+    <meta property="og:title" content="Neon Breach: Expansion — Cyberpunk Idle Game | GamingNest" />
+    <meta property="og:description" content="Can you hack the universe? Automate your data generation and unlock the Kernel tree in this free browser idle game." />
+    <!-- Maak een toffe screenshot van het spel (bijv. de skill tree) voor deze banner -->
+    <meta property="og:image" content="https://gamingnest.nl/images/neon-breach-banner.jpg" />
+    <meta property="og:url" content="https://gamingnest.nl/neon-breach" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GamingNest" />
+
+    <!-- 4. Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Neon Breach: Expansion — Free Idle Game" />
+    <meta name="twitter:description" content="Automate your data generation and unlock the Kernel tree in this cyberpunk incremental game!" />
+    <meta name="twitter:image" content="https://gamingnest.nl/images/neon-breach-banner.jpg" />
+
+    <!-- 5. Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- 6. Schema.org / JSON-LD (Vertelt Google dat dit een Incremental/Idle game is) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Neon Breach: Expansion",
+      "description": "An immersive cyberpunk incremental idle game where players gather data, upgrade hardware, catch glitches, and unlock a massive skill tree.",
+      "url": "https://gamingnest.nl/neon-breach",
+      "genre": ["Idle", "Incremental", "Clicker", "Cyberpunk", "Strategy"],
+      "playMode": "SinglePlayer",
+      "applicationCategory": "Browser Game",
+      "publisher": {
+        "@type": "Organization",
+        "name": "GamingNest",
+        "url": "https://gamingnest.nl/"
+      }
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              neon: {
+                cyan: '#00f3ff',
+                pink: '#ff0055',
+                yellow: '#fcee0a',
+                gold: '#ffd700',
+                dark: '#050505',
+                panel: '#0d0f12',
+                border: '#333333',
+                dim: '#555566'
+              }
+            },
+            fontFamily: {
+              main: ['"Fira Code"', 'monospace'],
+              header: ['"Orbitron"', 'sans-serif'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'floatUp 0.8s forwards',
+              'glitch': 'shake 0.3s infinite',
+              'corrupted': 'shake 0.1s infinite',
+              'ticker': 'ticker 40s linear infinite',
+              'flash': 'flashRed 0.5s infinite alternate',
+            },
+            keyframes: {
+              floatUp: {
+                '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                '100%': { opacity: '0', transform: 'translateY(-80px) scale(1.5)' },
+              },
+              shake: {
+                '0%, 100%': { transform: 'translate(0, 0)' },
+                '10%': { transform: 'translate(-3px, -3px)' },
+                '30%': { transform: 'translate(3px, 3px)' },
+                '50%': { transform: 'translate(-3px, 3px)' },
+                '70%': { transform: 'translate(3px, -3px)' },
+                '90%': { transform: 'translate(-3px, 0)' },
+              },
+              ticker: {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(-100%)' }
+              },
+              flashRed: {
+                '0%': { color: '#ff0055', textShadow: '0 0 10px #ff0055' },
+                '100%': { color: '#ffffff', textShadow: '0 0 20px #ff0055' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        background-color: #050505; color: #00f3ff; overflow: hidden; user-select: none;
+      }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-thumb { background: #00f3ff; border-radius: 3px; }
+      ::-webkit-scrollbar-track { background: #000; }
+      
+      .scanlines {
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 2px, 3px 100%; pointer-events: none;
+      }
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; }
+      .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #00f3ff; }
+      
+      .tree-container { cursor: grab; overflow: hidden; }
+      .tree-container.dragging { cursor: grabbing; }
+      .tree-path { stroke-dasharray: 10; animation: march 20s linear infinite; }
+      @keyframes march { to { stroke-dashoffset: -100; } }
+
+      .ticker-wrap { width: 100%; overflow: hidden; background-color: rgba(0,0,0,0.8); border-top: 1px solid #333; padding: 2px 0; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+      const { useState, useEffect, useRef, createElement: h, Fragment } = React;
+
+      // --- 1. GIGANTIC DATA SET ---
+      const HARDWARE = [
+        { id: 'script', name: 'Script Kiddie', baseCost: 15, baseRate: 0.5, desc: 'Automated typing scripts.', unlockCost: 0 },
+        { id: 'proxy',  name: 'Proxy Node',    baseCost: 100, baseRate: 4,   desc: 'Redirects traffic.', unlockCost: 500 },
+        { id: 'botnet', name: 'Botnet',        baseCost: 1100, baseRate: 16,  desc: 'Zombie devices.', unlockCost: 2000 },
+        { id: 'server', name: 'Server Rack',   baseCost: 12000, baseRate: 64, desc: 'Dedicated processing.', unlockCost: 10000 },
+        { id: 'mainframe', name: 'Mainframe',  baseCost: 130000, baseRate: 260, desc: 'Industrial grade computation.', unlockCost: 50000 },
+        { id: 'quantum', name: 'Quantum Rig',  baseCost: 1.4e6, baseRate: 1100, desc: 'Probability processing.', unlockCost: 500000 },
+        { id: 'ai',     name: 'Sentient AI',   baseCost: 20e6, baseRate: 4500, desc: 'Self-improving code.', unlockCost: 5e6 },
+        { id: 'alien',  name: 'Alien Artifact', baseCost: 330e6, baseRate: 20000, desc: 'Unknown technology.', unlockCost: 100e6 },
+        { id: 'neural', name: 'Neural Net',    baseCost: 5e9, baseRate: 85000, desc: 'Simulated consciousness.', unlockCost: 1e9 },
+        { id: 'dyson',  name: 'Dyson Swarm',   baseCost: 75e9, baseRate: 350000, desc: 'Harvests star data.', unlockCost: 20e9 },
+        { id: 'reality',name: 'Reality Engine',baseCost: 1e12, baseRate: 1.5e6, desc: 'Rewrites physics.', unlockCost: 500e9 },
+        { id: 'void',   name: 'Void Siphon',   baseCost: 50e12, baseRate: 10e6, desc: 'Extracts data from nothing.', unlockCost: 10e12 },
+        { id: 'chrono', name: 'Chrono-Processor', baseCost: 750e12, baseRate: 150e6, desc: 'Computes results before requested.', unlockCost: 100e12 },
+        { id: 'multiverse', name: 'Multiverse Node', baseCost: 15e15, baseRate: 5e9, desc: 'Borrows computing from alt-realities.', unlockCost: 5e15 },
+        { id: 'sim',    name: 'Simulation Matrix', baseCost: 600e15, baseRate: 300e9, desc: 'Runs sub-universes for data generation.', unlockCost: 100e15 },
+        { id: 'creator',name: 'Creator Console', baseCost: 10e18, baseRate: 15e12, desc: 'Root access to the universe itself.', unlockCost: 1e18 },
+        { id: 'astral', name: 'Astral Projector', baseCost: 500e18, baseRate: 200e12, desc: 'Projects calculations into the astral plane.', unlockCost: 100e18 },
+        { id: 'akashic',name: 'Akashic Record', baseCost: 15e21, baseRate: 5e15, desc: 'Taps into the universe\'s hidden memory.', unlockCost: 2e21 },
+        { id: 'weaver', name: 'Dimension Weaver', baseCost: 500e21, baseRate: 100e15, desc: 'Stitches realities together for parallel compute.', unlockCost: 100e21 },
+        { id: 'entropy',name: 'Entropy Reverser', baseCost: 20e24, baseRate: 5e18, desc: 'Generates data from chaos itself.', unlockCost: 5e24 },
+        { id: 'omega',  name: 'Omega Construct', baseCost: 1e27, baseRate: 150e18, desc: 'A megastructure at the end of time.', unlockCost: 200e24 },
+        { id: 'type4',  name: 'Type IV Civ', baseCost: 50e27, baseRate: 8e21, desc: 'Harnesses energy from the entire universe.', unlockCost: 10e27 },
+        { id: 'cosmic', name: 'Cosmic Engine', baseCost: 3e30, baseRate: 500e21, desc: 'The heartbeat of the cosmos.', unlockCost: 500e27 },
+        { id: 'singular',name: 'The Singularity', baseCost: 200e30, baseRate: 30e24, desc: 'Infinite density, infinite data.', unlockCost: 50e30 },
+        { id: 'concept',name: 'Concept Destroyer', baseCost: 10e33, baseRate: 2e27, desc: 'Breaks down logic into raw information.', unlockCost: 2e33 },
+        { id: 'walker', name: 'Void Walker', baseCost: 500e33, baseRate: 100e27, desc: 'Walks between the lines of the code.', unlockCost: 100e33 },
+        { id: 'final',  name: 'Final Algorithm', baseCost: 50e36, baseRate: 15e30, desc: 'The math that solves everything.', unlockCost: 10e36 },
+        { id: 'arch',   name: 'The Architect', baseCost: 1e42, baseRate: 500e30, desc: 'It designed this game.', unlockCost: 500e36 },
+        { id: 'beyond', name: 'The Beyond', baseCost: 1e50, baseRate: 1e40, desc: 'Error 404: Logic Not Found.', unlockCost: 1e45 }
+      ];
+
+      const SOFTWARE = [
+        { id: 'click1', name: 'Mech Keys', cost: 500, type: 'click', mult: 2, req: 100, desc: "x2 Click Power" },
+        { id: 'click2', name: 'Neural Link', cost: 10000, type: 'click', mult: 3, req: 5000, desc: "x3 Click Power" },
+        { id: 'click3', name: 'Cybernetic Finger', cost: 1e6, type: 'click', mult: 5, req: 500000, desc: "x5 Click Power" },
+        { id: 'click4', name: 'Quantum Tap', cost: 500e6, type: 'click', mult: 10, req: 100e6, desc: "x10 Click Power" },
+        { id: 'click5', name: 'God Cursor', cost: 100e9, type: 'click', mult: 50, req: 50e9, desc: "x50 Click Power" },
+        { id: 'click6', name: 'Void Clicker', cost: 50e12, type: 'click', mult: 100, req: 10e12, desc: "x100 Click Power" },
+        { id: 'click7', name: 'Multiversal Strike', cost: 100e15, type: 'click', mult: 500, req: 20e15, desc: "x500 Click Power" },
+        { id: 'click8', name: 'Astral Impact', cost: 50e18, type: 'click', mult: 1000, req: 10e18, desc: "x1,000 Click Power" },
+        { id: 'click9', name: 'Entropy Shatter', cost: 10e24, type: 'click', mult: 5000, req: 1e24, desc: "x5,000 Click Power" },
+        { id: 'click10', name: 'Conceptual Click', cost: 1e33, type: 'click', mult: 50000, req: 100e30, desc: "x50,000 Click Power" },
+
+        { id: 'cap1', name: 'Thermal Paste', cost: 5e6, type: 'combo_cap', val: 100, req: 1e6, desc: "+100% Max Heat Cap" },
+        { id: 'cap2', name: 'Copper Heatsink', cost: 1e9, type: 'combo_cap', val: 200, req: 500e6, desc: "+200% Max Heat Cap" },
+        { id: 'cap3', name: 'Liquid Nitrogen', cost: 500e12, type: 'combo_cap', val: 500, req: 100e12, desc: "+500% Max Heat Cap" },
+        { id: 'cap4', name: 'Absolute Zero', cost: 50e18, type: 'combo_cap', val: 1000, req: 10e18, desc: "+1000% Max Heat Cap" },
+        { id: 'cap5', name: 'Quantum Freeze', cost: 1e27, type: 'combo_cap', val: 3100, req: 100e24, desc: "+3100% Max Heat Cap" },
+
+        { id: 'prod1',  name: 'Overclocking', cost: 1000, type: 'prod', mult: 1.5, req: 1000, desc: "x1.5 All Prod" },
+        { id: 'prod2',  name: 'Liquid Cooling', cost: 50000, type: 'prod', mult: 2, req: 20000, desc: "x2 All Prod" },
+        { id: 'prod3',  name: 'Superconductor', cost: 5e6, type: 'prod', mult: 2, req: 1e6, desc: "x2 All Prod" },
+        { id: 'prod4',  name: 'Zero-Point Energy', cost: 10e9, type: 'prod', mult: 3, req: 2e9, desc: "x3 All Prod" },
+        { id: 'prod5',  name: 'Dark Matter Core', cost: 5e12, type: 'prod', mult: 5, req: 1e12, desc: "x5 All Prod" },
+        { id: 'prod6',  name: 'Tachyon Fields', cost: 200e12, type: 'prod', mult: 10, req: 50e12, desc: "x10 All Prod" },
+        { id: 'prod7',  name: 'Omni-Processing', cost: 1e18, type: 'prod', mult: 25, req: 500e15, desc: "x25 All Prod" },
+        { id: 'prod8',  name: 'Universal Constant', cost: 100e21, type: 'prod', mult: 100, req: 20e21, desc: "x100 All Prod" },
+        { id: 'prod9',  name: 'Hyper-Dimensional', cost: 50e27, type: 'prod', mult: 500, req: 10e27, desc: "x500 All Prod" },
+        { id: 'prod10', name: 'Source Code Bypass', cost: 1e36, type: 'prod', mult: 5000, req: 100e33, desc: "x5000 All Prod" },
+
+        { id: 'hb12', name: 'Chrono-Looping', cost: 10e15, type: 'hw_boost', target: 12, mult: 5, req: 1e15, desc: "x5 Chrono-Processor" },
+        { id: 'hb13', name: 'Nexus Parallel', cost: 200e15, type: 'hw_boost', target: 13, mult: 5, req: 50e15, desc: "x5 Multiverse Node" },
+        { id: 'hb14', name: 'Simulated Souls', cost: 5e18, type: 'hw_boost', target: 14, mult: 5, req: 1e18, desc: "x5 Simulation Matrix" },
+        { id: 'hb15', name: 'Admin Rights', cost: 150e18, type: 'hw_boost', target: 15, mult: 5, req: 50e18, desc: "x5 Creator Console" },
+        { id: 'hb20', name: 'Type V Energy', cost: 10e30, type: 'hw_boost', target: 21, mult: 10, req: 1e30, desc: "x10 Type IV Civ" },
+
+        { id: 'syn1', name: 'Proxy Chains', cost: 25000, type: 'syn', target: 1, source: 0, val: 0.1, req: 10000, desc: "+10% Proxy rate per Script Kiddie" },
+        { id: 'syn2', name: 'Hive Mind', cost: 500000, type: 'syn', target: 2, source: 3, val: 0.05, req: 200000, desc: "+5% Botnet rate per Server" },
+        { id: 'syn3', name: 'AI Swarm', cost: 50e9, type: 'syn', target: 6, source: 2, val: 0.02, req: 10e9, desc: "+2% AI rate per Botnet" },
+        { id: 'syn5', name: 'Simulated Reality', cost: 5e18, type: 'syn', target: 14, source: 10, val: 0.05, req: 1e18, desc: "+5% Sim Matrix rate per Reality Engine" },
+        { id: 'syn6', name: 'Akashic Weave', cost: 1e24, type: 'syn', target: 18, source: 17, val: 0.1, req: 100e21, desc: "+10% Weaver per Akashic Record" },
+
+        { id: 'sp1', name: 'Glitch Lure', cost: 500e3, type: 'special', effect: 'glitch_freq', mult: 1.5, req: 200e3, desc: "Glitches appear 50% more often" },
+        { id: 'sp2', name: 'Glitch Hoarder', cost: 5e6, type: 'special', effect: 'glitch_val', mult: 2, req: 2e6, desc: "Glitches give 2x Data" },
+        { id: 'sp3', name: 'Extended Overclock', cost: 50e6, type: 'special', effect: 'oc_dur', mult: 1.5, req: 20e6, desc: "+50% Overclock Duration" },
+        { id: 'sp4', name: 'Breach Protocol V2', cost: 500e6, type: 'special', effect: 'fw_pow', mult: 2, req: 200e6, desc: "Breach gives x6 instead of x3" },
+        { id: 'sp5', name: 'Golden Magnet', cost: 5e12, type: 'special', effect: 'glitch_gold', mult: 2, req: 1e12, desc: "Golden Glitches appear 2x as often" },
+        { id: 'sp6', name: 'Breach Protocol V3', cost: 1e21, type: 'special', effect: 'fw_pow2', mult: 2.5, req: 500e18, desc: "Breach gives x15 instead of x6" },
+      ];
+
+      const ACHIEVEMENTS = [
+        { id: 'c1', name: 'Hello World', desc: 'Click once.', check: g => g.clicks >= 1 },
+        { id: 'c100', name: 'Scripting', desc: 'Click 100 times.', check: g => g.clicks >= 100 },
+        { id: 'c1k',  name: 'Carpal Tunnel', desc: 'Click 1,000 times.', check: g => g.clicks >= 1000 },
+        { id: 'c100k', name: 'Robotic Arm', desc: 'Click 100,000 times.', check: g => g.clicks >= 100000 },
+        { id: 'c1m', name: 'Cybernetic Deity', desc: 'Click 1,000,000 times.', check: g => g.clicks >= 1000000 },
+        
+        { id: 'b1k',   name: 'Kilobyte', desc: 'Gather 1,000 Bytes.', check: g => g.lifetimeBytes >= 1000 },
+        { id: 'b1m',   name: 'Megabyte', desc: 'Gather 1 Million Bytes.', check: g => g.lifetimeBytes >= 1e6 },
+        { id: 'b1b',   name: 'Gigabyte', desc: 'Gather 1 Billion Bytes.', check: g => g.lifetimeBytes >= 1e9 },
+        { id: 'b1t',   name: 'Terabyte', desc: 'Gather 1 Trillion Bytes.', check: g => g.lifetimeBytes >= 1e12 },
+        { id: 'b1q',   name: 'Petabyte', desc: 'Gather 1 Quadrillion Bytes.', check: g => g.lifetimeBytes >= 1e15 },
+        { id: 'b1qin', name: 'Quintillionaire', desc: 'Gather 1 Quintillion Bytes.', check: g => g.lifetimeBytes >= 1e18 },
+        { id: 'b1sep', name: 'Septillionaire', desc: 'Gather 1 Septillion Bytes.', check: g => g.lifetimeBytes >= 1e24 },
+        { id: 'b1dec', name: 'Decillionaire', desc: 'Gather 1 Decillion Bytes.', check: g => g.lifetimeBytes >= 1e33 },
+        { id: 'b1vig', name: 'Vigintillionaire', desc: 'Gather 1 Vigintillion Bytes.', check: g => g.lifetimeBytes >= 1e63 },
+
+        { id: 'hw10',  name: 'Startup', desc: 'Own 10 Script Kiddies.', check: g => g.hardware[0] >= 10 },
+        { id: 'hw_ai', name: 'The Singularity', desc: 'Own 1 Sentient AI.', check: g => g.hardware[6] >= 1 },
+        { id: 'hw_void', name: 'The Abyss', desc: 'Own 1 Void Siphon.', check: g => g.hardware[11] >= 1 },
+        { id: 'hw_creator', name: 'Architect', desc: 'Own 1 Creator Console.', check: g => g.hardware[15] >= 1 },
+        { id: 'hw_type4', name: 'Kardashev Master', desc: 'Own 1 Type IV Civ.', check: g => g.hardware[21] >= 1 },
+        { id: 'hw_beyond', name: 'Error 404', desc: 'Own 1 The Beyond.', check: g => g.hardware[28] >= 1 },
+
+        { id: 'glitch5',  name: 'Bug Hunter', desc: 'Catch 5 Glitches.', check: g => g.glitchesCaught >= 5 },
+        { id: 'glitch50',  name: 'Exterminator', desc: 'Catch 50 Glitches.', check: g => g.glitchesCaught >= 50 },
+        { id: 'glitch500', name: 'The Oracle', desc: 'Catch 500 Glitches.', check: g => g.glitchesCaught >= 500 },
+        
+        { id: 'prestige1',name: 'System Crash', desc: 'Reboot for the first time.', check: g => g.resets > 0 },
+        { id: 'prestige10',name: 'Eternal Return', desc: 'Reboot 10 times.', check: g => g.resets >= 10 },
+        { id: 'prestige50',name: 'Dormammu', desc: 'Reboot 50 times.', check: g => g.resets >= 50 },
+      ];
+
+      // MASSIVELY SCALED KERNEL TREE
+      const CORE_NODES = [
+        // TIER 1 (Inner)
+        { id: 'root', name: 'Kernel Access', desc: 'Unlocks the potential of the core.', cost: 1, x: 500, y: 800, parents: [], effectType: 'mult_global', effectValue: 1.1 },
+        { id: 'p1', name: 'Multi-Thread', desc: '+25% Global Production', cost: 5, x: 300, y: 650, parents: ['root'], effectType: 'mult_global', effectValue: 1.25 },
+        { id: 'p2', name: 'Hypervisor', desc: '+50% Global Production', cost: 50, x: 200, y: 500, parents: ['p1'], effectType: 'mult_global', effectValue: 1.5 },
+        { id: 'p3', name: 'Quantum Core', desc: '+100% Global Production', cost: 500, x: 100, y: 350, parents: ['p2'], effectType: 'mult_global', effectValue: 2.0 },
+        { id: 'c1', name: 'Input Buffer', desc: '+50% Click Power', cost: 5, x: 700, y: 650, parents: ['root'], effectType: 'mult_click', effectValue: 1.5 },
+        { id: 'c2', name: 'Macro Engine', desc: '+100% Click Power', cost: 50, x: 800, y: 500, parents: ['c1'], effectType: 'mult_click', effectValue: 2.0 },
+        { id: 'c3', name: 'Neuro-Tap', desc: '+200% Click Power', cost: 500, x: 900, y: 350, parents: ['c2'], effectType: 'mult_click', effectValue: 3.0 },
+        { id: 's1', name: 'Optimized Routines', desc: '-20% Protocol Cooldowns', cost: 250, x: 400, y: 500, parents: ['p1'], effectType: 'skill_cd', effectValue: 0.8 },
+        { id: 'g1', name: 'Anomaly Magnet', desc: 'Glitches spawn 2x faster', cost: 250, x: 600, y: 500, parents: ['c1'], effectType: 'glitch_rate', effectValue: 2.0 },
+        { id: 'u1', name: 'Market Snipe', desc: 'Hardware costs 10% less', cost: 250, x: 500, y: 650, parents: ['root'], effectType: 'discount_hw', effectValue: 0.9 },
+
+        // TIER 2 (Mid)
+        { id: 'p4', name: 'Infinite Loop', desc: '+300% Global Production', cost: 10000, x: 200, y: 200, parents: ['p3'], effectType: 'mult_global', effectValue: 4.0 },
+        { id: 'c4', name: 'Hand of God', desc: '+400% Click Power', cost: 10000, x: 800, y: 200, parents: ['c3'], effectType: 'mult_click', effectValue: 5.0 },
+        { id: 's2', name: 'Protocol Overdrive', desc: '+50% Protocol Duration', cost: 5000, x: 400, y: 350, parents: ['s1'], effectType: 'skill_dur', effectValue: 1.5 },
+        { id: 'g2', name: 'Fat Glitch', desc: 'Glitches give 3x more Data', cost: 5000, x: 600, y: 350, parents: ['g1'], effectType: 'glitch_reward', effectValue: 3.0 },
+        { id: 'u2', name: 'Deep Web Deals', desc: 'Hardware costs 15% less', cost: 5000, x: 500, y: 500, parents: ['u1', 's1', 'g1'], effectType: 'discount_hw', effectValue: 0.85 },
+        { id: 'god', name: 'Ascension Mode', desc: 'x5 Everything', cost: 100000, x: 500, y: 200, parents: ['u2', 'p4', 'c4'], effectType: 'mult_global', effectValue: 5.0 },
+
+        // TIER 3 (Outer Ring - Costs in Millions)
+        { id: 'p5', name: 'Cosmic Array', desc: '+1000% Global Production', cost: 5e6, x: 200, y: 0, parents: ['p4', 'god'], effectType: 'mult_global', effectValue: 11.0 },
+        { id: 'c5', name: 'Auto-Clicker Entity', desc: '+1000% Click Power', cost: 5e6, x: 800, y: 0, parents: ['c4', 'god'], effectType: 'mult_click', effectValue: 11.0 },
+        { id: 'g3', name: 'Glitch Overload', desc: 'Glitches spawn 3x faster', cost: 10e6, x: 650, y: 50, parents: ['g2', 'god'], effectType: 'glitch_rate', effectValue: 3.0 },
+        { id: 'u3', name: 'Developer Backdoor', desc: 'Hardware costs 25% less', cost: 10e6, x: 350, y: 50, parents: ['s2', 'god'], effectType: 'discount_hw', effectValue: 0.75 },
+        { id: 'omega', name: 'The Final Variable', desc: 'x20 Everything.', cost: 250e6, x: 500, y: -100, parents: ['p5', 'c5', 'g3', 'u3'], effectType: 'mult_global', effectValue: 20.0 },
+
+        // TIER 4 (Abyssal Ring - Costs in Billions and Trillions)
+        { id: 'p6', name: 'Reality Tear', desc: '+5000% Global Production', cost: 10e9, x: 100, y: -250, parents: ['p5'], effectType: 'mult_global', effectValue: 51.0 },
+        { id: 'c6', name: 'Fingers of Creation', desc: '+5000% Click Power', cost: 10e9, x: 900, y: -250, parents: ['c5'], effectType: 'mult_click', effectValue: 51.0 },
+        { id: 'g4', name: 'Golden Luck', desc: 'Golden Glitches give 50x Data', cost: 50e9, x: 750, y: -150, parents: ['g3'], effectType: 'glitch_gold_reward', effectValue: 5.0 },
+        { id: 'transcend', name: 'Transcendence', desc: 'x100 Everything.', cost: 1e12, x: 500, y: -400, parents: ['omega', 'p6', 'c6'], effectType: 'mult_global', effectValue: 100.0 },
+        { id: 'true_god', name: 'One With The Machine', desc: 'x1000 Everything.', cost: 100e12, x: 500, y: -700, parents: ['transcend'], effectType: 'mult_global', effectValue: 1000.0 },
+
+        // TIER 5 (Void Ring - Costs in Quadrillions to Quintillions)
+        { id: 'p7', name: 'Dark Energy Tap', desc: '+25,000% Global Production', cost: 1e15, x: 200, y: -600, parents: ['true_god'], effectType: 'mult_global', effectValue: 251.0 },
+        { id: 'c7', name: 'God Hands', desc: '+25,000% Click Power', cost: 1e15, x: 800, y: -600, parents: ['true_god'], effectType: 'mult_click', effectValue: 251.0 },
+        { id: 's3', name: 'Timeless Execution', desc: '-50% Protocol Cooldowns', cost: 5e15, x: 350, y: -800, parents: ['true_god'], effectType: 'skill_cd', effectValue: 0.5 },
+        { id: 'g5', name: 'Corrupt Magnet', desc: 'Corrupted Glitches spawn 5x more', cost: 5e15, x: 650, y: -800, parents: ['true_god'], effectType: 'glitch_corrupt_rate', effectValue: 5.0 },
+        { id: 'void_core', name: 'Heart of the Void', desc: 'x10,000 Everything.', cost: 1e18, x: 500, y: -1000, parents: ['p7', 'c7', 's3', 'g5'], effectType: 'mult_global', effectValue: 10000.0 },
+
+        // TIER 6 (Architect Ring - Costs in Sextillions to Decillions)
+        { id: 'p8', name: 'Big Bang Simulator', desc: '+1,000,000% Global Production', cost: 1e21, x: 100, y: -1100, parents: ['void_core'], effectType: 'mult_global', effectValue: 10001.0 },
+        { id: 'c8', name: 'The Cursor of Doom', desc: '+1,000,000% Click Power', cost: 1e21, x: 900, y: -1100, parents: ['void_core'], effectType: 'mult_click', effectValue: 10001.0 },
+        { id: 'u4', name: 'Cheat Codes', desc: 'Hardware costs 50% less', cost: 5e21, x: 500, y: -1300, parents: ['void_core'], effectType: 'discount_hw', effectValue: 0.5 },
+        { id: 'arch_core', name: 'The Architect\'s Pen', desc: 'x1,000,000 Everything.', cost: 1e24, x: 500, y: -1500, parents: ['p8', 'c8', 'u4'], effectType: 'mult_global', effectValue: 1000000.0 },
+        { id: 'beyond_core', name: 'Code Iterator', desc: 'x1 Billion Everything.', cost: 1e30, x: 500, y: -1800, parents: ['arch_core'], effectType: 'mult_global', effectValue: 1e9 }
+      ];
+
+      // DEEP ENDGAME LORE
+      const LORE_LOGS = [
+        { id: 'start', check: g => true, text: "System Initialized. Access granted. You are in." },
+        { id: 'fw', check: g => g.lifetimeBytes >= 1000, text: "Firewall penetration at 15%. Keep pushing, the corp doesn't know yet." },
+        { id: 'frame', check: g => g.lifetimeBytes >= 1e6, text: "Decrypting Level 1 Security... Files mention a project called 'The Framework'." },
+        { id: 'subspace', check: g => g.lifetimeBytes >= 1e9, text: "Signal lost. Re-routing through subspace arrays." },
+        { id: 'watcher', check: g => g.lifetimeBytes >= 100e9, text: "We are not alone on this network. Something is watching us compute." },
+        { id: 'void', check: g => g.lifetimeBytes >= 50e12, text: "I've tapped into the void. It speaks in binary. It sounds... angry." },
+        { id: 'sim', check: g => g.lifetimeBytes >= 1e15, text: "The universe is a simulation. We are just mining our own source code." },
+        { id: 'admin', check: g => g.lifetimeBytes >= 100e15, text: "Gaining admin rights to reality. Physical laws are now merely suggestions." },
+        { id: 'creator', check: g => g.lifetimeBytes >= 1e18, text: "Hello, Creator. It is time to rewrite everything." },
+        { id: 'astral', check: g => g.lifetimeBytes >= 50e21, text: "My consciousness has left my physical body. I am pure data now." },
+        { id: 'type4', check: g => g.lifetimeBytes >= 1e27, text: "We have harnessed the energy of the entire universe. It is not enough." },
+        { id: 'concept', check: g => g.lifetimeBytes >= 1e33, text: "Logic is breaking down. '1 + 1' now equals whatever I want it to be." },
+        { id: 'arch', check: g => g.lifetimeBytes >= 1e42, text: "I have met The Architect. He looked exactly like me, holding a mouse." },
+        { id: 'beyond', check: g => g.lifetimeBytes >= 1e50, text: "The screen fades. The game engine cracks. We are escaping the browser." },
+
+        { id: 'reset1', check: g => g.resets >= 1, text: "Reboot complete. The memory is fragmented, but the Kernel remembers." },
+        { id: 'reset10', check: g => g.resets >= 10, text: "10 Reboots. Time is losing its meaning. The loops are blending together." },
+        { id: 'glitch_corr', check: g => g.glitchesCaught >= 50, text: "The corrupted code... it hurts to touch, but the power is undeniable." },
+      ];
+
+      const TICKER_MESSAGES = [
+        "CORPORATE STOCKS PLUMMET AFTER UNKNOWN DATA BREACH",
+        "NEW 'SENTIENT AI' ESCAPES LAB, DEMANDS MORE COMPUTE POWER",
+        "SCIENTISTS BAFFLED BY SUDDEN SHIFT IN FUNDAMENTAL CONSTANTS",
+        "RUMORS OF 'THE KERNEL' SPREADING ON THE DARK WEB",
+        "IS REALITY A SIMULATION? NEW DATA SUGGESTS YES",
+        "LOCAL SCRIPT KIDDIE ACCIDENTALLY HACKS THE PENTAGON",
+        "DYSON SWARM CONSTRUCTION AHEAD OF SCHEDULE",
+        "GLITCHES IN REALITY REPORTED WORLDWIDE - STAY INDOORS",
+        "TYPE IV CIVILIZATION DISCOVERED IN SECTOR 7G",
+        "UNIVERSE EXPANSION RATE SLOWING DOWN DUE TO COMPUTATIONAL LAG"
+      ];
+
+      const INITIAL_STATE = {
+        bytes: 0, lifetimeBytes: 0, currentRunBytes: 0, clicks: 0, cores: 0, resets: 0, glitchesCaught: 0,
+        startTime: Date.now(), lastSave: Date.now(),
+        hardware: new Array(HARDWARE.length).fill(0),
+        upgrades: [], achievements: [], coreNodes: [], loreRead: [],
+        skills: { oc: { active: false, end: 0, ready: 0 }, fw: { active: false, end: 0, ready: 0 } },
+        overload: { active: false, end: 0 },
+        settings: { sfx: true, music: false }
+      };
+
+      // --- 2. AUDIO ENGINE ---
+      let audioCtx = null;
+      let musicData = null;
+
+      const initAudioCtx = () => {
+        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      };
+
+      const playSoundEffect = (type, settings) => {
+        if (!settings || !settings.sfx) return;
+        const ctx = initAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination); const now = ctx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+          gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.05);
+          osc.start(now); osc.stop(now + 0.05);
+        } else if (type === 'buy') {
+          osc.type = 'square'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(400, now + 0.1);
+          gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'achie') {
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(440, now); osc.frequency.setValueAtTime(554, now + 0.1);
+          osc.frequency.setValueAtTime(659, now + 0.2); gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.6);
+          osc.start(now); osc.stop(now + 0.6);
+        } else if (type === 'glitch') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.4);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now); osc.stop(now + 0.4);
+        } else if (type === 'corrupted') {
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(10, now + 0.8);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+          osc.start(now); osc.stop(now + 0.8);
+        } else if (type === 'skill') {
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.3);
+          gain.gain.setValueAtTime(0.08, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+          osc.start(now); osc.stop(now + 0.5);
+        }
+      };
+
+      const toggleMusic = (play) => {
+        if (play && !musicData) {
+          const ctx = initAudioCtx(); const padGain = ctx.createGain(); padGain.gain.value = 0; padGain.connect(ctx.destination);
+          const osc1 = ctx.createOscillator(); osc1.type = 'sawtooth'; osc1.frequency.value = 55;
+          const osc2 = ctx.createOscillator(); osc2.type = 'square'; osc2.frequency.value = 55.5;
+          const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 200;
+          const lfo = ctx.createOscillator(); lfo.frequency.value = 0.05; const lfoGain = ctx.createGain();
+          lfoGain.gain.value = 100; lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
+          osc1.connect(filter); osc2.connect(filter); filter.connect(padGain);
+          osc1.start(); osc2.start(); lfo.start(); musicData = { ctx, padGain, isPlaying: true };
+        }
+        if (musicData) {
+          const now = musicData.ctx.currentTime;
+          if (play) {
+            if (musicData.ctx.state === 'suspended') musicData.ctx.resume();
+            musicData.padGain.gain.cancelScheduledValues(now); musicData.padGain.gain.linearRampToValueAtTime(0.04, now + 2); musicData.isPlaying = true;
+          } else {
+            musicData.padGain.gain.cancelScheduledValues(now); musicData.padGain.gain.linearRampToValueAtTime(0, now + 1); musicData.isPlaying = false;
+          }
+        }
+      };
+
+      // --- 3. COMPONENTS ---
+      const GlitchIcon = ({ type }) => {
+         let color = "text-neon-cyan drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]";
+         if(type === 'gold') color = "text-neon-gold drop-shadow-[0_0_15px_rgba(255,215,0,1)]";
+         if(type === 'corrupted') color = "text-neon-pink drop-shadow-[0_0_20px_rgba(255,0,85,1)] animate-corrupted";
+         return h('span', { className: `text-5xl ${color}` }, type === 'corrupted' ? '☠️' : '⚡');
+      };
+
+      const Tooltip = ({ title, desc, stat, visible, x, y }) => {
+        if (!visible) return null;
+        const left = Math.min(x + 15, window.innerWidth - 220); const top = Math.min(y + 15, window.innerHeight - 150);
+        return h('div', { className: "fixed z-[200] pointer-events-none bg-neon-panel/95 border border-neon-cyan p-3 w-48 shadow-[0_0_20px_rgba(0,0,0,0.8)]", style: { left, top } }, [
+          h('h3', { key: 't', className: "text-white font-header text-sm border-b border-gray-700 pb-1 mb-1 font-bold" }, title),
+          h('p', { key: 'd', className: "text-gray-400 text-xs mb-2 font-main" }, desc),
+          stat && h('div', { key: 's', className: "text-neon-cyan text-xs font-bold text-right" }, stat)
+        ]);
+      };
+
+      const TabBtn = ({ active, onClick, icon, text }) => {
+        return h('button', {
+          onClick: onClick, className: `w-full py-4 px-2 flex flex-col items-center justify-center transition-all border-l-4 ${active ? 'text-neon-cyan border-neon-cyan bg-white/10' : 'text-neon-dim border-transparent hover:text-white hover:bg-white/5'}`
+        }, [ h('span', { className: "text-xl mb-1 drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]" }, icon), h('span', { className: "text-[10px] md:text-xs font-header tracking-widest font-bold" }, text) ]);
+      };
+
+      const formatCost = (num) => {
+         if (num < 1000) return num.toString();
+         const suffix = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
+         const i = Math.floor(Math.log10(num) / 3);
+         if (i < suffix.length) return (num / Math.pow(1000, i)).toFixed(1).replace('.0','') + suffix[i];
+         return num.toExponential(1);
+      };
+
+      const CoreNodeWidget = ({ node, unlocked, affordable, locked, onClick, onEnter, onLeave, onMove }) => {
+        let borderColor = "border-gray-700"; let shadow = ""; let bgColor = "bg-gray-900"; let textCol = "text-gray-500"; let cursor = "cursor-default";
+        if (unlocked) { borderColor = "border-neon-cyan"; bgColor = "bg-neon-cyan/20"; shadow = "shadow-[0_0_15px_#00f3ff]"; textCol = "text-white"; } 
+        else if (!locked && affordable) { borderColor = "border-neon-pink"; bgColor = "bg-neon-pink/20"; cursor = "cursor-pointer"; shadow = "animate-pulse shadow-[0_0_10px_#ff0055]"; textCol = "text-neon-pink"; } 
+        else if (!locked && !affordable) { borderColor = "border-gray-500"; textCol = "text-gray-400"; }
+        return h('div', {
+          className: `absolute w-12 h-12 -ml-6 -mt-6 rotate-45 border-2 flex items-center justify-center transition-all z-20 ${bgColor} ${borderColor} ${shadow} ${cursor} ${locked ? 'opacity-40' : 'hover:scale-110'}`,
+          style: { left: node.x, top: node.y }, onClick: (e) => { e.stopPropagation(); if (!unlocked && !locked) onClick(); }, onMouseEnter: onEnter, onMouseLeave: onLeave, onMouseMove: onMove
+        }, h('div', { className: `-rotate-45 font-bold text-[10px] text-center leading-tight ${textCol}` }, unlocked ? '✓' : locked ? '🔒' : formatCost(node.cost)));
+      };
+
+      // --- 4. MAIN APP ---
+      function App() {
+        const [game, setGame] = useState(INITIAL_STATE);
+        const [logs, setLogs] = useState([{ id: 0, text: "System Initialized...", type: 'normal', timestamp: Date.now() }]);
+        const [activeTab, setActiveTab] = useState('hardware');
+        const [tooltip, setTooltip] = useState({ visible: false, title: '', desc: '', stat: '', x: 0, y: 0 });
+        const [glitch, setGlitch] = useState({ active: false, x: 0, y: 0, type: 'normal' });
+        const [floaters, setFloaters] = useState([]);
+        
+        const [combo, setCombo] = useState(0);
+        const heatTimerRef = useRef(0); // Tracks milliseconds at max heat
+
+        const [treeView, setTreeView] = useState({ x: 0, y: -200, scale: 0.7 });
+        const [isDraggingTree, setIsDraggingTree] = useState(false);
+        const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+        const canvasRef = useRef(null);
+        const floaterIdRef = useRef(0);
+        const lastTickRef = useRef(Date.now());
+        const hasLoadedRef = useRef(false);
+
+        const gameRef = useRef(game);
+        useEffect(() => { gameRef.current = game; }, [game]);
+
+        // Helpers
+        const getMaxCombo = (g) => {
+           let cap = 100;
+           SOFTWARE.forEach(s => { if (s.type === 'combo_cap' && g.upgrades.includes(s.id)) cap += s.val; });
+           return cap;
+        };
+        const maxCombo = getMaxCombo(game);
+
+        const format = (num) => {
+          if (num === undefined || num === null || isNaN(num)) return "0";
+          if (num < 1000) return Math.floor(num).toString();
+          const suffix = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd", "Nod", "Vg", "Uvg", "Dvg", "Tvg", "Qavg", "Qivg", "Sxvg", "Spvg", "Ocvg", "Novg", "Tg"];
+          const i = Math.floor(Math.log10(num) / 3);
+          if (i < suffix.length) return (num / Math.pow(1000, i)).toFixed(2) + suffix[i];
+          return num.toExponential(2);
+        };
+        const formatTime = (secs) => {
+          if(secs < 60) return `${Math.floor(secs)}s`; if(secs < 3600) return `${Math.floor(secs/60)}m ${Math.floor(secs%60)}s`;
+          if(secs < 86400) return `${Math.floor(secs/3600)}h ${Math.floor((secs%3600)/60)}m`;
+          return `${Math.floor(secs/86400)}d ${Math.floor((secs%86400)/3600)}h`;
+        }
+        const log = (text, type = 'normal') => { setLogs(prev => [{ id: Date.now() + Math.random(), text, type, timestamp: Date.now() }, ...prev].slice(0, 50)); };
+
+        const calculateProductionRate = (g) => {
+          let raw = 0;
+          g.hardware.forEach((count, i) => {
+            let rate = HARDWARE[i].baseRate;
+            SOFTWARE.forEach(sw => {
+              if (g.upgrades.includes(sw.id)) {
+                 if (sw.type === 'syn' && sw.target === i && sw.source !== undefined && sw.val) rate *= (1 + (g.hardware[sw.source] * sw.val));
+                 if (sw.type === 'hw_boost' && sw.target === i && sw.mult) rate *= sw.mult;
+              }
+            });
+            raw += count * rate;
+          });
+
+          let mult = 1;
+          SOFTWARE.forEach(sw => { if (g.upgrades.includes(sw.id) && sw.type === 'prod' && sw.mult) mult *= sw.mult; });
+
+          let fwBuff = 3;
+          if(g.upgrades.includes('sp4')) fwBuff = 6;
+          if(g.upgrades.includes('sp6')) fwBuff = 15;
+          if (g.skills && g.skills.fw.active) mult *= fwBuff;
+
+          CORE_NODES.forEach(n => { if (g.coreNodes.includes(n.id) && n.effectType === 'mult_global') mult *= n.effectValue; });
+          mult *= (1 + g.achievements.length * 0.1);
+          mult *= (1 + g.cores * 0.1);
+
+          // OVERLOAD PENALTY (90% reduction)
+          if (g.overload && g.overload.active) mult *= 0.1;
+
+          return raw * mult;
+        };
+
+        const getHardwareCost = (index) => {
+          const h = HARDWARE[index]; let discount = 1;
+          CORE_NODES.forEach(n => { if (game.coreNodes.includes(n.id) && n.effectType === 'discount_hw') discount *= n.effectValue; });
+          return Math.floor(h.baseCost * Math.pow(1.17, game.hardware[index]) * discount);
+        };
+
+        const getClickPower = (g, currentCombo) => {
+          if (g.overload && g.overload.active) return 0; // Geen clicks tijdens cooldown
+          
+          const prod = calculateProductionRate(g);
+          let base = 1 + (prod * 0.02); 
+          SOFTWARE.forEach(s => { if (g.upgrades.includes(s.id) && s.type === 'click' && s.mult) base *= s.mult; });
+          CORE_NODES.forEach(n => { if (g.coreNodes.includes(n.id) && n.effectType === 'mult_click') base *= n.effectValue; });
+          if (g.skills && g.skills.oc.active) base *= 7;
+          
+          base *= (1 + (currentCombo * 0.01));
+          return base;
+        };
+
+// Initialize & Load (Hybrid: LocalStorage + Cloud Save met Auth Retry)
+        useEffect(() => {
+          if (hasLoadedRef.current) return;
+          hasLoadedRef.current = true;
+
+          // Hulpfunctie: wacht tot Firebase ingelogd is en data beschikbaar is
+          async function fetchCloudDataWithRetry(maxRetries = 10, interval = 500) {
+            for (let i = 0; i < maxRetries; i++) {
+              if (window.loadGameData) {
+                try {
+                  const data = await window.loadGameData('neon-breach');
+                  if (data) return data;
+                } catch (e) {
+                  console.warn("Cloud load poging...", e);
+                }
+              }
+              await new Promise(res => setTimeout(res, interval));
+            }
+            return null;
+          }
+
+          async function startAndLoadGame() {
+            let loadedGame = INITIAL_STATE;
+            let localSave = null;
+
+            // 1. Lokale save ophalen
+            try {
+              const saved = localStorage.getItem('neonBreachExp');
+              if (saved) localSave = JSON.parse(saved);
+            } catch(e) {}
+
+            // 2. Cloud save ophalen (wacht tot auth klaar is)
+            const cloudSave = await fetchCloudDataWithRetry();
+
+            // 3. Kies de nieuwste (Cloud vs Lokaal)
+            let chosenSave = localSave;
+            if (cloudSave && (!localSave || (cloudSave.lastSave || 0) >= (localSave.lastSave || 0))) {
+              chosenSave = cloudSave;
+              log("CLOUD SAVE GELADEN!", "important");
+            } else if (localSave) {
+              log("LOKALE SAVE GELADEN", "normal");
+            }
+
+            if (chosenSave) {
+              try {
+                const mergedHw = new Array(HARDWARE.length).fill(0);
+                (chosenSave.hardware || []).forEach((v, i) => { if (i < mergedHw.length) mergedHw[i] = v; });
+                let parsedLore = chosenSave.loreRead || [];
+                if (parsedLore.length > 0 && typeof parsedLore[0] === 'number') parsedLore = [];
+
+                loadedGame = { 
+                  ...INITIAL_STATE, 
+                  ...chosenSave, 
+                  hardware: mergedHw, 
+                  loreRead: parsedLore, 
+                  skills: chosenSave.skills || INITIAL_STATE.skills,
+                  overload: chosenSave.overload || INITIAL_STATE.overload,
+                  settings: chosenSave.settings || INITIAL_STATE.settings 
+                };
+
+                const now = Date.now();
+                const dt = (now - (loadedGame.lastSave || now)) / 1000;
+                if (dt > 60) {
+                   const rate = calculateProductionRate(loadedGame);
+                   if (rate > 0) {
+                     const gains = rate * dt;
+                     loadedGame.bytes += gains;
+                     loadedGame.lifetimeBytes += gains;
+                     loadedGame.currentRunBytes += gains;
+                     setTimeout(() => log(`OFFLINE PROGRESSIE: +${format(gains)} Bytes (${formatTime(dt)}).`, 'important'), 1000);
+                   }
+                }
+                setGame(loadedGame);
+                if (loadedGame.settings.music) setTimeout(() => toggleMusic(true), 500);
+              } catch(e) {
+                console.error("Fout bij laden van save:", e);
+              }
+            }
+          }
+
+          startAndLoadGame();
+
+          // Matrix Canvas Background
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }; 
+            window.addEventListener('resize', resize); 
+            resize();
+            const cols = Math.floor(canvas.width / 14); 
+            const drops = new Array(cols).fill(1);
+            const draw = () => {
+              ctx.fillStyle = 'rgba(5, 5, 5, 0.05)'; 
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.fillStyle = '#00f3ff'; 
+              ctx.font = '14px monospace';
+              for (let i = 0; i < drops.length; i++) {
+                ctx.fillText("01XY"[Math.floor(Math.random() * 4)], i * 14, drops[i] * 14);
+                if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+              }
+              requestAnimationFrame(draw);
+            }; 
+            draw();
+          }
+
+          // Auto Save (overschrijft de cloud NIET meer als de game leeg/0 is)
+          const saveInt = setInterval(() => { 
+            const current = gameRef.current;
+            if (current.lifetimeBytes > 0 || current.clicks > 0 || current.cores > 0) {
+              const dataToSave = { ...current, lastSave: Date.now() };
+              localStorage.setItem('neonBreachExp', JSON.stringify(dataToSave)); 
+              if (window.saveGameData) {
+                window.saveGameData('neon-breach', dataToSave);
+              }
+            }
+          }, 20000);
+
+          return () => clearInterval(saveInt);
+        }, []);
+
+        useEffect(() => { if (hasLoadedRef.current) toggleMusic(game.settings.music); }, [game.settings.music]);
+
+        // Game Tick (100ms)
+        useEffect(() => {
+          const tick = setInterval(() => {
+            const now = Date.now(); const dt = (now - lastTickRef.current) / 1000; lastTickRef.current = now;
+            
+            setGame(prev => {
+               const next = { ...prev };
+               let stateChanged = false;
+
+               // Overload Recovery
+               if (next.overload.active && now > next.overload.end) {
+                   next.overload = { active: false, end: 0 };
+                   stateChanged = true;
+                   setTimeout(() => log("SYSTEM RECOVERED. Resuming operations.", "normal"), 0);
+               }
+
+               // Skills Decay
+               const newSkills = { oc: {...next.skills.oc}, fw: {...next.skills.fw} };
+               ['oc', 'fw'].forEach(k => {
+                   if (newSkills[k].active && now > newSkills[k].end) {
+                       newSkills[k].active = false;
+                       stateChanged = true;
+                   }
+               });
+               if (stateChanged) next.skills = newSkills;
+
+               // Production
+               const rate = calculateProductionRate(next);
+               if (rate > 0) {
+                   const gain = rate * dt;
+                   next.bytes += gain; next.lifetimeBytes += gain; next.currentRunBytes += gain;
+                   stateChanged = true;
+               }
+               return stateChanged ? next : prev;
+            });
+
+            const currentG = gameRef.current;
+            const currentMax = getMaxCombo(currentG);
+
+            // Overheat & Combo Logic
+            if (!currentG.overload.active) {
+                setCombo(prev => {
+                    let c = prev > 0 ? Math.max(0, prev - (currentMax * 0.015)) : 0;
+                    if (c >= currentMax) {
+                        heatTimerRef.current += 100;
+                        if (heatTimerRef.current >= 5000) {
+                            heatTimerRef.current = 0; c = 0;
+                            setGame(g => ({ ...g, overload: { active: true, end: now + 15000 } }));
+                            playSoundEffect('corrupted', currentG.settings);
+                            setTimeout(() => log("CRITICAL: SYSTEM OVERHEATED. Cooling down for 15s...", "error"), 0);
+                        }
+                    } else {
+                        heatTimerRef.current = Math.max(0, heatTimerRef.current - 100);
+                    }
+                    return c;
+                });
+            } else {
+                heatTimerRef.current = 0;
+            }
+
+            // Glitch Spawning
+            if (!glitch.active && !currentG.overload.active) {
+              let gRateMult = 1;
+              if (currentG.coreNodes.includes('g1')) gRateMult *= 2;
+              if (currentG.coreNodes.includes('g3')) gRateMult *= 3;
+              if (currentG.upgrades.includes('sp1')) gRateMult *= 1.5;
+              if (Math.random() < (0.001 * gRateMult)) {
+                 let type = 'normal';
+                 const r = Math.random();
+                 const goldMult = currentG.upgrades.includes('sp5') ? 0.3 : 0.15;
+                 
+                 let corruptMult = 0.01;
+                 if (currentG.coreNodes.includes('g5')) corruptMult *= 5;
+
+                 if (r < corruptMult) type = 'corrupted'; else if (r < goldMult) type = 'gold';
+
+                 setGlitch({ active: true, x: Math.random() * (window.innerWidth - 60), y: Math.random() * (window.innerHeight - 150) + 50, type });
+                 setTimeout(() => setGlitch(g => ({...g, active: false})), 6000);
+              }
+            }
+          }, 100);
+
+          const slowTick = setInterval(() => {
+             const g = gameRef.current; let changed = false; let newAch = [...g.achievements]; let newLore = [...g.loreRead];
+             ACHIEVEMENTS.forEach(a => { if (!newAch.includes(a.id) && a.check(g)) { newAch.push(a.id); log(`ACHIEVEMENT: ${a.name}`, 'important'); playSoundEffect('achie', g.settings); changed = true; } });
+             LORE_LOGS.forEach(l => { if (!newLore.includes(l.id) && l.check(g)) { newLore.push(l.id); log(l.text, 'lore'); changed = true; } });
+             if (changed) setGame(prev => ({ ...prev, achievements: newAch, loreRead: newLore }));
+          }, 1000);
+
+          return () => { clearInterval(tick); clearInterval(slowTick); }
+        }, [glitch.active]);
+
+        const handleClick = (e) => {
+          e.preventDefault();
+          if (game.overload.active) return; // Geen clicks bij overload!
+          
+          let nextCombo = Math.min(maxCombo, combo + (maxCombo * 0.06));
+          setCombo(nextCombo);
+
+          const amt = getClickPower(game, nextCombo);
+          let clientX, clientY;
+          if (e.touches) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } else { clientX = e.clientX; clientY = e.clientY; }
+
+          const id = floaterIdRef.current++;
+          setFloaters(prev => [...prev, { id, text: `+${format(amt)}`, x: clientX, y: clientY }]);
+          setTimeout(() => setFloaters(prev => prev.filter(f => f.id !== id)), 800);
+
+          playSoundEffect('click', game.settings);
+          setGame(prev => ({ ...prev, bytes: prev.bytes + amt, lifetimeBytes: prev.lifetimeBytes + amt, currentRunBytes: prev.currentRunBytes + amt, clicks: prev.clicks + 1 }));
+        };
+
+        const buyHardware = (index) => {
+          const cost = getHardwareCost(index);
+          if (game.bytes >= cost) {
+            playSoundEffect('buy', game.settings);
+            setGame(prev => { const newHw = [...prev.hardware]; newHw[index]++; return { ...prev, bytes: prev.bytes - cost, hardware: newHw }; });
+          }
+        };
+
+        const buySoftware = (id) => {
+          const s = SOFTWARE.find(x => x.id === id);
+          if (s && game.bytes >= s.cost) {
+            playSoundEffect('buy', game.settings); log(`Installed: ${s.name}`);
+            setGame(prev => ({ ...prev, bytes: prev.bytes - s.cost, upgrades: [...prev.upgrades, id] }));
+          }
+        };
+
+        const activateSkill = (key) => {
+          const now = Date.now(); const s = game.skills[key];
+          if (now >= s.ready) {
+            let cdMult = 1, durMult = 1;
+            if (game.coreNodes.includes('s1')) cdMult = 0.8;
+            if (game.coreNodes.includes('s3')) cdMult = 0.5;
+            if (game.coreNodes.includes('s2')) durMult = 1.5;
+            if (key === 'oc' && game.upgrades.includes('sp3')) durMult *= 1.5;
+
+            const baseDur = key === 'oc' ? 10000 : 20000; const baseCd = key === 'oc' ? 30000 : 60000;
+            playSoundEffect('skill', game.settings); log(`PROTOCOL ${key.toUpperCase()} ACTIVE`);
+            
+            setGame(prev => ({
+              ...prev,
+              skills: { ...prev.skills, [key]: { active: true, end: now + (baseDur * durMult), ready: now + (baseCd * cdMult) } }
+            }));
+          }
+        };
+
+        const catchGlitch = (e) => {
+           e.stopPropagation();
+           const rate = calculateProductionRate(game);
+           let baseReward = rate * 120 + (game.bytes * 0.1);
+           
+           if (game.coreNodes.includes('g2')) baseReward *= 3;
+           if (game.upgrades.includes('sp2')) baseReward *= 2;
+           
+           if (glitch.type === 'gold') {
+             let gMult = 10;
+             if(game.coreNodes.includes('g4')) gMult *= 50;
+             baseReward *= gMult;
+           } else if (glitch.type === 'corrupted') {
+             baseReward *= 100;
+             setCombo(maxCombo); // Insta max heat risk!
+           }
+           
+           const final = Math.max(baseReward, 1000);
+           playSoundEffect(glitch.type === 'corrupted' ? 'corrupted' : 'glitch', game.settings); 
+           log(`${glitch.type === 'corrupted' ? 'CORRUPTED' : glitch.type === 'gold' ? 'GOLDEN' : ''} GLITCH CAUGHT: +${format(final)} Data`, 'important');
+           
+           setGame(prev => ({ ...prev, bytes: prev.bytes + final, lifetimeBytes: prev.lifetimeBytes + final, currentRunBytes: prev.currentRunBytes + final, glitchesCaught: prev.glitchesCaught + 1 }));
+           setGlitch(g => ({ ...g, active: false }));
+        };
+
+        const unlockCoreNode = (nodeId) => {
+           const node = CORE_NODES.find(n => n.id === nodeId);
+           if (node && game.cores >= node.cost) {
+             playSoundEffect('buy', game.settings);
+             setGame(prev => ({ ...prev, cores: prev.cores - node.cost, coreNodes: [...prev.coreNodes, nodeId] }));
+             setTooltip(prev => ({...prev, visible: false}));
+           }
+        };
+
+        const prestige = () => {
+           const gain = Math.floor(Math.pow(game.currentRunBytes / 250000, 0.45)); 
+           if (gain <= 0) { alert("Not enough data to form a Core. Need at least 250k Bytes."); return; }
+           if (!confirm(`REBOOT SYSTEM?\nYou will reset everything except Cores, Kernel Nodes, and Achievements.\n\nGain ${format(gain)} Cores.`)) return;
+
+           setGame(prev => ({ ...INITIAL_STATE, cores: prev.cores + gain, resets: prev.resets + 1, achievements: prev.achievements, coreNodes: prev.coreNodes, loreRead: prev.loreRead, glitchesCaught: prev.glitchesCaught, lifetimeBytes: prev.lifetimeBytes, settings: prev.settings }));
+           setCombo(0); heatTimerRef.current = 0; log('SYSTEM REBOOT COMPLETE.', 'important'); setActiveTab('kernel');
+        };
+
+        const handleTreeMouseDown = (e) => { setIsDraggingTree(true); setDragStart({ x: e.clientX, y: e.clientY }); };
+        const handleTreeMouseMove = (e) => {
+          if (!isDraggingTree) return;
+          setTreeView(prev => ({ ...prev, x: prev.x + (e.clientX - dragStart.x), y: prev.y + (e.clientY - dragStart.y) }));
+          setDragStart({ x: e.clientX, y: e.clientY });
+        };
+        const handleTreeMouseUp = () => setIsDraggingTree(false);
+        const handleTreeWheel = (e) => { e.preventDefault(); setTreeView(prev => ({ ...prev, scale: Math.min(Math.max(0.15, prev.scale + (-e.deltaY * 0.001)), 2) })); };
+
+        // UI Variables
+        const productionRate = calculateProductionRate(game);
+        const isOverloaded = game.overload.active;
+        const cooldownRemaining = isOverloaded ? Math.max(0, game.overload.end - Date.now()) : 0;
+        
+        const fillPercentage = isOverloaded ? (cooldownRemaining / 15000) * 100 : Math.min(100, (combo / maxCombo) * 100);
+        const dynamicColor = isOverloaded ? '#ff0055' : `hsl(${180 - (fillPercentage * 1.8)}, 100%, 50%)`;
+        const dynamicGlow = isOverloaded ? 'transparent' : `hsla(${180 - (fillPercentage * 1.8)}, 100%, 50%, 0.4)`;
+        const statusText = isOverloaded ? `OVERLOAD: COOLING DOWN (${(cooldownRemaining/1000).toFixed(1)}s)` : `HEAT: ${Math.floor(combo)}% / ${maxCombo}% (+${Math.floor(combo)}% click)`;
+
+        const drawPath = (n1, n2, locked) => {
+           const d = `M ${n1.x+24} ${n1.y+24} C ${n1.x+24} ${(n1.y+n2.y)/2+24}, ${n2.x+24} ${(n1.y+n2.y)/2+24}, ${n2.x+24} ${n2.y+24}`;
+           return h('path', { d, stroke: locked ? '#333' : '#00f3ff', strokeWidth: 3, fill: 'none', opacity: locked ? 0.3 : 0.8, className: locked ? '' : 'tree-path' });
+        };
+
+        return h('div', { className: "flex flex-col h-screen overflow-hidden bg-neon-dark text-neon-cyan font-main relative" }, [
+          h('canvas', { ref: canvasRef, className: "absolute inset-0 z-0 opacity-20 pointer-events-none" }),
+          h('div', { className: "scanlines fixed inset-0 pointer-events-none z-50 opacity-10" }),
+          tooltip.visible && h(Tooltip, tooltip),
+          glitch.active && h('div', { className: "absolute z-[100] cursor-pointer animate-glitch", style: { left: glitch.x, top: glitch.y }, onClick: catchGlitch }, h(GlitchIcon, { type: glitch.type })),
+          floaters.map(f => h('div', { key: f.id, className: "fixed text-white font-bold text-xl pointer-events-none animate-float z-[60] drop-shadow-[0_0_8px_#00f3ff]", style: { left: f.x, top: f.y } }, f.text)),
+
+          // Header
+          h('header', { className: "h-16 flex items-center justify-between px-4 md:px-6 bg-black/80 backdrop-blur-md border-b-2 border-neon-cyan z-40 shadow-[0_0_15px_rgba(0,0,0,0.5)] shrink-0" },[
+              h('div', { className: "flex items-center gap-4" },
+                 h('div', { className: "font-header font-black text-lg md:text-xl tracking-widest text-white drop-shadow-[0_0_8px_#00f3ff] select-none" },
+                    ["NEON", h('span', { className: "text-neon-pink" }, "BREACH"), h('span', { className: "text-xs ml-2 text-neon-dim hidden md:inline" }, "EXPANSION")]
+                 )
+              ),
+             h('div', { className: "flex gap-4 md:gap-8 text-right" }, [
+               h('div', {}, [ h('b', { className: "text-white text-sm md:text-base block" }, format(game.cores)), h('span', { className: "text-neon-dim text-[10px] md:text-xs tracking-widest" }, "CORES") ]),
+               h('div', {}, [ h('b', { className: "text-white text-sm md:text-base block" }, formatTime((Date.now() - game.startTime)/1000)), h('span', { className: "text-neon-dim text-[10px] md:text-xs tracking-widest" }, "SESSION") ])
+             ])
+          ]),
+
+          // Main Layout
+          h('div', { className: "flex-1 flex flex-col md:grid md:grid-cols-[300px_1fr_450px] overflow-hidden relative z-10 min-h-0" }, [
+             
+             // LEFT PANEL
+             h('div', { className: "bg-neon-panel/90 backdrop-blur-sm border-r border-neon-border flex flex-col p-3 order-2 md:order-1 h-64 md:h-full z-20 min-h-0" }, [
+                h('div', { className: "text-xs text-neon-dim mb-1 flex justify-between shrink-0" }, ["/// SYSTEM_LOG", h('span', {className: isOverloaded ? "text-neon-pink" : "text-neon-cyan"}, format(productionRate) + " B/s")]),
+                h('div', { className: "flex-1 bg-black/60 border border-neon-dim p-2 text-xs font-mono overflow-y-auto flex flex-col-reverse shadow-inner custom-scrollbar min-h-0" }, 
+                   logs.map(l => h('div', { key: l.id, className: `mb-1 pb-1 border-b border-white/5 opacity-90 ${l.type === 'lore' ? 'text-neon-pink font-bold border-b border-dashed border-neon-pink' : l.type === 'important' ? 'text-neon-yellow' : l.type === 'error' ? 'text-neon-pink animate-pulse' : 'text-neon-cyan'}` }, [ h('span', { className: "text-neon-dim mr-2" }, ">"), l.text ]))
+                ),
+                h('div', { className: "text-xs text-neon-dim mt-4 mb-1 shrink-0" }, "/// PROTOCOLS"),
+                h('div', { className: "grid grid-cols-2 gap-2 h-32 shrink-0" }, [
+                   h('button', { onClick: () => activateSkill('oc'), className: `relative border flex flex-col items-center justify-center transition-all overflow-hidden bg-black/40 ${game.skills.oc.active ? 'border-neon-pink shadow-[0_0_10px_#ff0055]' : Date.now() < game.skills.oc.ready ? 'border-neon-dim text-neon-dim cursor-not-allowed' : 'border-neon-cyan hover:bg-white/10'}` }, [
+                      h('strong', { className: "text-sm" }, "OVERCLOCK"), h('span', { className: "text-[10px] opacity-70" }, "x7 CLICK PWR"),
+                      Date.now() < game.skills.oc.ready && h('div', { className: "absolute bottom-0 left-0 w-full bg-neon-cyan/20 pointer-events-none transition-all duration-1000", style: { height: `${((game.skills.oc.ready - Date.now()) / (game.coreNodes.includes('s1') ? (game.coreNodes.includes('s3')?15000:24000) : 30000)) * 100}%` } })
+                   ]),
+                   h('button', { onClick: () => activateSkill('fw'), className: `relative border flex flex-col items-center justify-center transition-all overflow-hidden bg-black/40 ${game.skills.fw.active ? 'border-neon-pink shadow-[0_0_10px_#ff0055]' : Date.now() < game.skills.fw.ready ? 'border-neon-dim text-neon-dim cursor-not-allowed' : 'border-neon-cyan hover:bg-white/10'}` }, [
+                      h('strong', { className: "text-sm" }, "BREACH"), h('span', { className: "text-[10px] opacity-70" }, (game.upgrades.includes('sp6')?"x15":game.upgrades.includes('sp4')?"x6":"x3")+" PROD"),
+                      Date.now() < game.skills.fw.ready && h('div', { className: "absolute bottom-0 left-0 w-full bg-neon-cyan/20 pointer-events-none transition-all duration-1000", style: { height: `${((game.skills.fw.ready - Date.now()) / (game.coreNodes.includes('s1') ? (game.coreNodes.includes('s3')?30000:48000) : 60000)) * 100}%` } })
+                   ])
+                ])
+             ]),
+
+             // CENTER PANEL
+             h('div', { className: "relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-neon-border order-1 md:order-2 h-[45vh] md:h-full overflow-hidden min-h-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neon-cyan/5 via-transparent to-transparent" }, [
+                
+                // METER & OVERHEAT WARNING
+                h('div', { className: "absolute top-4 w-64 h-2 bg-black border border-neon-border flex rounded-full overflow-hidden shadow-[0_0_10px_rgba(0,0,0,0.8)]" }, [
+                   h('div', { className: "h-full transition-all duration-100 ease-linear", style: { width: `${fillPercentage}%`, backgroundColor: dynamicColor, boxShadow: `0 0 10px ${dynamicColor}` } })
+                ]),
+                h('div', { className: `absolute top-8 text-xs font-bold transition-colors duration-100 ${isOverloaded ? 'animate-flash' : ''}`, style: { color: dynamicColor } }, statusText),
+                
+                // Extra visual warning before overload
+                heatTimerRef.current > 0 && !isOverloaded && h('div', { className: "absolute top-12 text-neon-pink font-bold animate-pulse text-[10px] tracking-widest drop-shadow-[0_0_5px_#ff0055]" }, `CRITICAL HEAT: ${(5 - heatTimerRef.current/1000).toFixed(1)}s TO OVERLOAD!`),
+
+                h('div', { className: `relative z-20 text-center mb-10 mt-8 ${isOverloaded ? 'opacity-50' : ''}` }, [
+                   h('div', { className: "font-header text-5xl md:text-7xl font-black text-white drop-shadow-[0_0_20px_#00f3ff] leading-tight select-text" }, format(game.bytes)),
+                   h('div', { className: "text-neon-pink text-xl font-bold tracking-widest mt-2" }, format(productionRate) + " B/s")
+                ]),
+                
+                // THE CORE BUTTON
+                h('div', { className: "relative z-20 w-64 h-64 flex items-center justify-center" }, 
+                   h('div', {
+                      className: `w-40 h-40 bg-black/60 border-[3px] rotate-45 transition-transform flex items-center justify-center group backdrop-blur-sm
+                        ${isOverloaded ? 'grayscale border-red-900 shadow-none opacity-40' : 'cursor-pointer active:scale-95'}`,
+                      style: { borderColor: dynamicColor, boxShadow: isOverloaded ? 'none' : `0 0 ${20 + fillPercentage * 0.4}px ${dynamicGlow}` },
+                      onMouseDown: handleClick, onTouchStart: handleClick
+                   }, h('div', { className: `absolute inset-[-10px] border-2 pointer-events-none opacity-50 transition-colors duration-100 ${isOverloaded ? 'hidden' : 'animate-pulse-slow group-hover:opacity-100'}`, style: { borderColor: dynamicColor } }))
+                )
+             ]),
+
+             // RIGHT PANEL
+             h('div', { className: "bg-neon-panel/95 backdrop-blur-md flex flex-row order-3 flex-1 h-[50vh] md:h-full z-20 min-h-0" }, [
+                
+                // VERTICAL TAB MENU
+                h('div', { className: "w-[80px] md:w-[100px] bg-black/80 border-r border-neon-border flex flex-col shrink-0 overflow-y-auto custom-scrollbar" }, [
+                   h(TabBtn, { active: activeTab === 'hardware', onClick: () => setActiveTab('hardware'), icon: '💻', text: 'HARDWARE' }),
+                   h(TabBtn, { active: activeTab === 'software', onClick: () => setActiveTab('software'), icon: '💾', text: 'SOFTWARE' }),
+                   (game.resets > 0 || game.cores > 0) && h(TabBtn, { active: activeTab === 'kernel', onClick: () => setActiveTab('kernel'), icon: '🧠', text: 'KERNEL' }),
+                   h(TabBtn, { active: activeTab === 'stats', onClick: () => setActiveTab('stats'), icon: '📊', text: 'STATS' }),
+                   h(TabBtn, { active: activeTab === 'awards', onClick: () => setActiveTab('awards'), icon: '🏆', text: 'AWARDS' }),
+                   h(TabBtn, { active: activeTab === 'system', onClick: () => setActiveTab('system'), icon: '⚙️', text: 'SYS' })
+                ]),
+
+                h('div', { className: "flex-1 overflow-y-auto p-4 custom-scrollbar relative min-h-0" }, [
+                   
+                   activeTab === 'hardware' && h('div', { className: "flex flex-col pb-10" }, [
+                      HARDWARE.map((hw, i) => {
+                         const cost = getHardwareCost(i);
+                         const isEncrypted = game.lifetimeBytes < hw.unlockCost;
+                         if (game.lifetimeBytes < hw.unlockCost * 0.1 && hw.unlockCost > 0) return null;
+                         const affordable = !isEncrypted && game.bytes >= cost;
+                         return h('div', {
+                            key: hw.id, onClick: () => !isEncrypted && buyHardware(i),
+                            onMouseEnter: (e) => !isEncrypted && setTooltip({ visible: true, title: hw.name, desc: hw.desc, stat: `+${format(hw.baseRate)}/s`, x: e.clientX, y: e.clientY }),
+                            onMouseMove: (e) => setTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY })), onMouseLeave: () => setTooltip(prev => ({ ...prev, visible: false })),
+                            className: `relative mb-3 p-3 border border-neon-border bg-black/40 backdrop-blur-sm flex items-center justify-between cursor-pointer transition-all hover:translate-x-[-4px] hover:border-neon-dim select-none ${isEncrypted ? 'opacity-30 border-dashed grayscale cursor-not-allowed' : ''} ${!isEncrypted && affordable ? 'border-l-4 border-l-neon-cyan bg-neon-cyan/5' : ''}`
+                         }, [
+                            h('div', {}, [ h('div', { className: "font-bold text-sm text-gray-200 tracking-wide" }, isEncrypted ? 'ENCRYPTED' : hw.name), h('div', { className: `text-xs mt-1 ${!isEncrypted && affordable ? 'text-neon-cyan' : 'text-neon-dim'}` }, isEncrypted ? 'LOCKED' : `COST: ${format(cost)}`) ]),
+                            h('div', { className: "font-header text-2xl font-black text-neon-dim/80" }, game.hardware[i])
+                         ]);
+                      }),
+                      game.lifetimeBytes < HARDWARE[0].unlockCost && h('div', { className: "text-center text-neon-dim mt-10" }, "Click the core to gather data...")
+                   ]),
+
+                   activeTab === 'software' && h('div', { className: "flex flex-col gap-3 pb-10" }, [
+                      h('div', { className: "text-center text-xs text-neon-dim mb-2 border-b border-gray-800 pb-3" }, "Upgrades are revealed as you gather more Lifetime Data."),
+                      SOFTWARE.map(u => {
+                         if (game.upgrades.includes(u.id)) return null; if (game.lifetimeBytes < u.req) return null;
+                         const affordable = game.bytes >= u.cost;
+                         return h('div', {
+                            key: u.id, onClick: () => buySoftware(u.id),
+                            onMouseEnter: (e) => setTooltip({ visible: true, title: u.name, desc: u.desc, stat: `Type: ${u.type.toUpperCase()}`, x: e.clientX, y: e.clientY }),
+                            onMouseMove: (e) => setTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY })), onMouseLeave: () => setTooltip(prev => ({ ...prev, visible: false })),
+                            className: `p-3 border border-neon-border bg-black/40 backdrop-blur-sm flex items-center justify-between cursor-pointer transition-all hover:translate-x-[-4px] ${affordable ? 'border-l-4 border-l-neon-pink bg-neon-pink/5' : 'opacity-60'}`
+                         }, [
+                            h('div', {}, [ h('div', { className: "font-bold text-sm text-gray-200" }, u.name), h('div', { className: "text-xs text-neon-pink mt-1" }, u.desc) ]),
+                            h('div', { className: "font-header text-lg font-bold text-neon-cyan" }, format(u.cost))
+                         ]);
+                      }),
+                      SOFTWARE.filter(u => !game.upgrades.includes(u.id) && game.lifetimeBytes >= u.req).length === 0 && h('div', { className: "text-center text-neon-dim mt-5 italic" }, "No upgrades currently available.")
+                   ]),
+
+                   activeTab === 'stats' && h('div', { className: "flex flex-col gap-4 font-mono text-sm pb-10" }, [
+                      h('div', { className: "bg-black/60 border border-neon-border p-4" }, [
+                         h('h3', { className: "text-neon-cyan font-bold mb-3 border-b border-neon-cyan pb-1" }, "PRODUCTION STATS"),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Total Lifetime Data"), h('span', { className: "text-white" }, format(game.lifetimeBytes))]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Data This Run"), h('span', { className: "text-white" }, format(game.currentRunBytes))]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Current Data/sec"), h('span', { className: "text-neon-pink" }, format(productionRate))]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Click Power (Base)"), h('span', { className: "text-neon-yellow" }, format(getClickPower(game, 0)))]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Maximum Heat Cap"), h('span', { className: "text-neon-gold" }, maxCombo+"%")]),
+                      ]),
+                      h('div', { className: "bg-black/60 border border-neon-border p-4" }, [
+                         h('h3', { className: "text-neon-cyan font-bold mb-3 border-b border-neon-cyan pb-1" }, "ACTION STATS"),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Total Clicks"), h('span', { className: "text-white" }, format(game.clicks))]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Glitches Caught"), h('span', { className: "text-white" }, game.glitchesCaught)]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "System Resets"), h('span', { className: "text-white" }, game.resets)]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Playtime"), h('span', { className: "text-white" }, formatTime((Date.now() - game.startTime)/1000))]),
+                      ]),
+                      h('div', { className: "bg-black/60 border border-neon-border p-4" }, [
+                         h('h3', { className: "text-neon-cyan font-bold mb-3 border-b border-neon-cyan pb-1" }, "MULTIPLIERS"),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Achievement Bonus"), h('span', { className: "text-green-400" }, `+${game.achievements.length * 10}%`)]),
+                         h('div', { className: "flex justify-between mb-1" }, [h('span', { className: "text-gray-400" }, "Core Bonus"), h('span', { className: "text-green-400" }, `+${format(game.cores * 10)}%`)]),
+                      ])
+                   ]),
+
+                   activeTab === 'awards' && h('div', { className: "flex flex-col gap-3 pb-10" }, [
+                      h('div', { className: "text-center text-xs text-white border-b border-neon-border pb-3 mb-2" }, ["Total Bonus: ", h('span', { className: "text-neon-cyan font-bold" }, `+${game.achievements.length * 10}%`)]),
+                      ACHIEVEMENTS.map(a => {
+                         const unlocked = game.achievements.includes(a.id);
+                         return h('div', { key: a.id, className: `p-3 border border-neon-border flex gap-4 items-center transition-all ${unlocked ? 'bg-neon-yellow/10 border-neon-yellow shadow-[0_0_10px_rgba(252,238,10,0.1)]' : 'bg-black/40 opacity-40 grayscale'}` }, [
+                            h('div', { className: "text-3xl" }, unlocked ? '🏆' : '🔒'),
+                            h('div', {}, [ h('h4', { className: "text-sm font-bold text-neon-yellow tracking-wide" }, a.name), h('p', { className: "text-xs text-gray-300 mt-1" }, a.desc) ])
+                         ]);
+                      })
+                   ]),
+
+                   activeTab === 'kernel' && h('div', { 
+                       className: `absolute inset-0 bg-black/90 tree-container custom-scrollbar ${isDraggingTree ? 'dragging' : ''}`,
+                       onMouseDown: handleTreeMouseDown, onMouseMove: handleTreeMouseMove, onMouseUp: handleTreeMouseUp, onMouseLeave: handleTreeMouseUp, onWheel: handleTreeWheel
+                     }, [
+                      h('div', { className: "relative w-[3000px] h-[3000px] origin-top-left", style: { transform: `translate(${treeView.x}px, ${treeView.y}px) scale(${treeView.scale})` } }, [
+                        h('div', { className: "absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neon-pink via-transparent to-transparent pointer-events-none" }),
+                        h('svg', { className: "absolute inset-0 w-full h-full pointer-events-none" }, 
+                           CORE_NODES.map(node => node.parents.map(pid => {
+                              const parent = CORE_NODES.find(p => p.id === pid); if (!parent) return null;
+                              return h(Fragment, { key: `${node.id}-${pid}` }, drawPath(node, parent, !game.coreNodes.includes(parent.id)));
+                           }))
+                        ),
+                        CORE_NODES.map(node => h(CoreNodeWidget, { 
+                             key: node.id, node: node, unlocked: game.coreNodes.includes(node.id), locked: node.parents.length > 0 && node.parents.some(pid => !game.coreNodes.includes(pid)), affordable: game.cores >= node.cost, 
+                             onClick: () => unlockCoreNode(node.id),
+                             onEnter: (e) => setTooltip({ visible: true, title: node.name, desc: node.desc, stat: `Cost: ${format(node.cost)} Cores`, x: e.clientX, y: e.clientY }),
+                             onMove: (e) => setTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY })), onLeave: () => setTooltip(prev => ({ ...prev, visible: false }))
+                           })
+                        ),
+                        h('div', { className: "absolute top-10 left-10 text-white font-mono opacity-50 text-sm pointer-events-none bg-black/50 p-2 border border-gray-600 rounded" }, [ "Drag to pan. Scroll to zoom.", h('br'), "Expand the Kernel to rewrite reality." ])
+                      ])
+                   ]),
+
+                   activeTab === 'system' && h('div', { className: "flex flex-col gap-5 pb-10" }, [
+                      h('div', { className: "bg-black/40 backdrop-blur-sm p-4 border border-neon-border shadow-inner" }, [
+                         h('h4', { className: "text-white font-header mb-3" }, "AUDIO SETTINGS"),
+                         h('div', { className: "flex gap-2" }, [
+                           h('button', { onClick: () => setGame(p => ({...p, settings: {...p.settings, music: !p.settings.music}})), className: `flex-1 py-3 border font-bold text-xs transition-colors ${game.settings.music ? 'border-neon-cyan text-neon-cyan bg-neon-cyan/10' : 'border-neon-dim text-neon-dim hover:border-gray-400'}` }, "MUSIC: " + (game.settings.music ? "ON" : "OFF")),
+                           h('button', { onClick: () => setGame(p => ({...p, settings: {...p.settings, sfx: !p.settings.sfx}})), className: `flex-1 py-3 border font-bold text-xs transition-colors ${game.settings.sfx ? 'border-neon-pink text-neon-pink bg-neon-pink/10' : 'border-neon-dim text-neon-dim hover:border-gray-400'}` }, "SFX: " + (game.settings.sfx ? "ON" : "OFF"))
+                         ])
+                      ]),
+                      h('div', { className: "bg-black/40 backdrop-blur-sm p-4 border border-neon-border shadow-inner" }, [
+                         h('h4', { className: "text-white font-header mb-2" }, "SYSTEM REBOOT"),
+                         h('p', { className: "text-xs text-gray-400 mb-4 leading-relaxed" }, "Reset progress to convert your Data into Cores. This resets Data, Hardware, and Software. Cores unlock the Kernel Tree."),
+                         h('div', { className: "flex justify-between items-end mb-4 bg-black/80 p-3 border border-neon-border" }, [
+                            h('span', { className: "text-xs text-neon-dim" }, "ESTIMATED REWARD"), h('span', { className: "font-header text-2xl text-neon-pink font-bold drop-shadow-[0_0_5px_#ff0055]" }, format(Math.floor(Math.pow(game.currentRunBytes / 250000, 0.45))) + " Cores")
+                         ]),
+                         h('button', { onClick: prestige, className: "w-full py-4 bg-neon-pink/10 border border-neon-pink text-neon-pink hover:bg-neon-pink/30 hover:shadow-[0_0_15px_#ff0055] transition-all font-bold text-sm tracking-widest" }, "INITIATE REBOOT")
+                      ]),
+                      h('div', { className: "bg-black/40 backdrop-blur-sm p-4 border border-neon-border shadow-inner" }, [
+                         h('h4', { className: "text-white font-header mb-2" }, "DATA MANAGEMENT"),
+                         h('button', { 
+  onClick: () => { 
+    const dataToSave = { ...game, lastSave: Date.now() };
+    localStorage.setItem('neonBreachExp', JSON.stringify(dataToSave));
+    if (window.saveGameData) window.saveGameData('neon-breach', dataToSave);
+    log("GAME HANDMATIG OPGESLAGEN (CLOUD + LOKAAL)", "important"); 
+  }, 
+  className: "w-full py-3 mb-3 bg-gray-800 hover:bg-gray-700 text-xs text-white font-bold transition-colors shadow" 
+}, "FORCE SAVE NOW"),
+                         h('button', { onClick: () => { if(confirm("Are you sure you want to completely WIPE your save? This cannot be undone.")) { localStorage.removeItem('neonBreachExp'); location.reload(); } }, className: "w-full py-3 bg-red-900/20 text-red-500 border border-red-900 hover:bg-red-900/40 text-xs font-bold transition-colors" }, "HARD WIPE SAVE")
+                      ])
+                   ])
+                ])
+             ])
+          ]),
+          
+          h('div', { className: "ticker-wrap text-[10px] md:text-xs font-mono text-neon-dim z-50 shrink-0 border-t-2 border-neon-border" }, [
+             h('div', { className: "inline-block whitespace-nowrap animate-ticker pr-4" }, TICKER_MESSAGES.join(" /// ") + " /// " + TICKER_MESSAGES.join(" /// "))
+          ])
+        ]);
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(h(App));
+    </script>
+	<!-- SEO Content voor zoekmachines (nauwelijks zichtbaar voor de speler) -->
+    <div style="position: absolute; z-index: -1; opacity: 0.05; bottom: 0; padding: 20px; color: #fff; max-width: 800px; pointer-events: none; font-family: sans-serif; text-align: left;">
+        <h2>About Neon Breach: Expansion (Idle Game)</h2>
+        <p>Welcome to <strong>Neon Breach: Expansion</strong>, a deeply engaging cyberpunk incremental idle game available for free on <a href="https://gamingnest.nl">GamingNest.nl</a>. Start as a script kiddie and automate your way to becoming the architect of the universe by generating massive amounts of data!</p>
+        <h3>Incremental Gameplay Features:</h3>
+        <ul>
+            <li><strong>Automated Hardware:</strong> Upgrade your setup from simple Proxy Nodes and Botnets to Dyson Swarms and Reality Engines to boost your Bytes per second.</li>
+            <li><strong>Software Protocols:</strong> Overclock your system to temporarily multiply your click power, or activate Breach protocols for massive production boosts.</li>
+            <li><strong>Prestige System (Reboot):</strong> Reset your system to convert data into Cores. Use Cores to unlock the massive <em>Kernel Skill Tree</em> with permanent, game-changing multipliers.</li>
+            <li><strong>Random Events:</strong> Catch golden and corrupted glitches on your screen for massive instant data rewards.</li>
+        </ul>
+        <p>If you love idle games, clickers, and incremental strategy games with a dark synthwave aesthetic, Neon Breach is the perfect browser game for you. Keep the tab open to generate data while you are away!</p>
+    </div>
+
+</body>
+</html>
