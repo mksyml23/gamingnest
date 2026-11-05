@@ -1,0 +1,3 @@
+[build]
+  command = "unzip -oq soepgames.zip -d _site"
+  publish = "_site/soepgames"
