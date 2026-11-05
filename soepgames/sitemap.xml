@@ -1,68 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-<url>
-<loc>https://gamingnest.nl/</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/strikezone.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/tag.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/neon-breach.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/spacejumper.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/paddleboss.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/stockmarket.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/pixelstack.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/idlegamedev.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/spendthemoney.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/parcour.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/aces.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/battlecore.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/timbertycoon.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/justclick.html</loc>
-</url>
-
-<url>
-<loc>https://gamingnest.nl/games/scp-foundation.html</loc>
-</url>
-
+  <url><loc>https://gamingnest.nl/</loc></url>
+  <url><loc>https://gamingnest.nl/games/tictac/</loc></url>
+  <url><loc>https://gamingnest.nl/games/aces.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/neon-breach.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/parcour.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/tag.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/spacejumper.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/idlegamedev.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/battlecore.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/stockmarket.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/justclick.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/strikezone.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/pixelstack.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/timbertycoon.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/paddleboss.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/chrono-core/</loc></url>
+  <url><loc>https://gamingnest.nl/games/spendthemoney.html</loc></url>
+  <url><loc>https://gamingnest.nl/games/soulreaper/</loc></url>
+  <url><loc>https://gamingnest.nl/games/scp-foundation.html</loc></url>
 </urlset>
