@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soul Reaper</title>
+
+    <!-- FIREBASE CLOUD SAVE -->
+    <script type="module" src="/firebase-app.js"></script>
+
+    <!-- AUTOMATISCHE FIREBASE KOPPELING -->
+    <script type="module">
+      const SAVE_KEY = "dark_survivor_save";
+      const GAME_ID = "soulreaper";
+
+      // 1. Bij het openen van het spel: Cloud Save inladen als deze nieuwer is
+      async function syncCloudOnStart() {
+        if (window.loadGameData) {
+          try {
+            const cloudData = await window.loadGameData(GAME_ID);
+            if (cloudData) {
+              let localData = null;
+              try {
+                localData = JSON.parse(localStorage.getItem(SAVE_KEY));
+              } catch(e) {}
+
+              // Als cloud data nieuwer is, overschrijf local data vóór de game start
+              if (!localData || (cloudData.lastSave || 0) > (localData.lastSave || 0)) {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(cloudData));
+                console.log("[Soul Reaper] Cloud savegame succesvol ingeladen!");
+              }
+            }
+          } catch(err) {
+            console.warn("Cloud load error:", err);
+          }
+        }
+      }
+      syncCloudOnStart();
+
+      // 2. Telkens als Soul Reaper opslaat in localStorage, stuur het direct door naar Firebase
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = function(key, value) {
+        originalSetItem.apply(this, arguments);
+        if (key === SAVE_KEY && window.saveGameData) {
+          try {
+            const parsed = JSON.parse(value);
+            window.saveGameData(GAME_ID, {
+              ...parsed,
+              lastSave: Date.now()
+            });
+          } catch(e) {}
+        }
+      };
+    </script>
+
+    <!-- HIER WORDT JE GAME GELADEN -->
+    <script type="module" crossorigin src="./assets/index-DnJ5gHZz.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-3_zDKc8j.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

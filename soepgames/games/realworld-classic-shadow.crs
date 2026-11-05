@@ -1,0 +1,21 @@
+﻿[SizeNWSE]
+Path=Diagonal Resize 1 (classic).cur
+
+[Hand]
+Path=classic_linksel.cur
+
+[SizeNESW]
+Path=Diagonal Resize 2 (classic).cur
+
+[SizeWE]
+Path=horizontal_classic.cur
+
+[Pin]
+Path=locationsel_classic.cur
+
+[Person]
+Path=personsel_classic.cur
+
+[SizeNS]
+Path=vertical_classic.cur
+

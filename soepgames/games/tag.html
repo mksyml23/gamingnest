@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 1. Basis SEO voor GamingNest -->
+    <title>Tag Masters (Game of Tag) | Play Free on GamingNest</title>
+    <meta name="description" content="Play Tag Masters on GamingNest! Run, double-jump, dash, and use power-ups to tag your friends in this chaotic free 2D multiplayer platformer.">
+    <meta name="keywords" content="tag masters, game of tag, 2d platformer, multiplayer browser game, free web game, gamingnest">
+    
+    <!-- Canonical URL (Vertelt Google dat dít de originele game pagina is) -->
+    <link rel="canonical" href="https://gamingnest.nl/tag.html" />
+	<!-- 2. Open Graph Tags (Voor mooie linkjes op Discord & WhatsApp) -->
+    <meta property="og:title" content="Tag Masters - Play Free on GamingNest">
+    <meta property="og:description" content="Challenge your friends in Tag Masters! Run, jump and use powerups in this chaotic 2D platformer.">
+    <meta property="og:image" content="https://gamingnest.nl/tag%20logo.webp">
+    <meta property="og:url" content="https://gamingnest.nl/tag.html">
+    <meta property="og:site_name" content="GamingNest">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+	<!-- 3. Schema.org (Vertelt Google direct dat dit een VideoGame is) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Tag Masters",
+      "url": "https://gamingnest.nl/tag.html",
+      "image": "https://gamingnest.nl/tag%20logo.webp",
+      "description": "A fast-paced 2D multiplayer platformer where you play tag with power-ups.",
+      "genre": ["Action", "Platform", "Multiplayer"],
+      "playMode": "MultiPlayer",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "publisher": {
+        "@type": "Organization",
+        "name": "GamingNest",
+        "url": "https://gamingnest.nl"
+      }
+    }
+    </script>
+    <!-- CDNs for standalone operation -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0f172a; /* slate-900 */
+            font-family: 'Inter', sans-serif;
+            color: white;
+            user-select: none;
+        }
+        canvas {
+            display: block;
+        }
+        .smooth-shadow {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+        .glass-panel {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+	<!-- 4. SEO Content (Onzichtbaar voor de speler dankzij de 'sr-only' class, maar Google smult hiervan!) -->
+    <div class="sr-only">
+        <h1>Tag Masters (Game of Tag) op GamingNest</h1>
+        <p>Speel Tag Masters, een gratis 2D multiplayer browser game op GamingNest. Ren, spring, dash en gebruik power-ups om je vrienden te tikken in deze snelle actie platformer!</p>
+        <h2>Hoe speel je Tag Masters? Besturing:</h2>
+        <ul>
+            <li><strong>Speler 1:</strong> Gebruik WASD om te bewegen, W om te springen, Q om te dashen en E om te gooien.</li>
+            <li><strong>Speler 2:</strong> Gebruik de Pijltjestoetsen om te bewegen, Pijltje Omhoog om te springen, M om te dashen en N om te gooien.</li>
+        </ul>
+        <p>Pas op voor slime, gebruik jump pads, pak schilden en vries elkaar in. Zorg dat je niet 'Hem' (IT) bent, want wie als eerste 60 seconden de tikker is, verliest de game. Speel nu gratis zonder download op GamingNest!</p>
+    </div>
+
+    <script type="text/babel">
+        const { useEffect, useRef, useState } = React;
+
+        // --- SVG Icons ---
+        const Icons = {
+            Home: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+            Play: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>,
+            Rotate: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>,
+            Trophy: () => <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        };
+
+        // --- Sound Manager (Retro Web Audio API) ---
+        class SoundManager {
+            constructor() {
+                this.ctx = null;
+                this.masterGain = null;
+                const init = () => { this.init(); window.removeEventListener('click', init); window.removeEventListener('keydown', init); };
+                window.addEventListener('click', init);
+                window.addEventListener('keydown', init);
+            }
+            init() {
+                if (this.ctx) return;
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.value = 0.3; // Master volume
+                this.masterGain.connect(this.ctx.destination);
+            }
+            playJump() {
+                if (!this.ctx || !this.masterGain) return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.type = 'square'; osc.frequency.setValueAtTime(150, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.5, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain); gain.connect(this.masterGain); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+            }
+            playDash() {
+                if (!this.ctx || !this.masterGain) return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+                osc.connect(gain); gain.connect(this.masterGain); osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+            }
+            playTag() {
+                if (!this.ctx || !this.masterGain) return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(800, this.ctx.currentTime); osc.frequency.setValueAtTime(1200, this.ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.8, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain); gain.connect(this.masterGain); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+            }
+            playPowerup() {
+                if (!this.ctx || !this.masterGain) return;
+                const now = this.ctx.currentTime;
+                [440, 554, 659, 880].forEach((freq, i) => {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = 'square'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.1, now + i * 0.05); gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.2);
+                    osc.connect(gain); gain.connect(this.masterGain); osc.start(now + i * 0.05); osc.stop(now + i * 0.05 + 0.2);
+                });
+            }
+            playWin() {
+                if (!this.ctx || !this.masterGain) return;
+                const now = this.ctx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                    osc.type = 'square'; osc.frequency.value = freq;
+                    const startTime = now + i * 0.1; const duration = i === 3 ? 0.8 : 0.1;
+                    gain.gain.setValueAtTime(0.2, startTime); gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                    osc.connect(gain); gain.connect(this.masterGain); osc.start(startTime); osc.stop(startTime + duration);
+                });
+            }
+        }
+        const soundManager = new SoundManager();
+
+        // --- Game Constants ---
+        const GRAVITY = 0.8;
+        const FRICTION_GROUND = 0.7;
+        const FRICTION_AIR = 0.85;
+        const JUMP_FORCE = -18;
+        const DASH_FORCE = 25;
+        const DASH_COOLDOWN = 45;
+        const TAG_COOLDOWN = 60;
+        const WALL_JUMP_FORCE_X = 12;
+        const WALL_JUMP_FORCE_Y = -16;
+        const DOUBLE_JUMP_FORCE = -16;
+        const POWERUP_DURATION = 300;
+        const POWERUP_SPAWN_RATE = 600;
+        const MAP_WIDTH = 3500;
+        const MAP_HEIGHT = 1200;
+
+        // --- Helper ---
+        const rectIntersect = (r1, r2) => {
+            return !(r2.x > r1.x + (r1.width || r1.size?.x) || 
+                     r2.x + (r2.width || r2.size?.x) < r1.x || 
+                     r2.y > r1.y + (r1.height || r1.size?.y) || 
+                     r2.y + (r2.height || r2.size?.y) < r1.y);
+        };
+
+        // --- Maps (Clean, Solid Colors, No Neon) ---
+        const MAPS = [
+            {
+                name: "CLASSIC TAG",
+                platforms: [
+                    // Boundaries
+                    { x: 0, y: 1150, width: 3500, height: 50, type: 'static', color: '#334155' }, // Floor
+                    { x: -50, y: 0, width: 50, height: 1200, type: 'static', color: '#1e293b' }, // Left Wall
+                    { x: 3500, y: 0, width: 50, height: 1200, type: 'static', color: '#1e293b' }, // Right Wall
+                    
+                    // Static Platforms
+                    {x:100,y:1150,width:150,height:20, type: 'static', color: '#475569'},{x:300,y:1050,width:150,height:20, type: 'static', color: '#475569'},{x:600,y:950,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:900,y:850,width:150,height:20, type: 'static', color: '#475569'},{x:1200,y:750,width:150,height:20, type: 'static', color: '#475569'},{x:1500,y:650,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:200,y:900,width:100,height:20, type: 'static', color: '#475569'},{x:400,y:800,width:150,height:20, type: 'static', color: '#475569'},{x:600,y:700,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:1000,y:600,width:150,height:20, type: 'static', color: '#475569'},{x:800,y:500,width:150,height:20, type: 'static', color: '#475569'},{x:1200,y:450,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:1600,y:550,width:200,height:20, type: 'static', color: '#475569'},{x:1800,y:350,width:100,height:20, type: 'static', color: '#475569'},{x:2200,y:250,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:500,y:650,width:100,height:20, type: 'static', color: '#475569'},{x:1700,y:500,width:120,height:20, type: 'static', color: '#475569'},{x:250,y:300,width:120,height:20, type: 'static', color: '#475569'},
+                    {x:1400,y:900,width:150,height:20, type: 'static', color: '#475569'},{x:1600,y:850,width:150,height:20, type: 'static', color: '#475569'},{x:1800,y:800,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:2000,y:750,width:150,height:20, type: 'static', color: '#475569'},{x:2200,y:700,width:150,height:20, type: 'static', color: '#475569'},{x:2400,y:650,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:2600,y:600,width:150,height:20, type: 'static', color: '#475569'},{x:2800,y:550,width:150,height:20, type: 'static', color: '#475569'},{x:3000,y:500,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:2500,y:1150,width:150,height:20, type: 'static', color: '#475569'},{x:2700,y:1050,width:150,height:20, type: 'static', color: '#475569'},{x:3000,y:950,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:3200,y:850,width:150,height:20, type: 'static', color: '#475569'},{x:3400,y:750,width:150,height:20, type: 'static', color: '#475569'},{x:3100,y:650,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:2900,y:900,width:100,height:20, type: 'static', color: '#475569'},{x:2700,y:800,width:150,height:20, type: 'static', color: '#475569'},{x:2500,y:700,width:150,height:20, type: 'static', color: '#475569'},
+                    {x:3200,y:600,width:150,height:20, type: 'static', color: '#475569'},
+
+                    // Moving Platforms
+                    {x:500,y:800,width:150,height:20,dx:2,dy:0,type:'moving',color:'#ff6b6b'},
+                    {x:1500,y:600,width:150,height:20,dx:2,dy:0,type:'moving',color:'#4ecdc4'},
+                    {x:2500,y:450,width:150,height:20,dx:0,dy:2,type:'moving',color:'#ffe66d'},
+                ]
+            }
+        ];
+
+        const TagGame = () => {
+            const canvasRef = useRef(null);
+            const [gameState, setGameState] = useState('menu');
+            const [selectedMap, setSelectedMap] = useState(0);
+            const [winner, setWinner] = useState(null);
+            const [scores, setScores] = useState({ p1: 0, p2: 0 });
+
+            const requestRef = useRef();
+            const playersRef = useRef([]);
+            const platformsRef = useRef([]);
+            const particlesRef = useRef([]);
+            const powerupsRef = useRef([]);
+            const throwablesRef = useRef([]);
+            const slimePuddlesRef = useRef([]);
+            const cameraRef = useRef({ x: 0, y: 0, zoom: 1 });
+            const gameTimeRef = useRef(0);
+            const tagCooldownRef = useRef(0);
+            const screenShakeRef = useRef(0);
+            const keysRef = useRef({});
+
+            const initGame = (mapIndex) => {
+                setScores({ p1: 0, p2: 0 });
+                gameTimeRef.current = 0;
+                tagCooldownRef.current = 0;
+                screenShakeRef.current = 0;
+                particlesRef.current = [];
+                powerupsRef.current = [];
+                slimePuddlesRef.current = [];
+                
+                throwablesRef.current = [
+                    { id: 1, x: 1000, y: 1200, width: 40, height: 40, type: 'box', vx: 0, vy: 0, heldBy: null },
+                    { id: 2, x: 2000, y: 1200, width: 40, height: 40, type: 'box', vx: 0, vy: 0, heldBy: null },
+                    { id: 3, x: 1500, y: 500, width: 30, height: 30, type: 'bomb', vx: 0, vy: 0, heldBy: null, timer: 300 },
+                    { id: 4, x: 500, y: 1200, width: 30, height: 30, type: 'slimeball', vx: 0, vy: 0, heldBy: null }
+                ];
+
+                platformsRef.current = JSON.parse(JSON.stringify(MAPS[mapIndex].platforms)).map(p => ({
+                    ...p, active: true, crumbleTimer: 0, respawnTimer: 0
+                }));
+
+                playersRef.current = [
+                    {
+                        id: 1, pos: { x: 100, y: 1000 }, vel: { x: 0, y: 0 }, size: { x: 40, y: 40 },
+                        color: '#3b82f6', isIt: true, grounded: false, jumps: 0, wallSliding: false, wallDir: 0, touchingWall: 0,
+                        dashCooldown: 0, facingRight: true, powerup: null, frozenTimer: 0,
+                        throwable: null, score: 0, coyoteTime: 0, jumpBuffer: 0, wasUpPressed: false,
+                        controls: { left: 'a', right: 'd', up: 'w', down: 's', dash: 'q', grab: 'e' }
+                    },
+                    {
+                        id: 2, pos: { x: MAP_WIDTH - 140, y: 1000 }, vel: { x: 0, y: 0 }, size: { x: 40, y: 40 },
+                        color: '#ef4444', isIt: false, grounded: false, jumps: 0, wallSliding: false, wallDir: 0, touchingWall: 0,
+                        dashCooldown: 0, facingRight: false, powerup: null, frozenTimer: 0,
+                        throwable: null, score: 0, coyoteTime: 0, jumpBuffer: 0, wasUpPressed: false,
+                        controls: { left: 'arrowleft', right: 'arrowright', up: 'arrowup', down: 'arrowdown', dash: 'm', grab: 'n' }
+                    }
+                ];
+            };
+
+            useEffect(() => {
+                const handleKeyDown = (e) => { keysRef.current[e.key.toLowerCase()] = true; };
+                const handleKeyUp = (e) => { keysRef.current[e.key.toLowerCase()] = false; };
+                window.addEventListener('keydown', handleKeyDown);
+                window.addEventListener('keyup', handleKeyUp);
+                return () => { window.removeEventListener('keydown', handleKeyDown); window.removeEventListener('keyup', handleKeyUp); };
+            }, []);
+
+            const update = () => {
+                if (gameState !== 'playing') return;
+                const canvas = canvasRef.current; if (!canvas) return;
+
+                const players = playersRef.current;
+                const platforms = platformsRef.current;
+                const powerups = powerupsRef.current;
+                const throwables = throwablesRef.current;
+
+                // 1. Update Platforms
+                platforms.forEach(p => {
+                    if (p.type === 'moving') {
+                        p.x += (p.dx || 0); p.y += (p.dy || 0);
+                        if (p.x < 100 || p.x > 2800) p.dx = -(p.dx || 0);
+                        if (p.y < 100 || p.y > 1400) p.dy = -(p.dy || 0);
+                    } else if (p.type === 'crumbling') {
+                        if (p.active) {
+                            if (p.crumbleTimer > 0) {
+                                p.crumbleTimer--;
+                                if (p.crumbleTimer <= 0) { p.active = false; p.respawnTimer = 180; createParticles(p.x + p.width/2, p.y + p.height/2, '#94a3b8', 20, 'circle'); }
+                            }
+                        } else {
+                            if (p.respawnTimer > 0) { p.respawnTimer--; if (p.respawnTimer <= 0) { p.active = true; p.crumbleTimer = 0; } }
+                        }
+                    }
+                });
+
+                // 1.5 Update Throwables
+                throwables.forEach(t => {
+                    if (t.safeTimer > 0) t.safeTimer--;
+                    if (!t.heldBy) {
+                        t.vy += GRAVITY; 
+                        if (t.vy > 18) t.vy = 18;
+                        t.vx *= 0.98; t.x += t.vx; t.y += t.vy;
+                        platforms.forEach(plat => {
+                            if (plat.type === 'crumbling' && !plat.active) return;
+                            if (rectIntersect(t, plat)) {
+                                const isOneWay = plat.height <= 40;
+                                if (t.vy > 0 && t.y + t.height - t.vy <= plat.y + 20) { t.y = plat.y - t.height; t.vy = -t.vy * 0.5; t.vx *= 0.8; if (Math.abs(t.vy) < 1) t.vy = 0; }
+                                else if (!isOneWay) {
+                                    if (t.vy < 0 && t.y - t.vy >= plat.y + plat.height - 20) { t.y = plat.y + plat.height; t.vy = 0; }
+                                    else if (t.vx > 0) { t.x = plat.x - t.width; t.vx = -t.vx * 0.5; }
+                                    else if (t.vx < 0) { t.x = plat.x + plat.width; t.vx = -t.vx * 0.5; }
+                                }
+                            }
+                        });
+                        if (t.y > MAP_HEIGHT) { t.y = 0; t.vy = 0; }
+                    }
+                });
+
+                // 2. Spawn Powerups
+                if (gameTimeRef.current % POWERUP_SPAWN_RATE === 0) {
+                    const types = ['speed', 'jump', 'shield', 'freeze', 'swap', 'invisibility'];
+                    powerups.push({ x: 200 + Math.random() * 2600, y: 200 + Math.random() * 1000, width: 30, height: 30, type: types[Math.floor(Math.random() * types.length)], active: true });
+                }
+
+                // 2.5 Update Slime Puddles
+                for (let i = slimePuddlesRef.current.length - 1; i >= 0; i--) {
+                    slimePuddlesRef.current[i].life--;
+                    if (slimePuddlesRef.current[i].life <= 0) slimePuddlesRef.current.splice(i, 1);
+                }
+
+                // 3. Update Players
+                players.forEach(p => {
+                    let inSlime = false;
+                    slimePuddlesRef.current.forEach(puddle => { if (rectIntersect({ x: p.pos.x, y: p.pos.y, width: p.size.x, height: p.size.y }, puddle)) inSlime = true; });
+                    if (inSlime) { p.vel.x *= 0.5; if (Math.random() < 0.1) createParticles(p.pos.x + p.size.x/2, p.pos.y + p.size.y, '#84cc16', 2, 'circle'); }
+
+                    let speedMult = 1, jumpMult = 1, frozen = false;
+                    if (p.powerup) {
+                        p.powerup.timer--; if (p.powerup.timer <= 0) p.powerup = null;
+                        else { if (p.powerup.type === 'speed') speedMult = 1.6; if (p.powerup.type === 'jump') jumpMult = 1.4; }
+                    }
+                    if (p.frozenTimer > 0) { p.frozenTimer--; frozen = true; }
+
+                    if (keysRef.current[p.controls.grab]) {
+                        if (p.throwable) {
+                            const t = throwables.find(t => t.id === p.throwable.id);
+                            if (t) { t.heldBy = null; t.vx = (p.facingRight ? 15 : -15) + p.vel.x; t.vy = -5 + p.vel.y; t.thrownBy = p.id; t.safeTimer = 20; p.throwable = null; keysRef.current[p.controls.grab] = false; }
+                        } else {
+                            const nearby = throwables.find(t => !t.heldBy && Math.abs(t.x - p.pos.x) < 60 && Math.abs(t.y - p.pos.y) < 60);
+                            if (nearby) { nearby.heldBy = p.id; p.throwable = { type: nearby.type, id: nearby.id }; keysRef.current[p.controls.grab] = false; }
+                        }
+                    }
+
+                    if (p.throwable) {
+                        const t = throwables.find(t => t.id === p.throwable.id);
+                        if (t) { t.x = p.pos.x + (p.facingRight ? 20 : -20); t.y = p.pos.y - 10; t.vx = 0; t.vy = 0; }
+                    }
+
+                    if (!frozen) {
+                        let accel = (p.grounded ? 5.0 : 2.5) * speedMult;
+                        if (keysRef.current[p.controls.left]) { p.vel.x -= accel; p.facingRight = false; }
+                        if (keysRef.current[p.controls.right]) { p.vel.x += accel; p.facingRight = true; }
+                    } else { p.pos.x += (Math.random() - 0.5) * 2; }
+
+                    if (p.grounded) {
+                        p.vel.x *= FRICTION_GROUND;
+                        p.coyoteTime = 8; // 8 frames of grace period
+                        p.jumps = 0;
+                    } else {
+                        p.vel.x *= FRICTION_AIR;
+                        if (p.coyoteTime > 0) p.coyoteTime--;
+                        else if (p.jumps === 0) p.jumps = 1;
+                    }
+
+                    p.vel.y += GRAVITY;
+                    if (p.vel.y > 18) p.vel.y = 18; // Max fall speed to prevent clipping through platforms
+                    if (p.wallSliding && p.vel.y > 4) {
+                        p.vel.y = 4; // Constant slide speed
+                    }
+
+                    // Jump Buffering
+                    if (keysRef.current[p.controls.up]) {
+                        if (!p.wasUpPressed) p.jumpBuffer = 8;
+                        p.wasUpPressed = true;
+                    } else {
+                        if (p.wasUpPressed && p.vel.y < -5) p.vel.y *= 0.6; // Subtle cut-off
+                        p.wasUpPressed = false;
+                    }
+                    if (p.jumpBuffer > 0) p.jumpBuffer--;
+
+                    if (p.jumpBuffer > 0) {
+                        if (p.coyoteTime > 0) { 
+                            p.vel.y = JUMP_FORCE * jumpMult; p.grounded = false; p.jumps = 1; p.coyoteTime = 0; p.jumpBuffer = 0;
+                            createParticles(p.pos.x + p.size.x/2, p.pos.y + p.size.y, '#fff', 5, 'circle'); soundManager.playJump(); 
+                        }
+                        else if (p.touchingWall !== 0) { 
+                            p.vel.y = WALL_JUMP_FORCE_Y * jumpMult; p.vel.x = -p.touchingWall * WALL_JUMP_FORCE_X; p.wallSliding = false; p.jumps = 1; p.jumpBuffer = 0;
+                            createParticles(p.pos.x + (p.touchingWall === 1 ? p.size.x : 0), p.pos.y + p.size.y/2, '#fff', 5, 'circle'); soundManager.playJump(); 
+                            p.touchingWall = 0;
+                        }
+                        else if (p.jumps < 2) { 
+                            p.vel.y = DOUBLE_JUMP_FORCE * jumpMult; p.jumps++; p.jumpBuffer = 0;
+                            createParticles(p.pos.x + p.size.x/2, p.pos.y + p.size.y, '#fff', 5, 'circle'); soundManager.playJump(); 
+                        }
+                    }
+
+                    // Only clamp vertical velocity to prevent infinite falling speed
+                    p.vel.y = Math.max(Math.min(p.vel.y, 24), -24);
+
+                    if (p.dashCooldown > 0) p.dashCooldown--;
+                    if (keysRef.current[p.controls.dash] && p.dashCooldown <= 0) {
+                        p.vel.x = DASH_FORCE * (p.facingRight ? 1 : -1); p.vel.y = 0; p.dashCooldown = DASH_COOLDOWN; screenShakeRef.current = 5; createParticles(p.pos.x + p.size.x/2, p.pos.y + p.size.y/2, p.color, 10, 'circle'); soundManager.playDash();
+                    }
+
+                    p.pos.x += p.vel.x; p.pos.y += p.vel.y;
+                    p.grounded = false; p.wallSliding = false; p.touchingWall = 0;
+
+                    // Ensure players stay at least 30px from screen edges (as requested previously)
+                    if (p.pos.x < 30) { p.pos.x = 30; p.vel.x = 0; }
+                    if (p.pos.x + p.size.x > MAP_WIDTH - 30) { p.pos.x = MAP_WIDTH - 30 - p.size.x; p.vel.x = 0; }
+                    if (p.pos.y > MAP_HEIGHT) { p.pos.y = 0; p.vel.y = 0; }
+
+                    platforms.forEach(plat => {
+                        if (plat.type === 'crumbling' && !plat.active) return;
+                        if (rectIntersect({ x: p.pos.x, y: p.pos.y, width: p.size.x, height: p.size.y }, plat)) {
+                            if (plat.type === 'slime') { p.vel.x *= 0.5; }
+                            if (plat.type === 'jump_pad') {
+                                if (p.pos.y + p.size.y <= plat.y + 20 && p.vel.y >= 0) { p.vel.y = -25; p.grounded = false; p.jumps = 1; createParticles(p.pos.x + p.size.x/2, p.pos.y + p.size.y, '#10b981', 20, 'circle'); soundManager.playJump(); return; }
+                            }
+                            if (plat.type !== 'jump_pad') {
+                                const prevY = p.pos.y - p.vel.y;
+                                const isOneWay = plat.height <= 40;
+                                if (prevY + p.size.y <= plat.y + 20 && p.vel.y >= 0) {
+                                    p.pos.y = plat.y - p.size.y; p.vel.y = 0; p.grounded = true; p.jumps = 0;
+                                    if (plat.dx) p.pos.x += plat.dx; if (plat.dy) p.pos.y += plat.dy;
+                                    if (plat.type === 'crumbling' && (!plat.crumbleTimer || plat.crumbleTimer <= 0)) plat.crumbleTimer = 60;
+                                } else if (!isOneWay) {
+                                    if (prevY >= plat.y + plat.height - 20 && p.vel.y < 0) { p.pos.y = plat.y + plat.height; p.vel.y = 0; }
+                                    else {
+                                        if (p.pos.x + p.size.x/2 < plat.x + plat.width/2) { 
+                                            p.pos.x = plat.x - p.size.x; p.vel.x = 0; 
+                                            p.touchingWall = 1;
+                                            if (keysRef.current[p.controls.right]) { p.wallSliding = true; p.wallDir = 1; }
+                                        }
+                                        else { 
+                                            p.pos.x = plat.x + plat.width; p.vel.x = 0; 
+                                            p.touchingWall = -1;
+                                            if (keysRef.current[p.controls.left]) { p.wallSliding = true; p.wallDir = -1; }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    for (let i = powerups.length - 1; i >= 0; i--) {
+                        if (rectIntersect({ x: p.pos.x, y: p.pos.y, width: p.size.x, height: p.size.y }, powerups[i])) {
+                            const type = powerups[i].type;
+                            if (type === 'freeze') {
+                                const opponent = players.find(op => op.id !== p.id);
+                                if (opponent) opponent.frozenTimer = 180; createParticles(opponent.pos.x, opponent.pos.y, '#3b82f6', 20, 'circle'); soundManager.playPowerup();
+                            } else if (type === 'swap') {
+                                const opponent = players.find(op => op.id !== p.id);
+                                if (opponent) { const tempPos = { ...p.pos }; p.pos = { ...opponent.pos }; opponent.pos = tempPos; createParticles(p.pos.x, p.pos.y, '#ec4899', 20, 'circle'); createParticles(opponent.pos.x, opponent.pos.y, '#ec4899', 20, 'circle'); soundManager.playPowerup(); }
+                            } else { p.powerup = { type, timer: POWERUP_DURATION }; soundManager.playPowerup(); }
+                            powerups.splice(i, 1);
+                        }
+                    }
+                    if (p.isIt) p.score += 1/60;
+                });
+
+                // 4. Tag Logic
+                if (tagCooldownRef.current > 0) tagCooldownRef.current--;
+                else {
+                    const p1 = players[0], p2 = players[1];
+                    if (rectIntersect({ x: p1.pos.x, y: p1.pos.y, width: p1.size.x, height: p1.size.y }, { x: p2.pos.x, y: p2.pos.y, width: p2.size.x, height: p2.size.y })) {
+                        p1.isIt = !p1.isIt; p2.isIt = !p2.isIt; tagCooldownRef.current = TAG_COOLDOWN; screenShakeRef.current = 15; createParticles((p1.pos.x + p2.pos.x)/2, (p1.pos.y + p2.pos.y)/2, '#fbbf24', 30, 'circle'); soundManager.playTag();
+                        if (p1.isIt && p2.powerup?.type === 'shield') { p1.isIt = true; p2.isIt = false; p1.vel.x = -p1.vel.x * 1.5; p2.vel.x = -p2.vel.x * 1.5; }
+                        else if (p2.isIt && p1.powerup?.type === 'shield') { p2.isIt = true; p1.isIt = false; p1.vel.x = -p1.vel.x * 1.5; p2.vel.x = -p2.vel.x * 1.5; }
+                    }
+                }
+
+                // 4.5 Throwable Collision with Players
+                throwables.forEach(t => {
+                    if (!t.heldBy && (Math.abs(t.vx) > 2 || Math.abs(t.vy) > 2)) {
+                        players.forEach(p => {
+                            if (t.thrownBy === p.id && t.safeTimer > 0) return;
+                            if (rectIntersect(t, { x: p.pos.x, y: p.pos.y, width: p.size.x, height: p.size.y })) {
+                                if (t.type === 'box') { p.vel.x += t.vx * 0.5; p.vel.y += t.vy * 0.5; p.frozenTimer = 30; createParticles(p.pos.x, p.pos.y, '#fff', 10, 'circle'); t.vx = -t.vx * 0.5; }
+                                else if (t.type === 'bomb') { p.vel.x += (p.pos.x - t.x) * 0.5; p.vel.y -= 15; p.frozenTimer = 60; createParticles(t.x, t.y, '#ef4444', 50, 'circle'); screenShakeRef.current = 20; t.x = -1000; t.vx = 0; t.vy = 0; }
+                                else if (t.type === 'slimeball') { p.vel.x *= 0.2; p.frozenTimer = 10; createParticles(p.pos.x, p.pos.y, '#84cc16', 20, 'circle'); slimePuddlesRef.current.push({ x: t.x - 20, y: t.y + t.height - 5, width: 80, height: 10, life: 300 }); t.x = -1000; t.vx = 0; t.vy = 0; }
+                            }
+                        });
+                    }
+                });
+
+                if (players[0].score >= 60) { setWinner('Player 2'); setGameState('gameover'); soundManager.playWin(); }
+                if (players[1].score >= 60) { setWinner('Player 1'); setGameState('gameover'); soundManager.playWin(); }
+
+                const p1 = players[0], p2 = players[1];
+                const midX = (p1.pos.x + p2.pos.x) / 2, midY = (p1.pos.y + p2.pos.y) / 2;
+                cameraRef.current.x += (midX - cameraRef.current.x) * 0.1;
+                cameraRef.current.y += (midY - cameraRef.current.y) * 0.1;
+                const dist = Math.sqrt(Math.pow(p1.pos.x - p2.pos.x, 2) + Math.pow(p1.pos.y - p2.pos.y, 2));
+                const screenFactor = canvas.width / 1500; 
+                const targetZoom = Math.max(0.4 * screenFactor, Math.min(1.2 * screenFactor, (canvas.width * 0.6) / (dist + 400))); 
+                cameraRef.current.zoom += (targetZoom - cameraRef.current.zoom) * 0.05;
+
+                updateParticles();
+                if (gameTimeRef.current % 10 === 0) setScores({ p1: players[0].score, p2: players[1].score });
+                gameTimeRef.current++;
+            };
+
+            const createParticles = (x, y, color, count, shape = 'circle') => {
+                for (let i = 0; i < count; i++) { particlesRef.current.push({ x, y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10, life: 30 + Math.random() * 20, color, size: 4 + Math.random() * 6, shape }); }
+            };
+
+            const updateParticles = () => {
+                for (let i = particlesRef.current.length - 1; i >= 0; i--) {
+                    const p = particlesRef.current[i]; p.x += p.vx; p.y += p.vy; p.life--; p.vx *= 0.95; p.vy *= 0.95;
+                    if (p.life <= 0) particlesRef.current.splice(i, 1);
+                }
+            };
+
+            const draw = () => {
+                const canvas = canvasRef.current; if (!canvas) return;
+                const ctx = canvas.getContext('2d'); if (!ctx) return;
+
+                // Background (fixed to screen)
+                const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                bgGradient.addColorStop(0, '#2c3e50');
+                bgGradient.addColorStop(1, '#1c2833');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.save();
+                
+                let shakeX = 0, shakeY = 0;
+                if (screenShakeRef.current > 0) { shakeX = (Math.random() - 0.5) * screenShakeRef.current; shakeY = (Math.random() - 0.5) * screenShakeRef.current; screenShakeRef.current *= 0.9; if (screenShakeRef.current < 0.5) screenShakeRef.current = 0; }
+
+                const cam = cameraRef.current;
+                ctx.translate(canvas.width / 2 + shakeX, canvas.height / 2 + shakeY);
+                ctx.scale(cam.zoom, cam.zoom);
+                ctx.translate(-cam.x, -cam.y);
+
+                // Draw Platforms
+                platformsRef.current.forEach(p => {
+                    if (p.type === 'crumbling' && !p.active) return;
+                    ctx.fillStyle = p.color || '#475569';
+                    if (p.type === 'crumbling' && p.crumbleTimer > 0) { const shake = (Math.random() - 0.5) * 5; ctx.save(); ctx.translate(shake, 0); }
+                    
+                    ctx.fillRect(p.x, p.y, p.width, p.height);
+                    
+                    // Platform details
+                    if (p.type === 'slime') { 
+                        ctx.fillStyle = '#a3e635'; 
+                        for(let i=10; i<p.width-10; i+=30) {
+                            ctx.fillRect(p.x+i, p.y, 15, 6);
+                        }
+                    } else if (p.type === 'jump_pad') {
+                        ctx.fillStyle = '#34d399';
+                        ctx.fillRect(p.x + 10, p.y + 4, p.width - 20, 12);
+                    } else {
+                        // Top highlight for solid platforms
+                        ctx.fillStyle = 'rgba(255,255,255,0.1)'; 
+                        ctx.fillRect(p.x, p.y, p.width, 4);
+                    }
+
+                    if (p.type === 'crumbling' && p.crumbleTimer > 0) ctx.restore();
+                });
+
+                // Draw Slime Puddles
+                slimePuddlesRef.current.forEach(p => {
+                    ctx.fillStyle = '#84cc16'; 
+                    ctx.fillRect(p.x, p.y, p.width, p.height);
+                    ctx.fillStyle = '#a3e635';
+                    ctx.fillRect(p.x + 5, p.y + 2, p.width - 10, 3);
+                });
+
+                // Draw Powerups
+                powerupsRef.current.forEach(p => {
+                    ctx.fillStyle = p.type === 'speed' ? '#facc15' : p.type === 'jump' ? '#4ade80' : p.type === 'shield' ? '#60a5fa' : p.type === 'freeze' ? '#3b82f6' : p.type === 'swap' ? '#ec4899' : '#a8a29e';
+                    ctx.fillRect(p.x, p.y, p.width, p.height);
+                    ctx.fillStyle = '#fff'; ctx.font = 'bold 14px "Inter"'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+                    ctx.fillText(p.type[0].toUpperCase(), p.x + p.width/2, p.y + p.height/2 + 1);
+                });
+
+                // Draw Throwables
+                throwablesRef.current.forEach(t => {
+                    ctx.save(); ctx.translate(t.x + t.width/2, t.y + t.height/2); ctx.rotate(t.vx * 0.1);
+                    if (t.type === 'box') { 
+                        ctx.fillStyle = '#d97706'; ctx.fillRect(-t.width/2, -t.height/2, t.width, t.height); 
+                        ctx.strokeStyle = '#92400e'; ctx.lineWidth = 3; ctx.strokeRect(-t.width/2, -t.height/2, t.width, t.height); 
+                    }
+                    else if (t.type === 'bomb') { 
+                        ctx.fillStyle = '#1f2937'; ctx.fillRect(-t.width/2, -t.height/2, t.width, t.height); 
+                        ctx.fillStyle = '#ef4444'; ctx.fillRect(-2, -t.height/2 - 4, 4, 4); 
+                    }
+                    else if (t.type === 'slimeball') { 
+                        ctx.fillStyle = '#84cc16'; ctx.fillRect(-t.width/2, -t.height/2, t.width, t.height); 
+                        ctx.fillStyle = '#a3e635'; ctx.fillRect(-4, -4, 8, 8); 
+                    }
+                    ctx.restore();
+                });
+
+                // Draw Players
+                playersRef.current.forEach(p => {
+                    ctx.save();
+                    if (p.powerup?.type === 'invisibility') ctx.globalAlpha = 0.3;
+                    
+                    // Player Body
+                    ctx.fillStyle = p.frozenTimer > 0 ? '#93c5fd' : p.color;
+                    ctx.fillRect(p.pos.x, p.pos.y, p.size.x, p.size.y);
+                    
+                    // Eyes
+                    ctx.fillStyle = '#fff'; 
+                    const eyeOffset = p.facingRight ? 20 : 10; 
+                    ctx.fillRect(p.pos.x + eyeOffset, p.pos.y + 10, 5, 5);
+                    ctx.fillRect(p.pos.x + eyeOffset + 10, p.pos.y + 10, 5, 5);
+                    
+                    // Pupils
+                    ctx.fillStyle = '#000';
+                    const pupilOffset = p.facingRight ? 2 : 0;
+                    ctx.fillRect(p.pos.x + eyeOffset + pupilOffset, p.pos.y + 12, 3, 3);
+                    ctx.fillRect(p.pos.x + eyeOffset + 10 + pupilOffset, p.pos.y + 12, 3, 3);
+
+                    // "IT" Indicator
+                    if (p.isIt) {
+                        ctx.fillStyle = '#fbbf24'; 
+                        ctx.beginPath();
+                        ctx.moveTo(p.pos.x + p.size.x/2 - 10, p.pos.y - 15);
+                        ctx.lineTo(p.pos.x + p.size.x/2 + 10, p.pos.y - 15);
+                        ctx.lineTo(p.pos.x + p.size.x/2, p.pos.y - 5);
+                        ctx.fill();
+                    }
+
+                    // Shield Indicator
+                    if (p.powerup?.type === 'shield') { 
+                        ctx.strokeStyle = '#60a5fa'; ctx.lineWidth = 3; 
+                        ctx.strokeRect(p.pos.x - 6, p.pos.y - 6, p.size.x + 12, p.size.y + 12); 
+                    }
+                    
+                    // Powerup Text
+                    if (p.powerup) { 
+                        ctx.fillStyle = '#fff'; ctx.font = 'bold 12px "Inter"'; ctx.textAlign = 'center';
+                        ctx.fillText(p.powerup.type.toUpperCase(), p.pos.x + p.size.x/2, p.pos.y - 25); 
+                    }
+                    ctx.restore();
+                });
+
+                // Draw Particles
+                ctx.shadowColor = 'transparent';
+                particlesRef.current.forEach(p => { 
+                    ctx.globalAlpha = p.life / 50; 
+                    ctx.fillStyle = p.color; 
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                ctx.globalAlpha = 1.0; 
+                
+                ctx.restore();
+            };
+
+            const loop = () => { update(); draw(); requestRef.current = requestAnimationFrame(loop); };
+
+            useEffect(() => {
+                if (gameState === 'playing') { initGame(selectedMap); requestRef.current = requestAnimationFrame(loop); }
+                return () => { if (requestRef.current) cancelAnimationFrame(requestRef.current); };
+            }, [gameState, selectedMap]);
+
+            useEffect(() => {
+                const handleResize = () => { if (canvasRef.current) { canvasRef.current.width = window.innerWidth; canvasRef.current.height = window.innerHeight - 80; } };
+                window.addEventListener('resize', handleResize); handleResize();
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            return (
+                <div className="w-full h-screen bg-slate-900 flex flex-col overflow-hidden font-sans select-none">
+                    {/* Top HUD */}
+                    <div className="h-20 glass-panel flex items-center justify-between px-8 shrink-0 z-10 relative">
+                        <div className="flex items-center gap-4">
+                            <a href="index.html" className="bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white p-3 rounded-full transition-all duration-200 shadow-lg border border-slate-600 flex items-center justify-center group" title="Home">
+                                <Icons.Home />
+                            </a>
+                            <div className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 ${playersRef.current[0]?.isIt ? 'bg-amber-500/20 border border-amber-500/50' : 'bg-slate-800'}`}>
+                                <div className="w-8 h-8 bg-blue-500 rounded-full" />
+                                <div className="flex flex-col">
+                                    <span className="text-blue-400 font-bold text-xs tracking-widest uppercase">Player 1</span>
+                                    <span className="text-2xl font-black text-white">{scores.p1.toFixed(1)}s</span>
+                                </div>
+                                {playersRef.current[0]?.isIt && <span className="text-amber-400 font-black text-xl ml-2">IT!</span>}
+                            </div>
+                        </div>
+                        
+                        <div className="flex flex-col items-center absolute left-1/2 -translate-x-1/2">
+                            <h1 className="text-slate-300 font-black tracking-[0.2em] text-lg">TAG MASTERS</h1>
+                            {winner && <span className="text-emerald-400 font-bold text-xl">{winner} WINS!</span>}
+                        </div>
+                        
+                        <div className={`flex items-center gap-4 p-3 rounded-lg transition-all duration-300 ${playersRef.current[1]?.isIt ? 'bg-amber-500/20 border border-amber-500/50' : 'bg-slate-800'}`}>
+                            {playersRef.current[1]?.isIt && <span className="text-amber-400 font-black text-xl mr-2">IT!</span>}
+                            <div className="flex flex-col items-end">
+                                <span className="text-red-400 font-bold text-xs tracking-widest uppercase">Player 2</span>
+                                <span className="text-2xl font-black text-white">{scores.p2.toFixed(1)}s</span>
+                            </div>
+                            <div className="w-8 h-8 bg-red-500 rounded-full" />
+                        </div>
+                    </div>
+
+                    <div className="flex-grow relative w-full bg-slate-900">
+                        <canvas ref={canvasRef} className="block w-full h-full" />
+
+                        {/* Main Menu */}
+                        {gameState === 'menu' && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 fade-in">
+                                <div className="glass-panel p-12 max-w-3xl w-full text-center">
+                                    <h1 className="text-6xl font-black text-white mb-2 tracking-tight">TAG MASTERS</h1>
+                                    <p className="text-blue-400 text-lg mb-10 font-bold tracking-widest uppercase">Classic Edition</p>
+                                    
+                                    <div className="flex justify-center gap-6 mb-10">
+                                        {MAPS.map((map, i) => (
+                                            <button 
+                                                key={i} 
+                                                onClick={() => setSelectedMap(i)}
+                                                className={`px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 ${selectedMap === i ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                                            >
+                                                {map.name}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-8 mb-10 text-left">
+                                        <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                                            <h3 className="text-blue-400 font-black text-xl mb-6 flex items-center gap-3"><div className="w-4 h-4 bg-blue-500 rounded-full"></div> P1 CONTROLS</h3>
+                                            <div className="space-y-4 text-slate-200 font-medium">
+                                                <div className="flex items-center justify-between"><span>Move</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">WASD</span></div>
+                                                <div className="flex items-center justify-between"><span>Jump</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">W</span></div>
+                                                <div className="flex items-center justify-between"><span>Dash</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">Q</span></div>
+                                                <div className="flex items-center justify-between"><span>Grab/Throw</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">E</span></div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                                            <h3 className="text-red-400 font-black text-xl mb-6 flex items-center gap-3"><div className="w-4 h-4 bg-red-500 rounded-full"></div> P2 CONTROLS</h3>
+                                            <div className="space-y-4 text-slate-200 font-medium">
+                                                <div className="flex items-center justify-between"><span>Move</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">ARROWS</span></div>
+                                                <div className="flex items-center justify-between"><span>Jump</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">UP</span></div>
+                                                <div className="flex items-center justify-between"><span>Dash</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">M</span></div>
+                                                <div className="flex items-center justify-between"><span>Grab/Throw</span> <span className="bg-slate-900 px-3 py-1 rounded text-sm font-bold text-slate-300">N</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button onClick={() => { setGameState('playing'); soundManager.init(); }} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-2xl py-5 px-16 rounded-lg transition-all active:scale-95 flex items-center gap-4 mx-auto">
+                                        <Icons.Play /> START GAME
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Game Over Screen */}
+                        {gameState === 'gameover' && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 fade-in">
+                                <div className="text-center glass-panel p-16">
+                                    <div className="mb-10">
+                                        <div className="text-amber-400 mx-auto mb-6 flex justify-center"><Icons.Trophy /></div>
+                                        <h2 className="text-6xl font-black text-white mb-4 tracking-tight">{winner} WINS!</h2>
+                                        <p className="text-slate-300 text-xl font-medium">The other player was "IT" for too long.</p>
+                                    </div>
+                                    <button onClick={() => setGameState('menu')} className="bg-white text-slate-900 font-black text-xl py-4 px-10 rounded-lg hover:bg-slate-200 active:scale-95 transition-all flex items-center gap-3 mx-auto">
+                                        <Icons.Rotate /> PLAY AGAIN
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TagGame />);
+    </script>
+	<script defer src="https://cloud.umami.is/script.js" data-website-id="5f408d48-7592-4cb0-a796-c0234493dd3e"></script>
+</body>
+</html>

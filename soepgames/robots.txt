@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /games/latijn-leren-coniunctivus.html
+Sitemap: https://gamingnest.nl/sitemap.xml

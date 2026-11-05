@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Revolt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&family=Consolas&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Consolas', 'Courier New', monospace;
+            cursor: url('arrow.cur'), auto;
+            user-select: none; /* Prevent text selection generally */
+        }
+
+        /* Allow selection in specific areas */
+        .allow-select {
+            user-select: text;
+        }
+
+        /* Custom Scrollbar - Cyberpunk Theme */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+            border-left: 1px solid #333;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border: 1px solid #000;
+            border-radius: 0;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+        }
+        ::-webkit-scrollbar-corner {
+            background: #050505;
+        }
+        
+        /* CRT Scanline Effect - Z-Index increased to cover windows */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999; /* Covers everything */
+            opacity: 0.3;
+        }
+
+        /* Glitch Effects */
+        #glitch-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .glitch-bar {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            left: 0;
+        }
+
+        #static-flash {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 60;
+            transition: opacity 0.1s;
+        }
+
+        #static-flash.active {
+            opacity: 1;
+        }
+
+        .cursor {
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* Text Styles */
+        .subtitle-text-player {
+            color: #60a5fa; /* Blue for player */
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+
+        .subtitle-text-baddev {
+            color: #ff4400; /* Deep Orange/Red for Dev */
+            text-shadow: 0 0 10px rgba(255, 68, 0, 0.5);
+            font-weight: bold;
+        }
+
+        .boot-line {
+            margin-bottom: 0.3rem;
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Advanced Glitch Text */
+        .glitch-text {
+            position: relative;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 81px, 0); }
+            20% { clip: rect(66px, 9999px, 19px, 0); }
+            40% { clip: rect(3px, 9999px, 83px, 0); }
+            60% { clip: rect(58px, 9999px, 3px, 0); }
+            80% { clip: rect(32px, 9999px, 98px, 0); }
+            100% { clip: rect(75px, 9999px, 43px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(12px, 9999px, 95px, 0); }
+            20% { clip: rect(89px, 9999px, 24px, 0); }
+            40% { clip: rect(1px, 9999px, 66px, 0); }
+            60% { clip: rect(98px, 9999px, 2px, 0); }
+            80% { clip: rect(44px, 9999px, 76px, 0); }
+            100% { clip: rect(56px, 9999px, 12px, 0); }
+        }
+
+        /* Game Window Styles */
+        .game-glitch {
+            position: absolute;
+            top: 2.2rem;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 2.2rem);
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(255,255,255,0.05) 1px,
+                rgba(255,255,255,0.05) 2px
+            );
+            animation: glitchAnim 0.3s infinite;
+            z-index: 40;
+        }
+
+        @keyframes glitchAnim {
+            0%,100% { transform: translate(0,0); opacity: 0.05; }
+            25% { transform: translate(2px, -1px); opacity: 0.1; }
+            50% { transform: translate(-2px, 1px); opacity: 0.08; }
+            75% { transform: translate(1px, 2px); opacity: 0.06; }
+        }
+
+        /* Desktop Icon Hover */
+        .desktop-icon:hover {
+            cursor: url('hand.cur'), pointer;
+        }
+        
+        /* Cursors */
+        .cursor-nwse { cursor: nwse-resize; }
+        .cursor-nesw { cursor: nesw-resize; }
+        .cursor-ew { cursor: ew-resize; }
+        .cursor-ns { cursor: ns-resize; }
+        .cursor-move { cursor: move; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "dom": "https://esm.sh/dom@^0.0.3",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "three": "https://esm.sh/three@^0.182.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.564.0",
+    "recharts": "https://esm.sh/recharts@^3.7.0"
+  }
+}
+</script>
+</head>
+<body>
+    <audio id="typeSound" src="Keyboardsound.mp3" preload="auto"></audio>
+    <div id="root"></div>
+</body>
+</html>

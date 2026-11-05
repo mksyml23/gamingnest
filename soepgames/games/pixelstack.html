@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <!-- 1. Basis SEO & Meta Tags -->
+    <title>PixelStack Fever: CHAOS EDITION — Free Puzzle Game | GamingNest</title>
+    <meta name="description" content="Play PixelStack Fever: CHAOS EDITION for free on GamingNest.nl! A mind-bending Tetris-style puzzle game with boss battles, pentominoes, and chaotic events." />
+    <meta name="keywords" content="pixelstack fever, chaos edition, tetris alternative, browser puzzle game, block stacking game, gamingnest, gamingnest.nl, boss battle puzzle" />
+    <meta name="author" content="GamingNest" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- 2. Canonical Link -->
+    <link rel="canonical" href="https://gamingnest.nl/pixelstack-fever" />
+
+    <!-- 3. Open Graph (Discord, WhatsApp, Facebook) -->
+    <meta property="og:title" content="PixelStack Fever: CHAOS EDITION | GamingNest" />
+    <meta property="og:description" content="Not your average block-stacker. Survive boss battles, screen glitches, and crazy powerups in this free browser game!" />
+    <meta property="og:image" content="https://gamingnest.nl/images/pixelstack-banner.jpg" />
+    <meta property="og:url" content="https://gamingnest.nl/pixelstack-fever" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GamingNest" />
+
+    <!-- 4. Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PixelStack Fever: CHAOS EDITION" />
+    <meta name="twitter:description" content="Survive boss battles and crazy powerups in this chaotic block-stacking game!" />
+    <meta name="twitter:image" content="https://gamingnest.nl/images/pixelstack-banner.jpg" />
+
+    <!-- 5. Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- 6. Schema.org / JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "PixelStack Fever: CHAOS EDITION",
+      "description": "A fast-paced, chaotic puzzle game inspired by classic block-stacking mechanics but featuring boss battles, power-ups, and screen-distorting events.",
+      "url": "https://gamingnest.nl/pixelstack-fever",
+      "genre": ["Puzzle", "Arcade", "Action"],
+      "playMode": "SinglePlayer",
+      "applicationCategory": "Browser Game",
+      "publisher": {
+        "@type": "Organization",
+        "name": "GamingNest",
+        "url": "https://gamingnest.nl/"
+      }
+    }
+    </script>
+
+    <!-- HIER START JOUW ORIGINELE CSS (Vanaf de <style> tag) -->
+    <style>
+  @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=vt323&display=swap');
+
+  :root {
+    --neon-blue: #0ff;
+    --neon-pink: #f0f;
+    --neon-green: #0f0;
+    --neon-yellow: #ff0;
+    --bg-dark: #050505;
+  }
+
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: 'VT323', monospace;
+    color: #fff;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px; /* For 3D effects */
+  }
+
+  /* Dynamic Fever Background */
+  #bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(4px) contrast(1.2);
+  }
+
+  #game-container {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  #wrap {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
+    transform-style: preserve-3d;
+  }
+
+  /* Logo */
+  .fixed-logo {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 10px var(--neon-blue));
+  }
+  .fixed-logo:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 20px var(--neon-pink));
+  }
+  .logo-img {
+    height: 80px;
+    width: auto;
+    border-radius: 10px;
+    border: 2px solid #fff;
+  }
+
+  /* Header & HUD */
+  header {
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    transform: translateZ(20px);
+  }
+
+  h1 {
+    font-family: 'Black Ops One', cursive;
+    font-size: 3rem;
+    margin: 0;
+    color: #fff;
+    text-shadow: 
+      2px 2px 0px var(--neon-pink),
+      -2px -2px 0px var(--neon-blue),
+      0 0 20px var(--neon-blue);
+    letter-spacing: 2px;
+    animation: glitchText 3s infinite;
+  }
+
+  .hud {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 1.5rem;
+  }
+
+  .hud-item {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    text-shadow: 0 0 5px currentColor;
+  }
+
+  #score { color: var(--neon-yellow); }
+  #level { color: var(--neon-green); }
+  #boss-hp-bar { 
+    width: 100%; 
+    height: 10px; 
+    background: #333; 
+    margin-top: 5px; 
+    display: none; 
+    position: relative;
+    overflow: hidden;
+  }
+  #boss-hp-fill {
+    width: 100%;
+    height: 100%;
+    background: #f00;
+    transition: width 0.2s;
+  }
+
+  /* Game Canvas */
+  #tetris {
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      0 0 20px var(--neon-blue),
+      inset 0 0 20px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
+    image-rendering: pixelated;
+    transform: translateZ(10px);
+  }
+
+  /* 3D Boss Container */
+  #boss-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(100px);
+    pointer-events: none;
+    display: none; /* Hidden by default */
+    perspective: 500px;
+  }
+
+  .boss-cube {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spinBoss 4s infinite linear;
+  }
+
+  .boss-face {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 0, 0, 0.7);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+    box-shadow: 0 0 20px red;
+  }
+
+  .boss-face:nth-child(1) { transform: rotateY(  0deg) translateZ(50px); }
+  .boss-face:nth-child(2) { transform: rotateY( 90deg) translateZ(50px); }
+  .boss-face:nth-child(3) { transform: rotateY(180deg) translateZ(50px); }
+  .boss-face:nth-child(4) { transform: rotateY(-90deg) translateZ(50px); }
+  .boss-face:nth-child(5) { transform: rotateX( 90deg) translateZ(50px); }
+  .boss-face:nth-child(6) { transform: rotateX(-90deg) translateZ(50px); }
+
+  @keyframes spinBoss {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* Footer */
+  footer {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 5px #000;
+  }
+
+  /* Animations & Chaos */
+  @keyframes glitchText {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+
+  .shake {
+    animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0) rotate(1deg); }
+    20%, 80% { transform: translate3d(4px, 0, 0) rotate(-1deg); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0) rotate(2deg); }
+    40%, 60% { transform: translate3d(8px, 0, 0) rotate(-2deg); }
+  }
+
+  .glitch-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    background: rgba(255, 0, 0, 0.1);
+    mix-blend-mode: overlay;
+    opacity: 0;
+    z-index: 100;
+  }
+  
+  .controls-hint {
+    margin-top: 10px;
+    font-size: 1rem;
+    opacity: 0.8;
+    text-align: center;
+    transform: translateZ(20px);
+    background: black;
+    padding: 5px;
+  }
+
+  /* Chaos Classes */
+  .chaos-rotate { animation: chaosRotate 10s infinite linear; }
+  @keyframes chaosRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  
+  .chaos-invert { filter: invert(1); }
+  .chaos-blur { filter: blur(2px); }
+  
+  #event-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(150px);
+    font-family: 'Black Ops One', cursive;
+    font-size: 4rem;
+    color: yellow;
+    text-shadow: 5px 5px 0px red;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+    text-align: center;
+    width: 100%;
+    z-index: 3000;
+  }
+</style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="5f408d48-7592-4cb0-a796-c0234493dd3e"></script>
+</head>
+<body>
+
+  <!-- Background Canvas for Fever Effects -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Logo Link -->
+  <a href="https://gamingnest.nl/" target="_blank" class="fixed-logo">
+    <img src="logo.png" alt="GamingNest" class="logo-img">
+  </a>
+
+  <div id="game-container">
+    <div id="wrap">
+      <header>
+        <h1>PixelStack<br><span style="font-size:1.5rem; color:var(--neon-pink)">CHAOS EDITION</span></h1>
+        <div class="hud">
+          <div id="score" class="hud-item">0</div>
+          <div id="level" class="hud-item">LVL 1</div>
+        </div>
+        <div id="boss-hp-bar"><div id="boss-hp-fill"></div></div>
+      </header>
+
+      <canvas id="tetris" width="288" height="480"></canvas>
+      
+      <div class="controls-hint">
+        ARROWS: Move/Rotate • SPACE: Drop • Q/W: Rotate
+      </div>
+    </div>
+
+    <!-- 3D Boss Element -->
+    <div id="boss-container">
+      <div class="boss-cube">
+        <div class="boss-face">☠️</div>
+        <div class="boss-face">👁️</div>
+        <div class="boss-face">🔥</div>
+        <div class="boss-face">💣</div>
+        <div class="boss-face">⚡</div>
+        <div class="boss-face">🤬</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="event-text">BOSS BATTLE!</div>
+  <div class="glitch-overlay" id="glitch"></div>
+
+  <footer>GamingNest · PixelStack Chaos</footer>
+
+<script>
+/**
+ * PIXELSTACK FEVER - CHAOS EDITION
+ * Pentominoes + Boss Battles + Random Events
+ */
+
+// --- CONFIG ---
+const canvas = document.getElementById('tetris');
+const ctx = canvas.getContext('2d');
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+const eventTextEl = document.getElementById('event-text');
+const bossContainer = document.getElementById('boss-container');
+const bossHpBar = document.getElementById('boss-hp-bar');
+const bossHpFill = document.getElementById('boss-hp-fill');
+const gameContainer = document.getElementById('game-container');
+
+const COLS = 12;
+const ROWS = 20;
+const CELL_SIZE = 24;
+
+canvas.width = COLS * CELL_SIZE;
+canvas.height = ROWS * CELL_SIZE;
+
+// --- STATE ---
+let arena = createMatrix(COLS, ROWS);
+let player = {
+  pos: {x: 0, y: 0},
+  matrix: null,
+  color: null,
+  score: 0,
+  level: 1,
+  lines: 0
+};
+
+let dropCounter = 0;
+let dropInterval = 1000;
+let lastTime = 0;
+let particles = [];
+let feverMode = 0; // 0 to 100
+
+// Boss State
+let bossActive = false;
+let bossHP = 100;
+let bossMaxHP = 100;
+let bossTimer = 0;
+
+// Pentominoes (5 blocks)
+const PIECES = [
+  { m: [[1,1,1,1,1]], c: '#00f0ff' }, // I
+  { m: [[1,0,0],[1,1,1],[0,0,1]], c: '#ff0055' }, // Z-like
+  { m: [[0,0,1],[1,1,1],[1,0,0]], c: '#00ff55' }, // S-like
+  { m: [[0,1,0],[1,1,1],[0,1,0]], c: '#aa00ff' }, // X
+  { m: [[1,1,1],[1,0,0],[1,0,0]], c: '#ffaa00' }, // V
+  { m: [[1,1,1],[0,1,0],[0,1,0]], c: '#ffff00' }, // T
+  { m: [[1,1],[1,1],[1,0]], c: '#ff00ff' }, // P
+  { m: [[1,1],[1,1],[0,1]], c: '#0055ff' }, // q
+  { m: [[1,0,1],[1,1,1]], c: '#ff5500' }, // U
+  { m: [[1,0,0],[1,1,0],[0,1,1]], c: '#55ff00' }, // W
+  { m: [[1,0],[1,1],[1,0],[1,0]], c: '#00ffaa' }, // F
+  { m: [[0,1],[1,1],[0,1],[0,1]], c: '#aa0055' }  // Y
+];
+
+// Powerups
+const POWERUPS = [
+  { type: 'BOMB', color: '#fff', icon: '💣' },
+  { type: 'SLOW', color: '#00f', icon: '❄️' },
+  { type: 'CHAOS', color: '#f0f', icon: '?' }
+];
+
+// --- HELPERS ---
+function createMatrix(w, h) {
+  const matrix = [];
+  while (h--) matrix.push(new Array(w).fill(0));
+  return matrix;
+}
+
+function collide(arena, player) {
+  const [m, o] = [player.matrix, player.pos];
+  for (let y = 0; y < m.length; ++y) {
+    for (let x = 0; x < m[y].length; ++x) {
+      if (m[y][x] !== 0 &&
+          (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function drawMatrix(matrix, offset, color, context = ctx) {
+  matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        const cx = (x + offset.x) * CELL_SIZE;
+        const cy = (y + offset.y) * CELL_SIZE;
+        
+        // Draw glow
+        context.shadowBlur = 10;
+        context.shadowColor = color;
+        
+        // Main block
+        context.fillStyle = color;
+        context.fillRect(cx, cy, CELL_SIZE, CELL_SIZE);
+        
+        // Inner highlight
+        context.shadowBlur = 0;
+        context.fillStyle = 'rgba(255,255,255,0.3)';
+        context.fillRect(cx + 2, cy + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+
+        // Draw Powerup Icon if applicable
+        if (typeof value === 'object' && value.powerup) {
+           context.fillStyle = '#000';
+           context.font = '16px serif';
+           context.textAlign = 'center';
+           context.textBaseline = 'middle';
+           context.fillText(value.powerup.icon, cx + CELL_SIZE/2, cy + CELL_SIZE/2);
+        }
+      }
+    });
+  });
+}
+
+function merge(arena, player) {
+  player.matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        arena[y + player.pos.y][x + player.pos.x] = { 
+          value: 1, 
+          color: player.color,
+          powerup: (Math.random() < 0.05) ? POWERUPS[Math.floor(Math.random()*POWERUPS.length)] : null
+        };
+      }
+    });
+  });
+}
+
+function rotate(matrix, dir) {
+  for (let y = 0; y < matrix.length; ++y) {
+    for (let x = 0; x < y; ++x) {
+      [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+    }
+  }
+  if (dir > 0) matrix.forEach(row => row.reverse());
+  else matrix.reverse();
+}
+
+function playerReset() {
+  const piece = PIECES[Math.floor(Math.random() * PIECES.length)];
+  player.matrix = piece.m.map(row => [...row]);
+  player.color = piece.c;
+  player.pos.y = 0;
+  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+  
+  if (collide(arena, player)) {
+    arena.forEach(row => row.fill(0));
+    player.score = 0;
+    player.level = 1;
+    dropInterval = 1000;
+    updateScore();
+    triggerShake(20);
+    showEvent("GAME OVER");
+    bossActive = false;
+    bossContainer.style.display = 'none';
+    bossHpBar.style.display = 'none';
+    document.body.classList.remove('chaos-invert');
+  }
+}
+
+function playerDrop() {
+  player.pos.y++;
+  if (collide(arena, player)) {
+    player.pos.y--;
+    merge(arena, player);
+    playerReset();
+    arenaSweep();
+    updateScore();
+    triggerShake(5);
+    createParticles(player.pos.x * CELL_SIZE, player.pos.y * CELL_SIZE, player.color, 10);
+  }
+  dropCounter = 0;
+}
+
+function playerMove(dir) {
+  player.pos.x += dir;
+  if (collide(arena, player)) {
+    player.pos.x -= dir;
+  }
+}
+
+function playerRotate(dir) {
+  const pos = player.pos.x;
+  let offset = 1;
+  rotate(player.matrix, dir);
+  while (collide(arena, player)) {
+    player.pos.x += offset;
+    offset = -(offset + (offset > 0 ? 1 : -1));
+    if (offset > player.matrix[0].length) {
+      rotate(player.matrix, -dir);
+      player.pos.x = pos;
+      return;
+    }
+  }
+}
+
+function arenaSweep() {
+  let rowCount = 0;
+  let powerupsTriggered = [];
+
+  outer: for (let y = arena.length - 1; y > 0; --y) {
+    for (let x = 0; x < arena[y].length; ++x) {
+      if (arena[y][x] === 0) {
+        continue outer;
+      }
+    }
+    
+    // Check for powerups in the cleared row
+    const row = arena.splice(y, 1)[0];
+    row.forEach(cell => {
+      if (cell.powerup) powerupsTriggered.push(cell.powerup);
+    });
+
+    arena.unshift(new Array(COLS).fill(0));
+    ++y;
+    rowCount++;
+    
+    createParticles(canvas.width/2, y * CELL_SIZE, '#fff', 50);
+  }
+  
+  if (rowCount > 0) {
+    const points = rowCount * 100 * player.level;
+    player.score += points;
+    player.lines += rowCount;
+    player.level = Math.floor(player.lines / 10) + 1;
+    dropInterval = Math.max(100, 1000 - (player.level - 1) * 50);
+    
+    if (bossActive) {
+      damageBoss(rowCount * 10);
+    } else if (Math.random() < 0.1 + (player.level * 0.02)) {
+      startBossBattle();
+    }
+
+    triggerShake(rowCount * 10);
+    
+    // Trigger Powerups
+    powerupsTriggered.forEach(p => activatePowerup(p));
+  }
+}
+
+function activatePowerup(p) {
+  showEvent(p.type + "!");
+  if (p.type === 'BOMB') {
+    // Clear bottom 3 rows
+    arena.splice(ROWS-3, 3);
+    arena.unshift(new Array(COLS).fill(0));
+    arena.unshift(new Array(COLS).fill(0));
+    arena.unshift(new Array(COLS).fill(0));
+    triggerShake(30);
+  } else if (p.type === 'SLOW') {
+    dropInterval += 500;
+  } else if (p.type === 'CHAOS') {
+    triggerChaos();
+  }
+}
+
+function triggerChaos() {
+  const effects = ['invert', 'rotate', 'tilt'];
+  const effect = effects[Math.floor(Math.random() * effects.length)];
+  
+  if (effect === 'invert') {
+    document.body.classList.add('chaos-invert');
+    setTimeout(() => document.body.classList.remove('chaos-invert'), 5000);
+  } else if (effect === 'rotate') {
+    gameContainer.style.transform = 'rotate(180deg)';
+    setTimeout(() => gameContainer.style.transform = 'rotate(0deg)', 5000);
+  } else if (effect === 'tilt') {
+    gameContainer.style.transform = 'rotateX(45deg)';
+    setTimeout(() => gameContainer.style.transform = 'rotateX(0deg)', 5000);
+  }
+}
+
+function startBossBattle() {
+  if (bossActive) return;
+  bossActive = true;
+  bossHP = 100 + (player.level * 20);
+  bossMaxHP = bossHP;
+  bossContainer.style.display = 'block';
+  bossHpBar.style.display = 'block';
+  showEvent("BOSS BATTLE!");
+  updateBossUI();
+}
+
+function damageBoss(amount) {
+  bossHP -= amount;
+  if (bossHP <= 0) {
+    bossHP = 0;
+    bossActive = false;
+    bossContainer.style.display = 'none';
+    bossHpBar.style.display = 'none';
+    showEvent("BOSS DEFEATED!");
+    player.score += 5000;
+    triggerShake(50);
+    // Reward: Clear half board
+    for(let i=0; i<ROWS/2; i++) {
+        arena.pop();
+        arena.unshift(new Array(COLS).fill(0));
+    }
+  }
+  updateBossUI();
+  triggerShake(5);
+}
+
+function updateBossUI() {
+  const pct = (bossHP / bossMaxHP) * 100;
+  bossHpFill.style.width = pct + '%';
+}
+
+function bossAttack() {
+  if (!bossActive) return;
+  
+  const attacks = [
+    () => { // Add garbage line
+      arena.shift();
+      const row = new Array(COLS).fill(0).map(() => Math.random() > 0.5 ? {value:1, color:'#333'} : 0);
+      arena.push(row);
+      showEvent("GARBAGE!");
+    },
+    () => { // Shake screen violently
+      triggerShake(40);
+      showEvent("EARTHQUAKE!");
+    },
+    () => { // Speed up
+      dropInterval = 100;
+      setTimeout(() => dropInterval = 800, 2000);
+      showEvent("SPEED UP!");
+    }
+  ];
+  
+  const attack = attacks[Math.floor(Math.random() * attacks.length)];
+  attack();
+}
+
+function updateScore() {
+  document.getElementById('score').innerText = player.score;
+  document.getElementById('level').innerText = 'LVL ' + player.level;
+}
+
+function showEvent(text) {
+  eventTextEl.innerText = text;
+  eventTextEl.style.opacity = 1;
+  eventTextEl.style.transform = `translate(-50%, -50%) translateZ(200px) rotate(${Math.random()*20-10}deg)`;
+  setTimeout(() => {
+    eventTextEl.style.opacity = 0;
+  }, 1500);
+}
+
+// --- VISUALS ---
+
+class Particle {
+  constructor(x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.vx = (Math.random() - 0.5) * 10;
+    this.vy = (Math.random() - 0.5) * 10;
+    this.life = 1.0;
+    this.color = color;
+    this.size = Math.random() * 4 + 2;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life -= 0.02;
+    this.vy += 0.2; // Gravity
+  }
+  draw(ctx) {
+    ctx.globalAlpha = this.life;
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.size, this.size);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function createParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    particles.push(new Particle(x, y, color));
+  }
+}
+
+function triggerShake(amount) {
+  const wrap = document.getElementById('wrap');
+  wrap.classList.remove('shake');
+  void wrap.offsetWidth; // trigger reflow
+  wrap.classList.add('shake');
+}
+
+// Background Animation
+let bgTime = 0;
+function drawBackground() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+  
+  const w = bgCanvas.width;
+  const h = bgCanvas.height;
+  
+  bgTime += 0.01;
+  
+  // Create a trippy gradient
+  const grad = bgCtx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0, `hsl(${bgTime * 40}, 50%, 10%)`);
+  grad.addColorStop(0.5, `hsl(${bgTime * 40 + 60}, 50%, 20%)`);
+  grad.addColorStop(1, `hsl(${bgTime * 40 + 120}, 50%, 10%)`);
+  
+  bgCtx.fillStyle = grad;
+  bgCtx.fillRect(0, 0, w, h);
+  
+  // Grid lines 3D effect
+  bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  bgCtx.lineWidth = 1;
+  
+  const centerX = w/2;
+  const centerY = h/2;
+  
+  for (let i = 0; i < 20; i++) {
+    const radius = (bgTime * 50 + i * 100) % (Math.max(w,h));
+    bgCtx.beginPath();
+    bgCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    bgCtx.stroke();
+  }
+}
+
+// --- MAIN LOOP ---
+function update(time = 0) {
+  const deltaTime = time - lastTime;
+  lastTime = time;
+
+  dropCounter += deltaTime;
+  if (dropCounter > dropInterval) {
+    playerDrop();
+  }
+  
+  // Boss Logic
+  if (bossActive) {
+    bossTimer += deltaTime;
+    if (bossTimer > 2000) { // Attack faster (2s)
+      bossAttack();
+      bossTimer = 0;
+    }
+  }
+
+  // Random Chaos Events (independent of level)
+  if (Math.random() < 0.001) { // Rare random event
+    triggerRandomChaos();
+  }
+
+  // Draw Game
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw Arena
+  arena.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell !== 0) {
+        const color = typeof cell === 'object' ? cell.color : cell;
+        
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = color;
+        ctx.fillStyle = color;
+        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.fillRect(x * CELL_SIZE + 2, y * CELL_SIZE + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+
+        if (cell.powerup) {
+           ctx.fillStyle = '#000';
+           ctx.font = '16px serif';
+           ctx.textAlign = 'center';
+           ctx.textBaseline = 'middle';
+           ctx.fillText(cell.powerup.icon, x * CELL_SIZE + CELL_SIZE/2, y * CELL_SIZE + CELL_SIZE/2);
+        }
+      }
+    });
+  });
+
+  // Draw Ghost
+  let ghostY = player.pos.y;
+  while (!collide(arena, { ...player, pos: { x: player.pos.x, y: ghostY + 1 } })) {
+    ghostY++;
+  }
+  drawMatrix(player.matrix, { x: player.pos.x, y: ghostY }, 'rgba(255, 255, 255, 0.1)');
+
+  // Draw Player
+  drawMatrix(player.matrix, player.pos, player.color);
+
+  // Particles
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => {
+    p.update();
+    p.draw(ctx);
+  });
+
+  // Fever Decay
+  if (feverMode > 0) feverMode -= 0.1;
+
+  // Background
+  drawBackground();
+
+  requestAnimationFrame(update);
+}
+
+// REMOVED MOUSE TILT LISTENER
+// Instead, we use fixed camera or level-based transforms
+
+// --- INPUT ---
+document.addEventListener('keydown', event => {
+  if (event.keyCode === 37) {
+    playerMove(-1);
+  } else if (event.keyCode === 39) {
+    playerMove(1);
+  } else if (event.keyCode === 40) {
+    playerDrop();
+  } else if (event.keyCode === 81) { // Q
+    playerRotate(-1);
+  } else if (event.keyCode === 87 || event.keyCode === 38) { // W or Up
+    playerRotate(1);
+  } else if (event.keyCode === 32) { // Space - Hard Drop
+    while (!collide(arena, { ...player, pos: { x: player.pos.x, y: player.pos.y + 1 } })) {
+      player.pos.y++;
+    }
+    playerDrop();
+    triggerShake(15);
+  }
+});
+
+// --- LEVEL & CHAOS SYSTEM ---
+
+let levelsCleared = {}; // Track unique level events
+
+function checkLevelEvents() {
+  // Level 2: BOSS FIGHT
+  if (player.level === 2 && !levelsCleared[2]) {
+    levelsCleared[2] = true;
+    startBossBattle();
+  }
+  
+  // Level 3: MIRROR MODE
+  if (player.level === 3 && !levelsCleared[3]) {
+    levelsCleared[3] = true;
+    showEvent("LEVEL 3: MIRROR DIMENSION");
+    gameContainer.style.transform = "scaleX(-1)"; // Flip horizontally
+    // Add a text hint that controls are NOT flipped (visual only) or maybe they are?
+    // Let's keep controls normal but visuals flipped for confusion
+  }
+
+  // Level 4: DARKNESS
+  if (player.level === 4 && !levelsCleared[4]) {
+    levelsCleared[4] = true;
+    showEvent("LEVEL 4: DARKNESS");
+    document.body.style.filter = "brightness(0.3) contrast(2)";
+    canvas.style.boxShadow = "0 0 50px #fff"; // Flashlight effect on board
+  }
+
+  // Level 5: FINAL BOSS
+  if (player.level === 5 && !levelsCleared[5]) {
+    levelsCleared[5] = true;
+    // Reset visual effects
+    gameContainer.style.transform = "none";
+    document.body.style.filter = "none";
+    startBossBattle(true); // Hard mode boss
+  }
+}
+
+function triggerRandomChaos() {
+  const events = [
+    { text: "COLOR SWAP!", action: () => document.documentElement.style.filter = `hue-rotate(${Math.random()*360}deg)` },
+    { text: "ZOOM!", action: () => { 
+        gameContainer.style.transition = "transform 0.2s";
+        gameContainer.style.transform = "scale(1.2)"; 
+        setTimeout(() => gameContainer.style.transform = "scale(1)", 2000); 
+      } 
+    },
+    { text: "SPIN!", action: () => {
+        gameContainer.style.transition = "transform 1s";
+        gameContainer.style.transform = "rotate(360deg)";
+        setTimeout(() => {
+           gameContainer.style.transition = "none";
+           gameContainer.style.transform = "rotate(0deg)";
+        }, 1000);
+      }
+    },
+    { text: "PIXELATE!", action: () => canvas.style.imageRendering = (canvas.style.imageRendering === 'pixelated') ? 'auto' : 'pixelated' }
+  ];
+
+  const evt = events[Math.floor(Math.random() * events.length)];
+  showEvent(evt.text);
+  evt.action();
+}
+
+// Override arenaSweep to trigger level checks
+const originalArenaSweep = arenaSweep;
+arenaSweep = function() {
+  let rowCount = 0;
+  let powerupsTriggered = [];
+
+  outer: for (let y = arena.length - 1; y > 0; --y) {
+    for (let x = 0; x < arena[y].length; ++x) {
+      if (arena[y][x] === 0) {
+        continue outer;
+      }
+    }
+    
+    const row = arena.splice(y, 1)[0];
+    row.forEach(cell => {
+      if (cell.powerup) powerupsTriggered.push(cell.powerup);
+    });
+
+    arena.unshift(new Array(COLS).fill(0));
+    ++y;
+    rowCount++;
+    
+    createParticles(canvas.width/2, y * CELL_SIZE, '#fff', 50);
+  }
+  
+  if (rowCount > 0) {
+    const points = rowCount * 100 * player.level;
+    player.score += points;
+    player.lines += rowCount;
+    
+    // Level up every 5 lines for faster progression to see cool stuff
+    const newLevel = Math.floor(player.lines / 5) + 1; 
+    if (newLevel > player.level) {
+      player.level = newLevel;
+      checkLevelEvents();
+      showEvent("LEVEL UP!");
+      triggerShake(30);
+    }
+
+    dropInterval = Math.max(100, 1000 - (player.level - 1) * 80);
+    
+    if (bossActive) {
+      damageBoss(rowCount * 15); // More damage to boss
+    }
+
+    triggerShake(rowCount * 10);
+    powerupsTriggered.forEach(p => activatePowerup(p));
+  }
+};
+
+// Override startBossBattle to handle hard mode
+const originalStartBossBattle = startBossBattle;
+startBossBattle = function(isHard = false) {
+  if (bossActive) return;
+  bossActive = true;
+  bossHP = isHard ? 300 : 100;
+  bossMaxHP = bossHP;
+  bossContainer.style.display = 'block';
+  bossHpBar.style.display = 'block';
+  
+  // Change boss appearance
+  const faces = document.querySelectorAll('.boss-face');
+  faces.forEach(f => {
+    f.style.background = isHard ? 'rgba(0,0,0,0.9)' : 'rgba(255,0,0,0.7)';
+    f.style.borderColor = isHard ? '#f0f' : '#fff';
+    f.innerText = isHard ? '😈' : '☠️';
+  });
+
+  showEvent(isHard ? "FINAL BOSS!" : "BOSS BATTLE!");
+  updateBossUI();
+};
+
+// --- INIT ---
+playerReset();
+updateScore();
+update();
+
+</script>
+<!-- SEO Content voor zoekmachines -->
+    <div style="position: absolute; z-index: -1; opacity: 0.1; bottom: 0; padding: 20px; color: #fff; max-width: 800px; pointer-events: none; font-family: sans-serif;">
+        <h2>About PixelStack Fever: Chaos Edition</h2>
+        <p>Welcome to <strong>PixelStack Fever: Chaos Edition</strong>, a free online puzzle game on <a href="https://gamingnest.nl">GamingNest.nl</a>. If you love classic Tetris-style block-stacking games but crave more action, this game is for you!</p>
+        <h3>Game Features & How to Play:</h3>
+        <ul>
+            <li><strong>Pentominoes & Powerups:</strong> Stack blocks to clear lines and unleash bombs, freeze time, or trigger complete chaos.</li>
+            <li><strong>Boss Battles:</strong> Clear enough lines to fight the 3D Boss Cube! Damage the boss by clearing lines before it fills your screen with garbage blocks.</li>
+            <li><strong>Controls:</strong> Use the <strong>Arrow Keys</strong> to move blocks, <strong>Q/W</strong> or <strong>Up Arrow</strong> to rotate, and the <strong>Spacebar</strong> to hard drop.</li>
+        </ul>
+        <p>Can you beat the Final Boss at Level 5 and survive the Mirror and Darkness dimensions? Play PixelStack Fever directly in your browser now!</p>
+    </div>
+
+</body>
+</html>
+

@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 1. Basis SEO & Meta Tags -->
+    <title>Just Click: The Grind — CPS Test & Clicker Game | GamingNest</title>
+	<!-- FIREBASE CLOUD SAVE -->
+    <script type="module" src="/firebase-app.js"></script>
+    <meta name="description" content="Play Just Click: The Grind for free on GamingNest.nl! Test your CPS (Clicks Per Second), earn pixels, unlock epic cosmetics, and climb the global leaderboards." />
+    <meta name="keywords" content="just click, clicker game, incremental game, cps test, click speed test, idle game, browser clicker, gamingnest, gamingnest.nl" />
+    <meta name="author" content="GamingNest" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- 2. Canonical Link -->
+    <link rel="canonical" href="https://gamingnest.nl/just-click" />
+
+    <!-- 3. Open Graph (Voor Discord, WhatsApp, Facebook etc.) -->
+    <meta property="og:title" content="Just Click: The Grind — Free Clicker Game | GamingNest" />
+    <meta property="og:description" content="How fast can you click? Level up, buy rare cursors, and reach Rank #1 on the global leaderboard!" />
+    <!-- Maak een screenshot van je game (bijv. de shop of leaderboard) en zet deze op je server -->
+    <meta property="og:image" content="https://gamingnest.nl/justclick.png" />
+    <meta property="og:url" content="https://gamingnest.nl/games/justclick" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GamingNest" />
+
+    <!-- 4. Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Just Click: The Grind — Free Browser Game" />
+    <meta name="twitter:description" content="Test your click speed, unlock rewards, and dominate the leaderboards!" />
+    <meta name="twitter:image" content="https://gamingnest.nl/games/justclicklogo.png" />
+
+    <!-- 5. Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- 6. Schema.org / JSON-LD (Dit vertelt Google dat dit een "Clicker Game" is) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Just Click: The Grind",
+      "description": "An addictive incremental clicker game where players test their click speed, earn pixels, level up, and unlock custom profile cosmetics.",
+      "url": "https://gamingnest.nl/just-click",
+      "genre": ["Clicker", "Incremental", "Arcade"],
+      "playMode": "SinglePlayer",
+      "applicationCategory": "Browser Game",
+      "publisher": {
+        "@type": "Organization",
+        "name": "GamingNest",
+        "url": "https://gamingnest.nl/"
+      }
+    }
+    </script>
+
+    <!-- HIER START JOUW ORIGINELE CODE WEER (vanaf de style tag) -->
+    <style>
+*{box-sizing:border-box;margin:0;padding:0;image-rendering:pixelated; user-select: none;}
+
+body{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    font-family:"Courier New",monospace;
+    color:#000;
+    position:relative;
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+/* Pixel dots canvas */
+#pixelCanvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:0;
+    opacity: 0.8;
+}
+
+/* News Feed */
+.news-box {
+    margin-top: 15px;
+    background: #fff9c4;
+    color: #333;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 11px;
+    border: 3px solid #000;
+    position: relative;
+    overflow: hidden;
+    height: 38px;
+    box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1), 4px 4px 0px rgba(0,0,0,0.2);
+}
+
+.news-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #000;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 9px;
+    z-index: 2;
+    font-weight: bold;
+}
+
+.news-scroll {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: newsTicker 180s linear infinite;
+    gap: 150px;
+}
+
+.news-box:hover .news-scroll {
+    animation-play-state: paused;
+}
+
+@keyframes newsTicker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Floating home button */
+.home-btn-fixed {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+}
+
+.home-btn-fixed img {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid #000;
+    padding: 2px;
+    background: #fff;
+}
+
+.window{
+    width:600px;
+    border:4px solid #000;
+    background:#fff;
+    position:relative;
+    z-index:10;
+    box-shadow: 8px 8px 0px rgba(0,0,0,1);
+}
+
+.titlebar{
+    height:36px;
+    border-bottom:4px solid #000;
+    display:flex;
+    align-items:center;
+    padding:0 10px;
+    font-size:18px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.win-btns{
+    display:flex;
+    gap:6px;
+    margin-right:10px;
+}
+
+.win-btn{
+    width:14px;
+    height:14px;
+    border:3px solid #000;
+    background: #fff;
+}
+
+.content{
+    padding:24px;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.8) 0px,
+            rgba(255,255,255,0.8) 4px,
+            rgba(200,200,200,0.4) 5px
+        );
+    position: relative;
+}
+
+.content::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.pfp-layer {
+    position: absolute;
+    cursor: move;
+    z-index: 4;
+}
+
+/* XP BAR STYLING */
+.xp-wrapper {
+    margin-bottom: 20px;
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.xp-bar-container {
+    width: 100%;
+    height: 24px;
+    border: 4px solid #000;
+    background: #fff;
+    position: relative;
+}
+
+#xp-fill {
+    height: 100%;
+    width: 0%;
+    background: #000; /* Black fill for the bar */
+    transition: width 0.2s;
+}
+
+h1{
+    font-size:22px;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+h2{
+    font-size:16px;
+    margin:10px 0 4px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 4px;
+}
+
+#counter{
+    font-size:72px;
+    text-align:center;
+    margin:10px 0;
+}
+
+#timer{
+    text-align:center;
+    font-size:18px;
+    margin-bottom:14px;
+    font-weight: bold;
+}
+
+input,select,button{
+    width:100%;
+    margin-bottom:12px;
+    padding:10px;
+    border:3px solid #000;
+    background:#fff;
+    font-family:inherit;
+    font-size:18px;
+    cursor:pointer;
+    font-weight: bold;
+    transition: transform 0.1s, background 0.2s, color 0.2s;
+}
+
+button:hover{
+    background:#000;
+    color:#fff;
+}
+
+button:active{
+    transform:translate(2px,2px);
+}
+
+button:disabled {
+    background: #eee;
+    color: #888;
+    cursor: not-allowed !important;
+    border-color: #888;
+}
+button:disabled:hover {
+    background: #eee;
+    color: #888;
+}
+button:disabled:active {
+    transform: none;
+}
+
+.hidden{display:none !important;}
+
+.leaderboards-grid{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.board-box{
+    border:3px solid #000;
+    padding:8px;
+    font-size:14px;
+    background: #fff;
+    box-shadow: 4px 4px 0px rgba(0,0,0,1);
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    border: 3px solid #000;
+    padding: 10px;
+    background: #fff;
+}
+
+.avatar-preview {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #000;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.accessory-layer {
+    position: absolute;
+    font-size: 32px;
+    cursor: move;
+    z-index: 5;
+    user-select: none;
+    touch-action: none;
+}
+
+/* Custom PFP Cursor */
+#pfp-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    font-size: 32px;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+body.hide-cursor {
+    cursor: none !important;
+}
+body.hide-cursor * {
+    cursor: none !important;
+}
+
+.clickable-rank {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.clickable-rank:hover {
+    color: #e67e22;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+#shop-container {
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+#shop-container::-webkit-scrollbar {
+    width: 8px;
+}
+#shop-container::-webkit-scrollbar-track {
+    background: #eee; 
+    border-left: 2px solid #000;
+}
+#shop-container::-webkit-scrollbar-thumb {
+    background: #000; 
+}
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-bottom: 1px dashed #ccc;
+    padding: 6px 4px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.shop-item:hover {
+    background: #f9f9f9;
+}
+
+.shop-item:active {
+    transform: scale(0.98);
+}
+
+.shop-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.shop-item button {
+    width: auto;
+    padding: 4px 8px;
+    font-size: 12px;
+    margin-bottom: 0;
+    border-width: 2px;
+}
+
+/* Floating +1 Text */
+.float-text {
+    position: absolute;
+    color: #000;
+    font-weight: bold;
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 1000;
+    animation: floatUp 0.6s ease-out forwards;
+    text-shadow: 2px 2px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff, 1px 1px 0px #fff;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(1.5); opacity: 0; }
+}
+
+/* Rainbow animation */
+.rainbow-bg {
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+    background-size: 400% 400%;
+    animation: rainbow 5s ease infinite;
+    color: #fff !important;
+    text-shadow: 1px 1px 0 #000;
+}
+
+@keyframes rainbow {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: #000;
+    color: #fff;
+    padding: 12px 24px;
+    border: 3px solid #fff;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    animation: slideUp 0.3s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+    text-align: center;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Modal Overlay */
+#modal-overlay, #customizer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-box {
+    background: #fff;
+    border: 4px solid #000;
+    padding: 30px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 8px 8px 0px rgba(0,0,0,1);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+#game button:active {
+    transform: scale(0.95);
+}
+
+.level-up-sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 5000;
+    font-size: 20px;
+    animation: sparkleOut 1s ease-out forwards;
+}
+
+@keyframes sparkleOut {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
+}
+
+.modal-box h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    border: none;
+}
+
+.modal-box p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-box button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.modal-box .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-box .btn-row button {
+    margin-bottom: 0;
+}
+
+/* Wheel Styles */
+#wheel-container {
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+    position: relative;
+    border: 8px solid #000;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #000;
+}
+
+#wheel-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#wheel-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #000;
+    z-index: 10;
+}
+
+#spin-btn {
+    background: #f1c40f;
+    color: #000;
+}
+
+#spin-btn:disabled {
+    background: #ccc;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 8px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-family: inherit;
+    border-bottom: 3px solid transparent;
+}
+.tab-btn.active {
+    background: #fff;
+    border-bottom: 3px solid #000;
+    font-weight: bold;
+}
+.profile-item.equipped {
+    box-shadow: inset 0 0 0 3px #000;
+}
+.profile-item:hover {
+    background: #f0f0f0;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="pixelCanvas"></canvas>
+
+<!-- Changed href to index.html and removed target="_blank" -->
+<a href="index.html" class="home-btn-fixed">
+<img src="https://media.istockphoto.com/id/1414215039/vector/hand-mouse-cursor-icon.jpg?s=612x612&w=0&k=20&c=JnwWVQkP1VDK4Y5z0CEjIls7SM-l4NJu-Ck41_LjLPs=">
+</a>
+
+<div class="window">
+    <div class="titlebar" id="title-color">
+        <div class="win-btns">
+            <div class="win-btn"></div>
+            <div class="win-btn"></div>
+            <div class="win-btn"></div>
+        </div>
+        <span>JUST CLICK.EXE</span>
+    </div>
+
+    <div class="content" id="main-area">
+
+        <!-- XP BAR (Always visible) -->
+        <div class="xp-wrapper">
+            <div class="xp-header">
+                <span>LVL: <span id="level-display">1</span> (<span id="rank-name">NOVICE</span>)</span>
+                <span onclick="checkSecret('party')" style="cursor: pointer;">PIXELS: <span id="pixel-display">0</span></span>
+            </div>
+            <div class="xp-bar-container">
+                <div id="xp-fill"></div>
+            </div>
+        </div>
+
+        <div id="setup">
+            <h1 onclick="easterEggTrigger()" style="cursor: pointer;">JUST CLICK</h1>
+
+            <div id="event-banner" style="margin-bottom: 15px; border: 3px solid #000; padding: 10px; font-size: 11px; text-align: center; background: #fffde7; display: none;">
+                <strong id="event-title" style="color: #e74c3c;"></strong><br>
+                <span id="event-desc"></span>
+            </div>
+
+            <div class="profile-section">
+                <div class="avatar-preview" id="avatar-view" onclick="openProfileModal()" style="cursor: pointer; position: relative;">
+                    <span id="avatar-pfp">👤</span>
+                    <div class="accessory-layer" id="acc-view" onmousedown="initDrag(event)" ontouchstart="initDrag(event)"></div>
+                </div>
+                <div class="profile-info">
+                    <input id="playerName" placeholder="ENTER NAME" maxlength="15" style="margin-bottom: 5px;">
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                        <button onclick="openProfileModal()" style="font-size: 10px; padding: 4px; margin-bottom: 0; background: #3498db; color: #fff;">👤 PROFILE</button>
+                        <button onclick="showAchievements()" style="font-size: 10px; padding: 4px; margin-bottom: 0;">🏆 ACHV</button>
+                        <button onclick="showHistory()" style="font-size: 10px; padding: 4px; margin-bottom: 0;">📜 HIST</button>
+                    </div>
+                </div>
+            </div>
+
+            <select id="mode">
+                <option value="1">1 SECOND</option>
+                <option value="3">3 SECONDS</option>
+                <option value="5">5 SECONDS</option>
+                <option value="10">10 SECONDS</option>
+                <option value="30">30 SECONDS</option>
+                <option value="60">60 SECONDS</option>
+                <option value="random">RANDOM (1-100s)</option>
+            </select>
+
+            <button onclick="startGame()">START GRIND</button>
+
+        <div class="leaderboards-grid">
+                <div class="board-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; margin-bottom: 5px;">
+                        <h2 style="border:none; margin:0;">PIXEL SHOP</h2>
+                    </div>
+                    <div id="shop-container"></div>
+                </div>
+                <div class="board-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; margin-bottom: 5px;">
+                        <h2 style="border:none; margin:0;">RANKINGS</h2>
+                        <button onclick="openLeaderboardModal()" style="width: auto; font-size: 10px; padding: 2px 6px; margin: 0;">TOP 100</button>
+                    </div>
+                    <div id="leaderboard-summary"></div>
+                </div>
+            </div>
+
+            <!-- Rankings and Pixel Shop shifted to grid above news -->
+
+            <div class="news-box">
+                <div class="news-label">NEWS</div>
+                <div class="news-scroll" id="news-feed">
+                    WELCOME TO THE GRIND! UNLOCK EXCLUSIVE ITEMS BY REACHING RANK #1 GLOBAL! LEVEL UP FOR PIXEL BONUSES! STAY CLICKING!
+                </div>
+            </div>
+        </div>
+
+        <div id="game" class="hidden">
+            <div id="counter">0</div>
+            <div id="timer"></div>
+            <button style="height: 140px; font-size: 40px;" onmousedown="clickGame(event)">CLICK!</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- History Modal -->
+<div id="history-overlay" class="hidden" onclick="if(event.target==this)this.classList.add('hidden')">
+    <div class="modal-box" style="width: 500px;">
+        <h2>SCORE HISTORY</h2>
+        <div id="history-list" style="max-height: 300px; overflow-y: auto; text-align: left; font-size: 12px; border: 2px solid #000; padding: 10px;"></div>
+        <button onclick="document.getElementById('history-overlay').classList.add('hidden')" style="margin-top: 15px;">CLOSE</button>
+    </div>
+</div>
+
+<!-- Achievements Modal -->
+<div id="achievements-overlay" class="hidden" onclick="if(event.target==this)this.classList.add('hidden')">
+    <div class="modal-box" style="width: 500px;">
+        <h2>ACHIEVEMENTS</h2>
+        <div id="achievements-list" style="max-height: 300px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: left;"></div>
+        <button onclick="document.getElementById('achievements-overlay').classList.add('hidden')" style="margin-top: 15px;">CLOSE</button>
+    </div>
+</div>
+
+<!-- Global Leaderboard Modal -->
+<div id="leaderboard-modal" class="hidden" onclick="if(event.target==this)this.classList.add('hidden')">
+    <div class="modal-box" style="width: 550px; max-width: 95vw;">
+        <h2>GLOBAL LEADERBOARDS</h2>
+        <div style="margin-bottom: 15px; display: flex; gap: 4px; overflow-x: auto; padding-bottom: 5px;">
+            <button onclick="renderLeaderboardTab('level')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">LEVELS</button>
+            <button onclick="renderLeaderboardTab('mode_1')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">1s</button>
+            <button onclick="renderLeaderboardTab('mode_5')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">5s</button>
+            <button onclick="renderLeaderboardTab('mode_10')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">10s</button>
+            <button onclick="renderLeaderboardTab('mode_30')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">30s</button>
+            <button onclick="renderLeaderboardTab('mode_60')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">60s</button>
+            <button onclick="renderLeaderboardTab('mode_random')" class="tab-btn" style="width:auto; font-size: 10px; padding: 4px 8px;">RND</button>
+        </div>
+        <div id="leaderboard-modal-content" style="max-height: 400px; overflow-y: auto; text-align: left; border: 2px solid #000; padding: 10px;"></div>
+        <button onclick="document.getElementById('leaderboard-modal').classList.add('hidden')" style="margin-top: 15px;">CLOSE</button>
+    </div>
+</div>
+
+<!-- Custom Notifications -->
+<!-- Profile Inspector Modal -->
+<div id="inspector-overlay" class="hidden" onclick="if(event.target==this)this.classList.add('hidden')">
+    <div class="modal-box" style="background: #f9f9f9;">
+        <h2 id="ins-name">PLAYER PROFILE</h2>
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <div class="avatar-preview" id="ins-avatar" style="border-width: 5px; width: 100px; height: 100px; font-size: 50px;"></div>
+        </div>
+        <div id="ins-stats" style="text-align: left; font-size: 16px; border: 2px solid #000; padding: 15px; background: #fff;"></div>
+        <button onclick="document.getElementById('inspector-overlay').classList.add('hidden')" style="margin-top: 15px;">CLOSE</button>
+    </div>
+</div>
+
+<!-- Profile Manager Modal -->
+<div id="profile-overlay" class="hidden" onclick="if(event.target==this)closeProfileModal()">
+    <div class="modal-box" style="width: 500px; max-height: 80vh; overflow-y: auto;">
+        <h2>PROFILE MANAGER</h2>
+        <div id="profile-stats" style="background: #f9f9f9; padding: 15px; border: 2px solid #000; margin-bottom: 15px; text-align: left;">
+            <!-- Stats will be injected here -->
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button onclick="openWheelModal()" style="flex: 1; background: #9b59b6; color: #fff;">🎰 DAILY WHEEL</button>
+            <button onclick="openCustomizer()" style="flex: 1; background: #f1c40f; color: #000;">🎨 CUSTOM TITLE</button>
+        </div>
+
+        <div class="profile-tabs" style="display: flex; border-bottom: 2px solid #000; margin-bottom: 15px;">
+            <button onclick="setTab('pfp')" class="tab-btn active">PFPs</button>
+            <button onclick="setTab('acc')" class="tab-btn">ACCs</button>
+            <button onclick="setTab('cursor')" class="tab-btn">CURSORS</button>
+            <button onclick="setTab('theme')" class="tab-btn">THEMES</button>
+        </div>
+
+        <div id="tab-content" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; padding: 10px;">
+            <!-- Tab content will be injected here -->
+        </div>
+
+        <button onclick="closeProfileModal()" style="margin-top: 20px; background: #eee; color: #000; width: 100%;">CLOSE</button>
+    </div>
+</div>
+<div id="wheel-overlay" class="hidden" onclick="if(event.target==this)closeWheelModal()">
+    <div class="modal-box" style="width: 400px;">
+        <h2>DAILY WHEEL</h2>
+        <div id="wheel-container">
+            <div id="wheel-pointer"></div>
+            <canvas id="wheel-canvas" width="600" height="600"></canvas>
+        </div>
+        <button id="spin-btn" onclick="spinWheel()">SPIN FOR REWARDS</button>
+        <p id="wheel-cooldown" style="font-size: 12px; color: #888;"></p>
+        <button onclick="closeWheelModal()" style="margin-top: 10px; background: #eee; color: #000;">CLOSE</button>
+    </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<div id="pfp-cursor">👤</div>
+
+<!-- Standard Modal -->
+<div id="modal-overlay" class="hidden">
+    <div class="modal-box">
+        <h2 id="modal-title"></h2>
+        <p id="modal-message"></p>
+        <button onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<!-- Legendary Title Modal -->
+<div id="customizer-overlay" class="hidden">
+    <div class="modal-box">
+        <h2>LEGENDARY TITLE</h2>
+        <p>Cost: 100000 Pixels</p>
+        <div style="margin-bottom: 15px; text-align: left;">
+            <label style="font-weight: bold; font-size: 14px;">Target to Change:</label>
+            <select id="customizer-target" style="margin-top: 5px; margin-bottom: 0;">
+                <option value="title">Title Bar Color</option>
+                <option value="background">Background Color</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 20px; text-align: left;">
+            <label style="font-weight: bold; font-size: 14px;">Pick a Color:</label>
+            <input type="color" id="customizer-color" value="#ff0000" style="height: 50px; padding: 0; margin-top: 5px; margin-bottom: 0;">
+        </div>
+        <div class="btn-row">
+            <button onclick="confirmCustomizer()" style="background: #2ecc71; color: #fff; border-color: #000;">CONFIRM</button>
+            <button onclick="closeCustomizer()" style="background: #e74c3c; color: #fff; border-color: #000;">CANCEL</button>
+        </div>
+    </div>
+</div>
+<script>
+// --- GAME STATE ---
+let state = {
+    playerName: '',
+    playerId: '', // Toegevoegd voor anti-naam stelen
+    pixels: 0,
+    xp: 0,
+    level: 1,
+    xpNeeded: 100,
+    totalClicks: 0,
+    unlocked: [],
+    equippedTheme: '#fff',
+    equippedPfp: '👤',
+    equippedAccs: [], 
+    equippedCursorItem: 'default',
+    pfpX: 0,
+    pfpY: 0,
+    customBgColor: '#ffffff',
+    achievements: [],
+    scoreHistory: [],
+    jsonBinKey: '$2a$10$ilneJ1cdpFgE2FpCkKA5oOHLSt/E6cu8YHhUtGVHf6cMj2nG8Sx2a',
+    jsonBinId: '6a01ce7bc0954111d8090379',
+    cheater: false,
+    lastSpinTimestamp: 0
+};
+
+let count=0, time=0, interval, player="", mode="", actualMode=0;
+let boards=JSON.parse(localStorage.getItem("boards_v2"))||{};
+let lastClickTime = 0;
+let clickIntervals = [];
+let botDetected = false;
+
+// --- ACHIEVEMENT DATA ---
+const achievementsData = [
+    {id: 'ach_100', name: 'Starting Out', desc: '100 Total Clicks', goal: () => state.totalClicks >= 100},
+    {id: 'ach_1000', name: 'Click Addict', desc: '1,000 Total Clicks', goal: () => state.totalClicks >= 1000},
+    {id: 'ach_lvl10', name: 'Rising Star', desc: 'Reach Level 10', goal: () => state.level >= 10},
+    {id: 'ach_lvl50', name: 'The Grinder', desc: 'Reach Level 50', goal: () => state.level >= 50},
+    {id: 'ach_top1', name: 'Rank #1', desc: 'Reach Rank 1 globally', goal: () => false}, 
+    {id: 'ach_10k', name: 'Pixel Millionaire', desc: 'Earn 10,000 Pixels total', goal: () => (state.pixels + (state.unlocked.length * 100)) >= 10000}
+];
+
+// --- SHOP DATA ---
+const shopItems = [
+    {id: 'theme_blue', name: 'Blue Title', price: 100, type: 'theme', color: '#3498db'},
+    {id: 'theme_red', name: 'Red Title', price: 100, type: 'theme', color: '#e74c3c'},
+    {id: 'theme_green', name: 'Green Title', price: 200, type: 'theme', color: '#2ecc71'},
+    {id: 'theme_purple', name: 'Purple Title', price: 300, type: 'theme', color: '#9b59b6'},
+    {id: 'theme_orange', name: 'Orange Title', price: 300, type: 'theme', color: '#e67e22'},
+    {id: 'theme_pink', name: 'Pink Title', price: 400, type: 'theme', color: '#fd79a8'},
+    {id: 'theme_gold', name: 'Gold Title', price: 800, type: 'theme', color: '#f1c40f'},
+    {id: 'theme_black', name: 'Void Title', price: 1500, type: 'theme', color: '#000000'},
+    {id: 'theme_rainbow', name: 'Rainbow', price: 4000, type: 'theme', color: 'rainbow'},
+    {id: 'cursor_crosshair', name: 'Crosshair', price: 400, type: 'cursor', value: 'crosshair'},
+    {id: 'cursor_cell', name: 'Cell', price: 800, type: 'cursor', value: 'cell'},
+    {id: 'cursor_help', name: 'Help', price: 800, type: 'cursor', value: 'help'},
+    {id: 'cursor_wait', name: 'Wait', price: 1200, type: 'cursor', value: 'wait'},
+    {id: 'pfp_robot', name: 'Robot PFP', price: 150, type: 'pfp', value: '🤖'},
+    {id: 'pfp_ghost', name: 'Ghost PFP', price: 400, type: 'pfp', value: '👻'},
+    {id: 'pfp_alien', name: 'Alien PFP', price: 800, type: 'pfp', value: '👽'},
+    {id: 'pfp_ninja', name: 'Ninja PFP', price: 700, type: 'pfp', value: '🥷'},
+    {id: 'pfp_cat', name: 'Cat PFP', price: 350, type: 'pfp', value: '🐱'},
+    {id: 'pfp_dog', name: 'Dog PFP', price: 350, type: 'pfp', value: '🐶'},
+    {id: 'pfp_monkey', name: 'Monkey PFP', price: 600, type: 'pfp', value: '🐒'},
+    {id: 'pfp_devil', name: 'Dev PFP', price: 1000, type: 'pfp', value: '👨‍💻'},
+    {id: 'pfp_wizard', name: 'Wizard PFP', price: 2000, type: 'pfp', value: '🧙'},
+    {id: 'pfp_king', name: 'King PFP', price: 5000, type: 'pfp', value: '🤴'},
+    {id: 'pfp_planet', name: 'Planet PFP', price: 1200, type: 'pfp', value: '🪐'},
+    {id: 'pfp_dragon', name: 'Dragon PFP', price: 2500, type: 'pfp', value: '🐲'},
+    {id: 'pfp_unicorn', name: 'Unicorn PFP', price: 2200, type: 'pfp', value: '🦄'},
+    {id: 'pfp_pizza', name: 'Pizza PFP', price: 600, type: 'pfp', value: '🍕'},
+    {id: 'pfp_cactus', name: 'Cactus PFP', price: 400, type: 'pfp', value: '🌵'},
+    {id: 'pfp_ice', name: 'Ice PFP', price: 500, type: 'pfp', value: '🧊'},
+    {id: 'pfp_fire', name: 'Fire PFP', price: 3000, type: 'pfp', value: '🔥'},
+    {id: 'pfp_clown', name: 'Clown PFP', price: 100, type: 'pfp', value: '🤡'},
+    {id: 'pfp_panda', name: 'Panda PFP', price: 1500, type: 'pfp', value: '🐼'},
+    {id: 'pfp_cool', name: 'Cool PFP', price: 2000, type: 'pfp', value: '😎'},
+    {id: 'cur_hand', name: 'Hand Cursor', price: 100, type: 'cursor', value: '🖐️'},
+    {id: 'cur_sword', name: 'Sword Cursor', price: 500, type: 'cursor', value: '⚔️'},
+    {id: 'cur_wand', name: 'Wand Cursor', price: 1500, type: 'cursor', value: '🪄'},
+    {id: 'cur_ghost', name: 'Ghost Cursor', price: 3000, type: 'cursor', value: '👻'},
+    {id: 'cur_pixel', name: 'Pixel Cursor', price: 5000, type: 'cursor', value: '⬛'},
+    {id: 'cur_target', name: 'Target', price: 800, type: 'cursor', value: '🎯'},
+    {id: 'cur_pencil', name: 'Pencil', price: 300, type: 'cursor', value: '✏️'},
+    {id: 'cur_bomb', name: 'Bomb', price: 1000, type: 'cursor', value: '🧨'},
+    {id: 'cur_rocket', name: 'Rocket', price: 2500, type: 'cursor', value: '🚀'},
+    {id: 'acc_cap', name: 'Cap', price: 250, type: 'acc', value: '🧢'},
+    {id: 'acc_shirt', name: 'Pixel Shirt', price: 500, type: 'acc', value: '👕'},
+    {id: 'acc_tophat', name: 'Top Hat', price: 1500, type: 'acc', value: '🎩'},
+    {id: 'acc_ribbon', name: 'Ribbon', price: 300, type: 'acc', value: '🎀'},
+    {id: 'acc_balloon', name: 'Balloon', price: 400, type: 'acc', value: '🎈'},
+    {id: 'acc_cream', name: 'Ice Cream', price: 600, type: 'acc', value: '🍦'},
+    {id: 'acc_diamond', name: 'Diamond', price: 10000, type: 'acc', value: '💎'},
+    {id: 'acc_shades', name: 'Shades', price: 900, type: 'acc', value: '😎'},
+    {id: 'acc_headphones', name: 'Headset', price: 2500, type: 'acc', value: '🎧'},
+    {id: 'acc_guitar', name: 'Guitar', price: 3500, type: 'acc', value: '🎸'},
+    {id: 'pfp_spider', name: 'Spider PFP', price: 1200, type: 'pfp', value: '🕷️'},
+    {id: 'pfp_pumpkin', name: 'Pumpkin PFP', price: 1500, type: 'pfp', value: '🎃'},
+    {id: 'pfp_clover', name: 'Clover PFP', price: 777, type: 'pfp', value: '🍀'},
+    {id: 'pfp_ghost_king', name: 'Ghost King', price: 8000, type: 'pfp', value: '👻'},
+    {id: 'cur_lightning', name: 'Lightning Cursor', price: 900, type: 'cursor', value: '⚡'},
+    {id: 'cur_broom', name: 'Broom Cursor', price: 400, type: 'cursor', value: '🧹'},
+    {id: 'acc_bone', name: 'Bone', price: 150, type: 'acc', value: '🦴'},
+    {id: 'acc_chicken', name: 'Chicken Leg', price: 1200, type: 'acc', value: '🍗'},
+    {id: 'acc_backpack', name: 'Backpack', price: 800, type: 'acc', value: '🎒'},
+    {id: 'acc_devil', name: 'Devil Horns', price: 2000, type: 'acc', value: '😈'},
+    {id: 'acc_fire', name: 'Fire Aura', price: 4500, type: 'acc', value: '🔥'},
+    {id: 'acc_pizza', name: 'Pizza Hat', price: 1200, type: 'acc', value: '🍕'},
+    {id: 'acc_butterfly', name: 'Butterflies', price: 1500, type: 'acc', value: '🦋'},
+    {id: 'acc_money', name: 'Money Eyes', price: 3000, type: 'acc', value: '🤑'},
+    {id: 'acc_sparkles', name: 'Sparkles', price: 2500, type: 'acc', value: '✨'},
+    {id: 'acc_clown', name: 'Clown Nose', price: 100, type: 'acc', value: '🤡'},
+    {id: 'acc_poop', name: 'Poop Hat', price: 69, type: 'acc', value: '💩'},
+    {id: 'acc_hotdog', name: 'Hotdog Suit', price: 500, type: 'acc', value: '🌭'},
+    {id: 'acc_duck', name: 'Rubber Duck', price: 200, type: 'acc', value: '🦆'},
+    {id: 'acc_alien_invader', name: 'Invader Hat', price: 3000, type: 'acc', value: '👾'},
+    {id: 'acc_lightning', name: 'Static Bolt', price: 99999, type: 'acc', value: '🌩️', isRankReward: true},
+    {id: 'acc_bolt', name: 'Flash Bolt', price: 99999, type: 'acc', value: '⚡', isRankReward: true},
+    {id: 'acc_swift', name: 'Swift Wings', price: 99999, type: 'acc', value: '💸', isRankReward: true},
+    {id: 'acc_clock', name: 'Clock Hat', price: 99999, type: 'acc', value: '⏰', isRankReward: true},
+    {id: 'acc_medal', name: 'Consistent', price: 99999, type: 'acc', value: '🏅', isRankReward: true},
+    {id: 'acc_bandana', name: 'Runner', price: 99999, type: 'acc', value: '🧣', isRankReward: true},
+    {id: 'acc_eyes', name: 'Chaos Eye', price: 99999, type: 'acc', value: '🧿', isRankReward: true},
+    {id: 'acc_crown', name: 'Crown', price: 99999, type: 'acc', value: '👑', isRankReward: true},
+    {id: 'acc_crown_level', name: 'Level Crown', price: 99999, type: 'acc', value: '👑', isRankReward: true},
+    {id: 'theme_secret', name: 'Deep Night', price: 0, type: 'theme', color: '#0a0a0a', secret: true},
+    {id: 'secret_ninja', name: 'Ninja Cowl', price: 0, type: 'acc', value: '🥷', secret: true},
+    {id: 'secret_ufo', name: 'Alien Scout', price: 0, type: 'acc', value: '🛸', secret: true},
+    {id: 'secret_glitch', name: 'Glitch Cursor', price: 0, type: 'cursor', value: '📟', secret: true},
+    {id: 'secret_gold_pfp', name: 'Golden Guy', price: 0, type: 'pfp', value: '🟡', secret: true},
+    {id: 'secret_party', name: 'Party Horn', price: 0, type: 'acc', value: '🥳', secret: true},
+    {id: 'legendary_custom', name: 'Customizer', price: 100000, type: 'theme'}
+];
+
+// Load progress
+const saved = localStorage.getItem("justClickSave_v2");
+if(saved) {
+    const parsed = JSON.parse(saved);
+    state = Object.assign(state, parsed);
+    if (!state.playerName) state.playerName = '';
+    if (state.equippedCursor && state.equippedCursorItem === 'default') {
+        state.equippedCursorItem = state.equippedCursor;
+    }
+    if (!state.equippedCursorItem) state.equippedCursorItem = 'default';
+    if (!state.equippedPfp) state.equippedPfp = '👤';
+    if (!state.equippedAcc) state.equippedAcc = '';
+    if (!state.achievements) state.achievements = [];
+    if (!state.scoreHistory) state.scoreHistory = [];
+
+    if (state.equippedAccs && state.equippedAccs.length > 0 && typeof state.equippedAccs[0] === 'string') {
+        state.equippedAccs = state.equippedAccs.map(val => {
+            const item = shopItems.find(i => i.value === val && i.type === 'acc');
+            return { id: item ? item.id : 'acc_unknown', value: val, x: 0, y: 0 };
+        });
+    }
+
+    document.getElementById('playerName').value = state.playerName;
+}
+
+// NIEUW: Genereer unieke speler ID als die nog niet bestaat
+if (!state.playerId) {
+    state.playerId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+    save();
+}
+
+// Update name on change
+document.getElementById('playerName').addEventListener('input', (e) => {
+    state.playerName = e.target.value.trim();
+    save();
+});
+
+// --- CUSTOM CURSOR & DRAG LOGIC ---
+let dragInfo = null;
+
+function initDrag(e, target, itemId) {
+    e.stopPropagation();
+    dragInfo = { target, itemId };
+}
+
+document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+document.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+}, {passive: false});
+
+function handleMove(x, y) {
+    const cursor = document.getElementById('pfp-cursor');
+    
+    if (state.equippedCursorItem !== 'default') {
+        cursor.style.display = 'block';
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+        cursor.innerText = state.equippedCursorItem;
+        document.body.classList.add('hide-cursor');
+    } else {
+        cursor.style.display = 'none';
+        document.body.classList.remove('hide-cursor');
+    }
+
+    if (dragInfo) {
+        const preview = document.getElementById('avatar-view');
+        if (!preview) return;
+        const rect = preview.getBoundingClientRect();
+        
+        let el;
+        if (dragInfo.target === 'pfp') {
+            el = document.getElementById('pfp-view');
+            if (!el) return;
+            
+            let valX = x - rect.left - (el.offsetWidth / 2);
+            let valY = y - rect.top - (el.offsetHeight / 2);
+            
+            valX = Math.max(-20, Math.min(rect.width - 20, valX));
+            valY = Math.max(-20, Math.min(rect.height - 20, valY));
+
+            state.pfpX = valX;
+            state.pfpY = valY;
+            el.style.left = valX + 'px';
+            el.style.top = valY + 'px';
+        } else if (dragInfo.target === 'acc') {
+            const accInState = state.equippedAccs.find(a => a.id === dragInfo.itemId);
+            if (!accInState) return;
+            
+            el = document.getElementById('acc-' + dragInfo.itemId);
+            if (!el) return;
+
+            let valX = x - rect.left - (el.offsetWidth / 2);
+            let valY = y - rect.top - (el.offsetHeight / 2);
+            
+            valX = Math.max(-20, Math.min(rect.width - 20, valX));
+            valY = Math.max(-20, Math.min(rect.height - 20, valY));
+
+            accInState.x = valX;
+            accInState.y = valY;
+            el.style.left = valX + 'px';
+            el.style.top = valY + 'px';
+        }
+    }
+}
+
+function easterEggTrigger() {
+    window.easterEggCount = (window.easterEggCount || 0) + 1;
+    if (window.easterEggCount === 10) {
+        state.pixels += 5000;
+        showToast("🕵️ SECRET ROOM DISCOVERED! +5000 PIXELS!");
+        if (!state.unlocked.includes('theme_secret')) state.unlocked.push('theme_secret');
+        save();
+        updateUI();
+    }
+}
+
+const secretTaps = { ufo: 0, gold: 0, party: 0 };
+let typedSecret = "";
+
+function checkSecret(key) {
+    secretTaps[key]++;
+    if (key === 'ufo' && secretTaps.ufo === 5) unlockSecret('secret_ufo', "🛸 ALIEN SCOUT UNLOCKED!");
+    if (key === 'gold' && secretTaps.gold === 10) unlockSecret('secret_gold_pfp', "🟡 GOLDEN GUY UNLOCKED!");
+    if (key === 'party' && secretTaps.party === 10) unlockSecret('secret_party', "🥳 PARTY HORN UNLOCKED!");
+}
+
+function unlockSecret(id, msg) {
+    if (!state.unlocked.includes(id)) {
+        state.unlocked.push(id);
+        showToast(msg);
+        save();
+        updateUI();
+        if (document.getElementById('profile-overlay') && !document.getElementById('profile-overlay').classList.contains('hidden')) {
+            renderProfile();
+        }
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    typedSecret += e.key.toLowerCase();
+    if (typedSecret.length > 10) typedSecret = typedSecret.slice(-10);
+    if (typedSecret.endsWith('ninja')) unlockSecret('secret_ninja', "🥷 NINJA COWL UNLOCKED!");
+    if (typedSecret.endsWith('glitch')) unlockSecret('secret_glitch', "📟 GLITCH CURSOR UNLOCKED!");
+});
+
+document.addEventListener('mouseup', () => { if (dragInfo) { dragInfo = null; save(); } });
+document.addEventListener('touchend', () => { if (dragInfo) { dragInfo = null; save(); } });
+
+let currentTab = 'pfp';
+
+function openProfileModal() {
+    document.getElementById('profile-overlay').classList.remove('hidden');
+    renderProfile();
+}
+
+function closeProfileModal() { document.getElementById('profile-overlay').classList.add('hidden'); }
+
+function setTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase().includes(tab.toLowerCase()));
+    });
+    renderTabContent();
+}
+
+function renderProfile() {
+    const stats = document.getElementById('profile-stats');
+    stats.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 14px; font-weight: bold;">
+                <input id="profile-name-input" value="${state.playerName || 'GRINDER'}" 
+                       style="border: 1px solid #ccc; padding: 4px; font-size: 14px; width: 150px; margin-bottom: 0;"
+                       oninput="state.playerName = this.value.trim(); save(); document.getElementById('playerName').value = this.value;">
+            </div>
+            <div style="font-size: 11px; text-align: right; cursor: pointer;" onclick="checkSecret('ufo')">v2.0.5</div>
+        </div>
+        <div style="font-size: 12px; margin-top: 10px;">Level: <b>${state.level}</b> | XP: <b>${state.xp}/${state.xpNeeded}</b></div>
+        <div style="font-size: 12px;">Total Pixels: <b>${state.pixels}</b></div>
+        <div style="font-size: 12px; cursor: pointer;" onclick="checkSecret('gold')">Rank: <b id="profile-rank-val">${document.getElementById('rank-name').innerText}</b></div>
+    `;
+    renderTabContent();
+}
+
+function renderTabContent() {
+    const container = document.getElementById('tab-content');
+    const items = shopItems.filter(i => {
+        if (i.type !== currentTab) return false;
+        if (i.secret && !state.unlocked.includes(i.id)) return false;
+        return true;
+    });
+    
+    container.innerHTML = items.map(item => {
+        const isOwned = state.unlocked.includes(item.id) || item.price === 0;
+        let isEquipped = false;
+        if (currentTab === 'pfp') isEquipped = state.equippedPfp === item.value;
+        else if (currentTab === 'cursor') isEquipped = state.equippedCursorItem === item.value;
+        else if (currentTab === 'theme') isEquipped = state.equippedTheme === item.color;
+        else if (currentTab === 'acc') isEquipped = state.equippedAccs.some(a => a.id === item.id);
+
+        const statusLabel = isEquipped ? 'EQUIPPED' : (isOwned ? 'OWNED' : `${item.price} P`);
+        const itemBg = isEquipped ? '#2ecc71' : (isOwned ? '#fff' : '#eee');
+        const opacity = isOwned ? '1' : '0.6';
+
+        const standardCursors = { 'crosshair': '🎯', 'cell': '🪜', 'help': '❓', 'wait': '⏳', 'default': '🖱️' };
+
+        let content = item.value;
+        if (item.type === 'theme') content = '🎨';
+        else if (item.type === 'cursor') content = standardCursors[item.value] || item.value;
+
+        return `
+            <div class="profile-item ${isEquipped ? 'equipped' : ''}" onclick="handleProfileClick('${item.id}')" 
+                 style="border: 2px solid #000; padding: 10px; text-align: center; cursor: pointer; background: ${itemBg}; opacity: ${opacity}; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="font-size: 24px;">${content}</div>
+                <div style="font-size: 8px; font-weight: bold; margin-top: 5px;">${item.name}</div>
+                <div style="font-size: 7px; color: #555;">${statusLabel}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function handleProfileClick(itemId) {
+    const item = shopItems.find(i => i.id === itemId);
+    if (!item) return;
+    const isOwned = state.unlocked.includes(itemId) || item.price === 0;
+
+    if (isOwned) {
+        toggleEquipment(itemId);
+    } else {
+        if (item.isRankReward) {
+            showToast("Reach Rank #1 to unlock this!");
+            return;
+        }
+        if (state.pixels >= item.price) {
+            state.pixels -= item.price;
+            state.unlocked.push(itemId);
+            save();
+            updateUI();
+            renderProfile();
+            showToast(`Bought ${item.name}!`);
+        } else {
+            showToast("Not enough pixels!");
+        }
+    }
+}
+
+function toggleEquipment(itemId) {
+    const item = shopItems.find(i => i.id === itemId);
+    if (!item) return;
+    if (!state.unlocked.includes(itemId) && item.price !== 0) return;
+
+    if (item.type === 'pfp') state.equippedPfp = item.value;
+    else if (item.type === 'cursor') state.equippedCursorItem = item.value;
+    else if (item.type === 'theme') {
+        state.equippedTheme = item.color;
+        if (item.id === 'legendary_custom') openCustomizer();
+    } else if (item.type === 'acc') {
+        if (state.equippedAccs.some(a => a.id === item.id)) {
+            state.equippedAccs = state.equippedAccs.filter(a => a.id !== item.id);
+        } else {
+            state.equippedAccs.push({ id: item.id, value: item.value, x: 0, y: 0 });
+        }
+    }
+
+    save();
+    updateUI();
+    renderTabContent();
+}
+
+let isSpinning = false;
+let wheelAngle = 0;
+const wheelRewards = [
+    { label: "50 PIXELS", color: "#f1c40f", value: 50, type: "pixels" },
+    { label: "100 PIXELS", color: "#e67e22", value: 100, type: "pixels" },
+    { label: "250 PIXELS", color: "#e74c3c", value: 250, type: "pixels" },
+    { label: "500 PIXELS", color: "#9b59b6", value: 500, type: "pixels" },
+    { label: "1000 PIXELS", color: "#3498db", value: 1000, type: "pixels" },
+    { label: "25 XP", color: "#2ecc71", value: 25, type: "xp" },
+    { label: "100 XP", color: "#27ae60", value: 100, type: "xp" },
+    { label: "RANDOM PFP", color: "#1abc9c", type: "item", category: "pfp" }
+];
+
+function drawWheel() {
+    const canvas = document.getElementById('wheel-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const sections = wheelRewards.length;
+    const arc = (2 * Math.PI) / sections;
+    const radius = canvas.width / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(wheelAngle);
+
+    for (let i = 0; i < sections; i++) {
+        const reward = wheelRewards[i];
+        ctx.beginPath();
+        ctx.fillStyle = reward.color;
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, i * arc, (i + 1) * arc);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 24px Courier New";
+        ctx.rotate(i * arc + arc / 2);
+        ctx.textAlign = "right";
+        ctx.fillText(reward.label, radius - 20, 10);
+        ctx.restore();
+    }
+    ctx.restore();
+}
+
+function openWheelModal() {
+    const now = Date.now();
+    const cooldown = 24 * 60 * 60 * 1000;
+    const timePassed = now - (state.lastSpinTimestamp || 0);
+
+    const overlay = document.getElementById('wheel-overlay');
+    overlay.classList.remove('hidden');
+    drawWheel();
+
+    const spinBtn = document.getElementById('spin-btn');
+    const cooldownText = document.getElementById('wheel-cooldown');
+
+    if (timePassed < cooldown) {
+        const remaining = cooldown - timePassed;
+        const hours = Math.floor(remaining / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        spinBtn.disabled = true;
+        cooldownText.innerText = `Come back in ${hours}h ${minutes}m`;
+    } else {
+        spinBtn.disabled = false;
+        cooldownText.innerText = "Daily spin available!";
+    }
+}
+
+function closeWheelModal() {
+    if (isSpinning) return;
+    document.getElementById('wheel-overlay').classList.add('hidden');
+}
+
+function spinWheel() {
+    if (isSpinning) return;
+    const now = Date.now();
+    const cooldown = 24 * 60 * 60 * 1000;
+    const timePassed = now - (state.lastSpinTimestamp || 0);
+
+    if (timePassed < cooldown) {
+        showToast("Wait for the daily cooldown!");
+        return;
+    }
+
+    isSpinning = true;
+    document.getElementById('spin-btn').disabled = true;
+    
+    const startTime = Date.now();
+    const duration = 4000;
+    const startAngle = wheelAngle;
+    const spins = 5 + Math.random() * 5;
+    const targetAngle = startAngle + spins * 2 * Math.PI;
+
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        wheelAngle = startAngle + (targetAngle - startAngle) * easeOut;
+        drawWheel();
+        if (progress < 1) requestAnimationFrame(animate);
+        else finalizeSpin();
+    }
+    requestAnimationFrame(animate);
+}
+
+function finalizeSpin() {
+    isSpinning = false;
+    state.lastSpinTimestamp = Date.now();
+    save();
+
+    const sections = wheelRewards.length;
+    const arc = (2 * Math.PI) / sections;
+    let normalizedAngle = (wheelAngle + Math.PI/2) % (2 * Math.PI);
+    if (normalizedAngle < 0) normalizedAngle += 2 * Math.PI;
+    const index = Math.floor((2 * Math.PI - (normalizedAngle % (2 * Math.PI))) / arc) % sections;
+    
+    applyReward(wheelRewards[index]);
+    updateUI();
+}
+
+function applyReward(reward) {
+    if (reward.type === "pixels") {
+        state.pixels += reward.value;
+        showToast(`🎰 WON ${reward.value} PIXELS!`);
+    } else if (reward.type === "xp") {
+        state.xp += reward.value;
+        showToast(`🎰 WON ${reward.value} XP!`);
+        while (state.xp >= state.xpNeeded) {
+            state.level++;
+            state.xp -= state.xpNeeded;
+            state.xpNeeded = Math.floor(state.xpNeeded * 1.3);
+            state.pixels += (state.level * 25);
+            showToast(`LEVEL UP! Now Level ${state.level}`);
+        }
+    } else if (reward.type === "item") {
+        const items = shopItems.filter(i => i.type === reward.category && !state.unlocked.includes(i.id) && !i.secret && !i.isRankReward);
+        if (items.length > 0) {
+            const chosen = items[Math.floor(Math.random() * items.length)];
+            state.unlocked.push(chosen.id);
+            showToast(`🎰 WON RANDOM ${reward.category.toUpperCase()}: ${chosen.name}!`);
+        } else {
+            state.pixels += 500;
+            showToast(`🎰 WON 500 PIXELS (Already have all ${reward.category}s)!`);
+        }
+    }
+}
+
+function showInspector(name, dataKey) {
+    const modeData = boards[dataKey] || [];
+    const p = modeData.find(x => x.name === name);
+    if (!p) return;
+
+    document.getElementById('ins-name').innerText = p.name.toUpperCase();
+    const avatar = document.getElementById('ins-avatar');
+    
+    const accs = p.accs || (p.acc ? [{id: 'legacy', value: p.acc, x: 0, y: -5}] : []);
+    const accsHtml = accs.map(acc => {
+        return `<div class="accessory-layer" 
+                     style="position: absolute; left: ${acc.x || 0}px; top: ${acc.y || 0}px; pointer-events: none; font-size: 32px;">${acc.value || acc}</div>`;
+    }).join('');
+
+    avatar.innerHTML = `
+        <div style="position: absolute; left: ${p.pfpX||0}px; top: ${p.pfpY||0}px; pointer-events: none; font-size: 48px;">${p.pfp || '👤'}</div>
+        <div id="ins-acc-layers">${accsHtml}</div>
+    `;
+    
+    document.getElementById('ins-stats').innerHTML = `
+        <div style="margin-bottom: 8px;"><strong>LVL:</strong> ${p.level || '?'}</div>
+        <div style="margin-bottom: 8px;"><strong>CLICKS:</strong> ${p.totalClicks || '?'}</div>
+        <div style="margin-bottom: 8px;"><strong>BEST:</strong> ${p.score}</div>
+    `;
+    document.getElementById('inspector-overlay').classList.remove('hidden');
+}
+
+function showToast(message) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    container.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, 3000);
+}
+
+function showModal(title, message, callback) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-message').innerText = message;
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    window.modalCallback = callback;
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    if (window.modalCallback) { window.modalCallback(); window.modalCallback = null; }
+}
+
+let customizerPrice = 10000;
+
+function openCustomizer() {
+    const isOwned = state.unlocked.includes('legendary_custom');
+    openCustomizerModal(isOwned ? 0 : 100000);
+}
+
+function openCustomizerModal(price) {
+    customizerPrice = price;
+    document.getElementById('customizer-overlay').classList.remove('hidden');
+    document.querySelector('#customizer-overlay p').innerText = price === 0 ? "You own this! (Free edits)" : `Cost: ${price} Pixels`;
+}
+
+function closeCustomizer() { document.getElementById('customizer-overlay').classList.add('hidden'); }
+
+function confirmCustomizer() {
+    const isOwned = state.unlocked.includes('legendary_custom');
+    if (!isOwned && state.pixels < customizerPrice) {
+        showToast("Not enough pixels!");
+        closeCustomizer(); return;
+    }
+    if (!isOwned) {
+        state.pixels -= customizerPrice;
+        state.unlocked.push('legendary_custom');
+    }
+    const target = document.getElementById('customizer-target').value;
+    const color = document.getElementById('customizer-color').value;
+
+    if (target === 'title') state.equippedTheme = color;
+    else if (target === 'background') state.customBgColor = color;
+
+    save();
+    updateUI();
+    closeCustomizer();
+    showToast("Legendary Customization Applied!");
+}
+
+const events = [
+    { day: 1, name: "Monday Mania", bonus: "2X PIXELS", desc: "Start your week right! 2X Pixels on every click." },
+    { day: 3, name: "Midweek Magic", bonus: "1.5X XP", desc: "Gain 1.5X XP and unlock levels faster!" },
+    { day: 5, name: "Friday Frenzy", bonus: "RANDOM GIFTS", desc: "Increased chance of finding secret pixel stashes." },
+    { day: 6, name: "Weekend Warriors", bonus: "DOUBLE EVERYTHING", desc: " Saturday & Sunday: Double Pixels and Double XP!" },
+    { day: 0, name: "Weekend Warriors", bonus: "DOUBLE EVERYTHING", desc: " Saturday & Sunday: Double Pixels and Double XP!" }
+];
+
+function getCurrentEvent() {
+    const day = new Date().getDay();
+    return events.find(e => e.day === day) || null;
+}
+
+function updateEventBanner() {
+    const event = getCurrentEvent();
+    const banner = document.getElementById('event-banner');
+    const title = document.getElementById('event-title');
+    const desc = document.getElementById('event-desc');
+    if (!banner || !title || !desc) return;
+    
+    if (event) {
+        banner.style.display = 'block';
+        title.innerText = `🔥 ${event.name.toUpperCase()} 🔥`;
+        desc.innerText = event.desc;
+    } else banner.style.display = 'none';
+}
+
+const newsItems = [
+    "🔥 PIXEL ECONOMY BOOMING! CLICK DEBT DOWN BY 40%!",
+    "💡 TIP: RANDOM MODE GIVES HUGE PIXEL BONUSES!",
+    "🚨 RUMOR: THE PIXEL GOD IS WATCHING YOUR CLICK SPEED...",
+    "🛒 AD: BUY THE VOID TITLE TO HIDE YOUR SINS!",
+    "💪 FACT: REAL GRINDERS NEVER STOP CLICKING.",
+    "✨ NEWS: NEW ACCESSORIES ADDED TO THE SHOP!",
+    "🏆 TIP: REACH RANK #1 TO UNLOCK SPECIAL GEAR!",
+    "⚡ URGENT: CLICK THE BUTTON. THAT IS ALL.",
+    "🍬 SWEETNESS: PIXEL CANDIES ARE ALMOST GONE!"
+];
+
+const morningNews = ["🌅 GOOD MORNING! START YOUR DAY WITH 100 CLICKS.", "☕ COFFEE AND CLICKS."];
+const eveningNews = ["🌙 LATE NIGHT GRIND: PIXELS NEVER SLEEP.", "🌚 THE MOON IS WATCHING YOUR CPS."];
+const weekendNews = ["🎉 WEEKEND VIBES: CLICK HARDER, PLAY LONGER.", "🎢 WEEKEND ROLLERCOASTER: YOUR SCORE GOES UP!"];
+
+function updateNewsFeed() {
+    const feed = document.getElementById('news-feed');
+    if (!feed) return;
+    const now = new Date();
+    const hour = now.getHours();
+    const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+
+    let timeSpecific = [];
+    if (isWeekend) timeSpecific = weekendNews;
+    else if (hour >= 6 && hour < 12) timeSpecific = morningNews;
+    else if (hour >= 18 || hour < 4) timeSpecific = eveningNews;
+
+    const items = [...newsItems, ...timeSpecific, "DAILY CHALLENGE: CLICK 1000 TIMES!"];
+    items.sort(() => Math.random() - 0.5);
+    const tickerText = items.join(" +++ ");
+    feed.innerHTML = `<span>${tickerText}</span><span>${tickerText}</span>`;
+}
+setInterval(updateNewsFeed, 20000);
+
+function startGame(){
+    updateNewsFeed();
+    player=document.getElementById("playerName").value.trim();
+    state.playerName = player;
+    save();
+
+    if(!player) { showToast("PLEASE ENTER A NAME!"); return; }
+
+    const modeVal = document.getElementById("mode").value;
+    if (modeVal === "random") {
+        mode = "random";
+        actualMode = Math.floor(Math.random() * 100) + 1;
+    } else {
+        mode = parseInt(modeVal);
+        actualMode = mode;
+    }
+
+    count=0; time=actualMode;
+    document.getElementById("counter").innerText=0;
+    document.getElementById("timer").innerText="TIME: "+time;
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+
+    interval=setInterval(()=>{
+        time--;
+        document.getElementById("timer").innerText="TIME: "+time;
+        if(time<=0) endGame();
+    }, 1000);
+}
+
+function clickGame(e){
+    if (botDetected || state.cheater) { showToast("ANTI-CHEAT ACTIVE: RELOAD PAGE"); return; }
+    const now = Date.now();
+    if (lastClickTime > 0) {
+        const intervalTime = now - lastClickTime;
+        if (intervalTime < 33) { showToast("⚠️ CLICKING TOO FAST!"); return; }
+
+        clickIntervals.push(intervalTime);
+        if (clickIntervals.length > 30) clickIntervals.shift();
+        
+        if (clickIntervals.length >= 30) {
+            const avg = clickIntervals.reduce((a, b) => a + b) / 30;
+            const variance = clickIntervals.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / 30;
+            const stdDev = Math.sqrt(variance);
+            if (stdDev < 1.5) {
+                botDetected = true; state.cheater = true; save();
+                showModal("BOT DETECTED", "Your click pattern is too consistent! Please click manually.", () => { location.reload(); });
+                return;
+            }
+        }
+    }
+    lastClickTime = now;
+
+    const event = getCurrentEvent();
+    let xpMult = 1, pixelMult = 1;
+    if (event) {
+        if (event.bonus.includes("2X PIXELS")) pixelMult = 2;
+        if (event.bonus.includes("1.5X XP")) xpMult = 1.5;
+        if (event.bonus.includes("DOUBLE EVERYTHING")) { xpMult = 2; pixelMult = 2; }
+    }
+
+    count++;
+    state.xp += (2 * xpMult);
+    state.totalClicks++;
+    document.getElementById("counter").innerText=count;
+
+    const windowEl = document.querySelector('.window');
+    windowEl.style.transform = `translate(${(Math.random()-0.5)*4}px, ${(Math.random()-0.5)*4}px)`;
+    setTimeout(() => windowEl.style.transform = 'translate(0,0)', 50);
+
+    const ft = document.createElement("div");
+    ft.className = "float-text";
+    ft.innerText = pixelMult > 1 ? `+${pixelMult}x` : "+1";
+    if (pixelMult > 1) ft.style.color = "#f1c40f";
+    const offsetX = (Math.random() - 0.5) * 40;
+    ft.style.left = (e.clientX + offsetX) + "px";
+    ft.style.top = e.clientY + "px";
+    document.body.appendChild(ft);
+    setTimeout(() => ft.remove(), 600);
+
+    if(state.xp >= state.xpNeeded) {
+        state.level++;
+        state.xp = 0;
+        state.xpNeeded = Math.floor(state.xpNeeded * 1.3);
+        const bonus = (state.level * 25);
+        state.pixels += bonus; 
+        showToast(`LEVEL UP! You are now level ${state.level}\n+${bonus} Pixels!`);
+        createSparkles();
+    }
+    checkAchievements();
+    updateUI();
+}
+
+function createSparkles() {
+    for (let i = 0; i < 20; i++) {
+        const s = document.createElement('div');
+        s.className = 'level-up-sparkle';
+        s.innerText = ['✨', '⭐', '🌟', '💎', '💰'][Math.floor(Math.random() * 5)];
+        s.style.left = '50%'; s.style.top = '50%';
+        s.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px');
+        s.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 1000);
+    }
+}
+
+function showHistory() {
+    const list = document.getElementById('history-list');
+    if (state.scoreHistory.length === 0) list.innerHTML = "<p style='text-align:center;'>No history yet.</p>";
+    else {
+        list.innerHTML = state.scoreHistory.map(h => `
+            <div style="padding: 4px; border-bottom: 1px solid #eee;">
+                [${h.date}] <strong>${h.mode}</strong>: ${h.score} clicks
+            </div>
+        `).join('');
+    }
+    document.getElementById('history-overlay').classList.remove('hidden');
+}
+
+function showAchievements() {
+    const list = document.getElementById('achievements-list');
+    list.innerHTML = achievementsData.map(ach => {
+        const isLocked = !state.achievements.includes(ach.id);
+        return `
+            <div style="padding: 8px; border: 2px solid #000; background: ${isLocked ? '#eee' : '#fff'}; color: ${isLocked ? '#888' : '#000'};">
+                <div style="font-weight: bold; font-size: 14px;">${isLocked ? '🔒 ' : '🏆 '}${ach.name}</div>
+                <div style="font-size: 10px;">${ach.desc}</div>
+            </div>
+        `;
+    }).join('');
+    document.getElementById('achievements-overlay').classList.remove('hidden');
+}
+
+function checkAchievements() {
+    achievementsData.forEach(ach => {
+        if (!state.achievements.includes(ach.id) && ach.goal()) {
+            state.achievements.push(ach.id);
+            showToast(`🏆 ACHIEVEMENT: ${ach.name}!`);
+        }
+    });
+}
+
+function checkRankRewards(providedBoards = boards) {
+    const myName = state.playerName;
+    if (!myName) return false;
+
+    const rankRewardsMap = {
+        "mode_1": "acc_lightning", "mode_3": "acc_bolt", "mode_5": "acc_swift",
+        "mode_10": "acc_clock", "mode_30": "acc_medal", "mode_60": "acc_bandana",
+        "mode_random": "acc_eyes", "level": "acc_crown_level"
+    };
+
+    const deservedIds = new Set();
+    let amTop1AnyClickMode = false;
+
+    Object.keys(providedBoards).forEach(key => {
+        const board = providedBoards[key] || [];
+        if (board.length > 0 && board[0].id === state.playerId) {
+            const rid = rankRewardsMap[key];
+            if (rid) deservedIds.add(rid);
+            if (key !== "level") amTop1AnyClickMode = true;
+        }
+    });
+
+    if (amTop1AnyClickMode) deservedIds.add('acc_crown');
+
+    const allRankRewardIds = shopItems.filter(i => i.isRankReward).map(i => i.id);
+    let changed = false;
+
+    allRankRewardIds.forEach(rid => {
+        const isDeserved = deservedIds.has(rid);
+        const isUnlocked = state.unlocked.includes(rid);
+
+        if (isDeserved && !isUnlocked) {
+            state.unlocked.push(rid);
+            showToast(`👑 RANK #1 REWARD UNLOCKED: ${rid.replace('acc_', '').toUpperCase()}`);
+            changed = true;
+        } else if (!isDeserved && isUnlocked) {
+            state.unlocked = state.unlocked.filter(id => id !== rid);
+            state.equippedAccs = state.equippedAccs.filter(acc => acc.id !== rid);
+            showToast(`🚫 RANK #1 REWARD RECLAIMED: ${rid.replace('acc_', '').toUpperCase()}`);
+            changed = true;
+        }
+    });
+
+    if (changed) { checkAchievements(); updateUI(); save(); }
+    return changed;
+}
+
+function endGame(){
+    clearInterval(interval);
+    
+    const event = getCurrentEvent();
+    let pixelMult = 1;
+    if (event) {
+        if (event.bonus.includes("2X PIXELS")) pixelMult = 2;
+        if (event.bonus.includes("DOUBLE EVERYTHING")) pixelMult = 2;
+    }
+
+    const reward = Math.floor(count * (actualMode / 5) * pixelMult);
+    state.pixels += reward;
+
+    const gameModeStr = mode === "random" ? `RANDOM (${actualMode}s)` : mode+"s";
+    
+    state.scoreHistory.unshift({ mode: gameModeStr, score: count, date: new Date().toLocaleString() });
+    if (state.scoreHistory.length > 50) state.scoreHistory.pop();
+
+    const key="mode_"+mode;
+    boards[key]=boards[key]||[];
+    
+    // --- NIEUWE ENDGAME LOGICA MET ID ---
+    const existingIndex = boards[key].findIndex(x => x.id === state.playerId);
+    const scorePayload = {
+        id: state.playerId,
+        name: state.playerName,
+        score: count,
+        pfp: state.equippedPfp,
+        accs: state.equippedAccs,
+        level: state.level,
+        totalClicks: state.totalClicks
+    };
+
+    if (existingIndex !== -1) {
+        if (count > boards[key][existingIndex].score) {
+            boards[key][existingIndex] = scorePayload;
+        } else {
+            boards[key][existingIndex].name = state.playerName;
+            boards[key][existingIndex].pfp = state.equippedPfp;
+            boards[key][existingIndex].accs = state.equippedAccs;
+            boards[key][existingIndex].level = state.level;
+            boards[key][existingIndex].totalClicks = state.totalClicks;
+        }
+    } else {
+        boards[key].push(scorePayload);
+    }
+
+    boards[key].sort((a,b)=>b.score-a.score);
+    boards[key]=boards[key].slice(0, 100);
+    // ------------------------------------
+
+    localStorage.setItem("boards_v2", JSON.stringify(boards));
+    save();
+    
+    checkRankRewards();
+    checkAchievements();
+
+    setTimeout(()=>{
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("setup").classList.remove("hidden");
+        renderLeaderboards();
+        updateUI();
+        syncGlobal();
+    }, 1500);
+}
+
+function getContrastYIQ(hexcolor){
+    hexcolor = hexcolor.replace("#", "");
+    if (hexcolor.length === 3) hexcolor = hexcolor.split('').map(h => h + h).join('');
+    if (hexcolor.length !== 6) return 'black';
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? 'black' : 'white';
+}
+
+function updateUI() {
+    document.getElementById("pixel-display").innerText = state.pixels;
+    document.getElementById("level-display").innerText = state.level;
+    document.body.style.backgroundColor = state.customBgColor || '#fff';
+
+    const avatarView = document.getElementById("avatar-view");
+    const accsHtml = state.equippedAccs.map(acc => {
+        return `<div class="accessory-layer" id="acc-${acc.id}" 
+                     onmousedown="initDrag(event, 'acc', '${acc.id}')" 
+                     ontouchstart="initDrag(event, 'acc', '${acc.id}')"
+                     style="position: absolute; left: ${acc.x}px; top: ${acc.y}px; display: flex; justify-content: center; align-items: center; font-size: 32px; pointer-events: auto;">${acc.value}</div>`;
+    }).join('');
+
+    avatarView.innerHTML = `
+        <div class="pfp-layer" id="pfp-view" onmousedown="initDrag(event, 'pfp')" ontouchstart="initDrag(event, 'pfp')"
+             style="font-size: 48px; position: absolute; left: ${state.pfpX||0}px; top: ${state.pfpY||0}px;">${state.equippedPfp}</div>
+        <div id="acc-layers">${accsHtml}</div>
+    `;
+    
+    const pct = Math.min((state.xp / state.xpNeeded) * 100, 100);
+    document.getElementById("xp-fill").style.width = pct + "%";
+
+    const ranks = ["NOVICE", "AMATEUR", "PRO", "ELITE", "MASTER", "GRANDMASTER", "PIXEL GOD", "TRANSCENDENT"];
+    const rIdx = Math.min(Math.floor((state.level - 1) / 5), ranks.length - 1);
+    document.getElementById("rank-name").innerText = ranks[rIdx];
+
+    const sortedItems = [...shopItems].sort((a, b) => {
+        if (a.isRankReward && !b.isRankReward) return 1;
+        if (!a.isRankReward && b.isRankReward) return -1;
+        if (a.secret && !b.secret) return 1;
+        if (!a.secret && b.secret) return -1;
+        return (a.price || 0) - (b.price || 0);
+    });
+
+    const shopHtml = sortedItems.map(item => {
+        if (item.secret && !state.unlocked.includes(item.id)) return '';
+        const isOwned = state.unlocked.includes(item.id);
+        const canAfford = state.pixels >= item.price;
+        let isEquipped = false;
+        
+        if (item.type === 'theme') isEquipped = state.equippedTheme === item.color || (item.color === 'rainbow' && state.equippedTheme === 'rainbow');
+        else if (item.type === 'cursor') isEquipped = state.equippedCursorItem === item.value;
+        else if (item.type === 'pfp') isEquipped = state.equippedPfp === item.value;
+        else if (item.type === 'acc') isEquipped = state.equippedAccs.some(a => a.id === item.id);
+
+        let btnText = 'BUY';
+        if (item.type === 'consumable') btnText = 'BUY';
+        else {
+            if (isEquipped) btnText = 'EQUIPPED';
+            else if (isOwned) btnText = 'EQUIP';
+        }
+
+        const isDisabled = (item.type === 'consumable' ? !canAfford : (!isOwned && !canAfford) || isEquipped);
+        let label = item.name;
+        let priceLabel = item.price;
+        if (item.isRankReward) priceLabel = 'RANK 1';
+
+        let icon = '';
+        if (item.type === 'pfp' || item.type === 'cursor' || item.type === 'acc') {
+            const standardCursors = { 'crosshair': '🎯', 'cell': '🪜', 'help': '❓', 'wait': '⏳', 'default': '🖱️' };
+            const visual = (item.type === 'cursor' && standardCursors[item.value]) ? standardCursors[item.value] : item.value;
+            icon = `<span style="font-size: 14px;">${visual}</span>`;
+        } else if (item.type === 'theme') {
+            const color = item.color === 'rainbow' ? 'linear-gradient(90deg, red, yellow, lime, blue)' : item.color;
+            icon = `<div style="width: 12px; height: 12px; border: 1px solid #000; background: ${color}; display: inline-block;"></div>`;
+        }
+
+        return `
+            <div class="shop-item" onclick="buyItem('${item.id}')" style="cursor: pointer; ${isOwned ? 'background: #f0f0f0;' : ''}">
+                <div style="flex:1; display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; display: flex; justify-content: center; align-items: center;">${icon}</div>
+                    <span style="font-size: 11px; ${isEquipped ? 'color: #2ecc71;' : ''}">${label} (${priceLabel})</span>
+                </div>
+                <button ${isDisabled && (!isOwned || isEquipped) ? 'disabled' : ''}>
+                    ${btnText}
+                </button>
+            </div>
+        `;
+    }).join('');
+    document.getElementById("shop-container").innerHTML = shopHtml;
+
+    var titleBarEl = document.getElementById("title-color");
+    titleBarEl.className = "titlebar"; 
+    if (state.equippedTheme === 'rainbow') {
+        titleBarEl.classList.add('rainbow-bg');
+        titleBarEl.style.backgroundColor = '';
+        titleBarEl.style.color = '#fff';
+    } else {
+        titleBarEl.style.backgroundColor = state.equippedTheme;
+        titleBarEl.style.color = getContrastYIQ(state.equippedTheme);
+    }
+
+    document.body.style.cursor = state.equippedCursorItem === 'default' ? 'default' : 'none';
+    document.querySelectorAll('button, select, input').forEach(el => {
+        if (!el.disabled) el.style.cursor = state.equippedCursorItem === 'default' ? 'pointer' : 'none';
+    });
+}
+
+function buyItem(id) {
+    const item = shopItems.find(i => i.id === id);
+    if (!item) return;
+    const isOwned = state.unlocked.includes(id) || item.price === 0;
+
+    if (isOwned) toggleEquipment(id);
+    else {
+        if (state.pixels >= item.price) {
+            state.pixels -= item.price;
+            state.unlocked.push(id);
+            toggleEquipment(id);
+            showToast(`Bought ${item.name}!`);
+        } else showToast("Not enough pixels!");
+    }
+    save();
+    updateUI();
+}
+
+function save() {
+    state.lastSave = Date.now();
+    localStorage.setItem("justClickSave_v2", JSON.stringify(state));
+
+    if (window.saveGameData) {
+        window.saveGameData('justclick', state);
+    }
+}
+
+function renderLeaderboards(){
+    const summaryEl = document.getElementById("leaderboard-summary");
+    if (!summaryEl) return;
+    const myName = state.playerName;
+    summaryEl.innerHTML="";
+    
+    const categories = [
+        {key: "level", label: "HIGHEST LEVEL", unit: "LVL"},
+        {key: "mode_1", label: "1s SPEEDRUN", unit: ""},
+        {key: "mode_5", label: "5s SPRINT", unit: ""},
+        {key: "mode_random", label: "RANDOM CHAOS", unit: ""}
+    ];
+
+    categories.forEach(cat => {
+        const scores = boards[cat.key] || [];
+        if (scores.length > 0) {
+            const top = scores[0];
+            summaryEl.innerHTML += `
+                <div style="margin-bottom: 8px; padding: 4px; border: 1px solid #ddd; font-size: 10px;">
+                    <strong style="display:block; text-decoration: underline;">${cat.label}:</strong>
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 2px;">
+                        <span class="clickable-rank" onclick="showInspector('${top.name}', '${cat.key}')">#1 ${top.name}</span>
+                        <strong>${top.score || top.level} ${cat.unit}</strong>
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    if (summaryEl.innerHTML === "") {
+        summaryEl.innerHTML = "<div style='color:#666; font-style:italic;'>Waiting for global sync...</div>";
+    }
+}
+
+function openLeaderboardModal() {
+    document.getElementById('leaderboard-modal').classList.remove('hidden');
+    renderLeaderboardTab('level');
+}
+
+function renderLeaderboardTab(modeKey) {
+    const container = document.getElementById('leaderboard-modal-content');
+    const myName = state.playerName;
+    const scores = boards[modeKey] || [];
+    
+    if (scores.length === 0) {
+        container.innerHTML = "<p style='text-align:center; padding: 20px;'>No data for this category.</p>";
+        return;
+    }
+
+    const isLevel = modeKey === 'level';
+    
+    container.innerHTML = scores.map((s, i) => {
+        const accs = s.accs || (s.acc ? [{value: s.acc, x: 0, y: -5}] : []);
+        const accsHtml = accs.map(a => {
+            const val = typeof a === 'string' ? a : a.value;
+            const ax = typeof a === 'string' ? 0 : a.x;
+            const ay = typeof a === 'string' ? -5 : a.y;
+            return `<div style="position: absolute; left: calc(50% + ${ax}px / 4); top: calc(50% + ${ay}px / 4); transform: translate(-50%, -50%); pointer-events: none; font-size: 10px;">${val}</div>`;
+        }).join('');
+
+        return `
+        <div style="font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 4px; background: ${s.id === state.playerId ? '#fff7e6' : 'transparent'};">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-weight:bold; width: 20px;">#${i+1}</span>
+                <div onclick="showInspector('${s.name}', '${modeKey}')" style="cursor: pointer; position: relative; font-size: 20px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc; background: #fff;">
+                    <div style="position: absolute; left: calc(50% + ${s.pfpX || 0}px / 4); top: calc(50% + ${s.pfpY || 0}px / 4); transform: translate(-50%, -50%); pointer-events: none;">${s.pfp || '👤'}</div>
+                    ${accsHtml}
+                </div>
+                <span class="clickable-rank" onclick="showInspector('${s.name}', '${modeKey}')" style="font-weight: bold;">${s.name} ${s.id === state.playerId ? '(YOU)' : ''}</span>
+            </div>
+            <strong>${isLevel ? 'LVL ' + s.level : s.score}</strong>
+        </div>
+    `;}).join('');
+}
+
+const canvas=document.getElementById("pixelCanvas");
+const ctx=canvas.getContext("2d");
+let dots = [];
+
+function initDots() {
+    dots = [];
+    for(let i=0; i<300; i++){
+        dots.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2 + 1, speed: Math.random() * 0.5 + 0.1, opacity: Math.random() * 0.5 + 0.2 });
+    }
+}
+
+function drawStaticPixels(){
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    if (dots.length === 0) initDots();
+    animateDots();
+}
+
+function animateDots() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    dots.forEach(d => {
+        d.y -= d.speed;
+        if (d.y < -5) d.y = canvas.height + 5;
+        ctx.fillStyle = `rgba(0,0,0,${d.opacity})`;
+        ctx.fillRect(d.x, d.y, d.size, d.size);
+    });
+    requestAnimationFrame(animateDots);
+}
+
+window.addEventListener('resize', drawStaticPixels);
+drawStaticPixels();
+updateUI();
+checkAchievements();
+updateNewsFeed();
+updateEventBanner();
+
+// syncGlobal (Complete replacement)
+async function syncGlobal() {
+    const accessKey = '$2a$10$76ng.g9YqLA10PWTonf0Be4gAnV0tcHLOvGeG.beZC9jzaUx5Qo9K';
+    const binId = '6a01ce7bc0954111d8090379';
+
+    try {
+        const headers = { "Content-Type": "application/json", "X-Access-Key": accessKey };
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, { method: "GET", headers: headers });
+        if (!res.ok) throw new Error(`GET status ${res.status}`);
+
+        const data = await res.json();
+        const remoteBoards = data.record || {};
+
+        // 1. SCORES BIJWERKEN (Beveiligd met ID)
+        Object.keys(boards).forEach(mode => {
+            if (!remoteBoards[mode]) remoteBoards[mode] = [];
+            if (mode === "level") return;
+
+            const myLocalScore = boards[mode].find(x => x.id === state.playerId);
+            
+            if (myLocalScore) {
+                const nameTaken = remoteBoards[mode].find(x => x.name.toLowerCase() === state.playerName.toLowerCase() && x.id !== state.playerId && x.id !== undefined);
+                
+                if (nameTaken) {
+                    state.playerName = state.playerName + Math.floor(Math.random() * 999);
+                    myLocalScore.name = state.playerName;
+                    document.getElementById('playerName').value = state.playerName;
+                    showToast("Name already taken! Auto-changed to avoid conflict.");
+                    save();
+                }
+
+                const existingRemote = remoteBoards[mode].find(x => x.id === state.playerId);
+                const scorePayload = {
+                    id: state.playerId,
+                    name: state.playerName,
+                    score: myLocalScore.score,
+                    pfp: state.equippedPfp,
+                    accs: state.equippedAccs,
+                    level: state.level,
+                    totalClicks: state.totalClicks
+                };
+
+                if (!existingRemote) {
+                    let legacy = remoteBoards[mode].find(x => x.name === state.playerName && !x.id);
+                    if (legacy) Object.assign(legacy, scorePayload);
+                    else remoteBoards[mode].push(scorePayload);
+                } else {
+                    if (myLocalScore.score > existingRemote.score || existingRemote.name !== state.playerName) {
+                        Object.assign(existingRemote, scorePayload);
+                    }
+                }
+            }
+            remoteBoards[mode].sort((a, b) => b.score - a.score);
+            remoteBoards[mode] = remoteBoards[mode].slice(0, 100);
+        });
+
+        // 2. LEVEL LEADERBOARD BIJWERKEN (Beveiligd)
+        if (!remoteBoards["level"]) remoteBoards["level"] = [];
+        if (state.playerName) {
+            const nameTakenLvl = remoteBoards["level"].find(x => x.name.toLowerCase() === state.playerName.toLowerCase() && x.id !== state.playerId && x.id !== undefined);
+            if (nameTakenLvl) {
+                state.playerName = state.playerName + Math.floor(Math.random() * 999);
+                document.getElementById('playerName').value = state.playerName;
+                save();
+            }
+
+            const myLevelEntry = remoteBoards["level"].find(x => x.id === state.playerId);
+            const levelPayload = {
+                id: state.playerId,
+                name: state.playerName,
+                level: state.level,
+                pfp: state.equippedPfp,
+                accs: state.equippedAccs,
+                totalClicks: state.totalClicks
+            };
+            
+            if (!myLevelEntry) {
+                let legacyLvl = remoteBoards["level"].find(x => x.name === state.playerName && !x.id);
+                if (legacyLvl) Object.assign(legacyLvl, levelPayload);
+                else remoteBoards["level"].push(levelPayload);
+            } else {
+                Object.assign(myLevelEntry, levelPayload);
+            }
+
+            remoteBoards["level"].sort((a, b) => b.level - a.level);
+            remoteBoards["level"] = remoteBoards["level"].slice(0, 50);
+        }
+
+        boards = remoteBoards;
+        localStorage.setItem("boards_v2", JSON.stringify(boards));
+        renderLeaderboards();
+        checkRankRewards(remoteBoards);
+
+        if (state.playerName) {
+            const putRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: "PUT",
+                headers: headers,
+                body: JSON.stringify(remoteBoards)
+            });
+            if (!putRes.ok) throw new Error(`PUT status ${putRes.status}`);
+        }
+    } catch(err) {
+        console.error("JSONBin Sync Error:", err);
+    }
+}
+
+// CLOUD SAVE OPHALEN BIJ OPSTARTEN (met Retry voor Firebase Auth)
+async function fetchCloudDataWithRetry(maxRetries = 10, interval = 500) {
+    for (let i = 0; i < maxRetries; i++) {
+        if (window.loadGameData) {
+            try {
+                const data = await window.loadGameData('justclick');
+                if (data) return data;
+            } catch (e) {
+                console.warn("[Just Click] Cloud poging...", e);
+            }
+        }
+        await new Promise(res => setTimeout(res, interval));
+    }
+    return null;
+}
+
+async function initCloudJustClick() {
+    const cloud = await fetchCloudDataWithRetry();
+    if (cloud) {
+        if (cloud.playerId) state.playerId = cloud.playerId; // NIEUW ID Lokaal opslaan
+        if (cloud.pixels !== undefined) state.pixels = Math.max(state.pixels, cloud.pixels);
+        if (cloud.level !== undefined) state.level = Math.max(state.level, cloud.level);
+        if (cloud.xp !== undefined) state.xp = Math.max(state.xp, cloud.xp);
+        if (cloud.totalClicks !== undefined) state.totalClicks = Math.max(state.totalClicks, cloud.totalClicks);
+        if (cloud.playerName) state.playerName = cloud.playerName;
+        if (cloud.unlocked) state.unlocked = Array.from(new Set([...state.unlocked, ...cloud.unlocked]));
+        if (cloud.achievements) state.achievements = Array.from(new Set([...state.achievements, ...cloud.achievements]));
+        if (cloud.equippedTheme) state.equippedTheme = cloud.equippedTheme;
+        if (cloud.equippedPfp) state.equippedPfp = cloud.equippedPfp;
+        if (cloud.equippedAccs) state.equippedAccs = cloud.equippedAccs;
+        if (cloud.equippedCursorItem) state.equippedCursorItem = cloud.equippedCursorItem;
+        if (cloud.customBgColor) state.customBgColor = cloud.customBgColor;
+        
+        document.getElementById('playerName').value = state.playerName || '';
+        showToast("☁️ CLOUD SAVE GELADEN!");
+        updateUI();
+        checkAchievements();
+    }
+}
+initCloudJustClick();
+
+syncGlobal().then(() => {
+    renderLeaderboards();
+});
+
+// AUTO-SAVE NAAR FIREBASE & LOCALSTORAGE ELKE 30 SECONDEN
+setInterval(() => {
+    if (state.totalClicks > 0 || state.pixels > 0 || state.level > 1) {
+        save();
+        console.log("[Just Click] Automatische save voltooid.");
+    }
+}, 30000);
+</script>
+
+<!-- SEO Content voor zoekmachines (nauwelijks zichtbaar voor de speler) -->
+    <div style="position: absolute; z-index: -1; opacity: 0.02; bottom: 0; padding: 20px; color: #000; max-width: 800px; pointer-events: none; font-family: sans-serif; text-align: left;">
+        <h2>About Just Click: The Grind</h2>
+        <p>Welcome to <strong>Just Click: The Grind</strong>, an addictive clicker and incremental game available for free on <a href="https://gamingnest.nl">GamingNest.nl</a>. Test your Click Per Second (CPS) speed, earn Pixels, and grind your way to the top of the global leaderboards!</p>
+        <h3>Game Features:</h3>
+        <ul>
+            <li><strong>Click Speed Tests:</strong> Challenge yourself in 1s, 3s, 5s, 10s, 30s, 60s, or Random time modes to set new high scores.</li>
+            <li><strong>Progression System:</strong> Gain XP with every click, level up from Novice to Transcendent, and unlock exclusive achievements.</li>
+            <li><strong>Pixel Shop & Cosmetics:</strong> Spend your hard-earned Pixels on custom profile pictures (PFPs), unique cursors, accessories, and rare legendary titles to stand out on the leaderboard.</li>
+            <li><strong>Daily Rewards & Events:</strong> Spin the Daily Wheel for bonus XP and Pixels, and take advantage of weekend multipliers!</li>
+        </ul>
+        <p>Can you click fast enough to reach Global Rank #1? Start the grind now and prove your speed in the ultimate browser clicker game!</p>
+    </div>
+
+</body>
+</html>
+

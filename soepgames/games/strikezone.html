@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 1. Basis SEO voor GamingNest -->
+    <title>Strikezone | Free 2D Multiplayer Fighting Game - GamingNest</title>
+    <meta name="description" content="Play Strikezone on GamingNest! A free 2D multiplayer sci-fi fighting game. Choose your class, use unique abilities and destroy your opponent in the arena.">
+    <meta name="keywords" content="arena clash nexus, 2d fighting game, multiplayer browser game, free web game, pvp arena, gamingnest">
+    
+    <!-- Canonical URL (Pas de link aan naar jouw daadwerkelijke bestandsnaam!) -->
+    <link rel="canonical" href="https://gamingnest.nl/games/strikezone.html" />
+	<!-- 2. Open Graph Tags (Voor mooie linkjes op Discord & WhatsApp) -->
+    <meta property="og:title" content="Arena Clash: Nexus - Free PvP Game on GamingNest">
+    <meta property="og:description" content="Choose your class and battle your friends in Arena Clash: Nexus. Play this epic 2D sci-fi brawler for free!">
+    <meta property="og:image" content="https://gamingnest.nl/arena-logo.webp">
+    <meta property="og:url" content="https://gamingnest.nl/games/arena-clash.html">
+    <meta property="og:site_name" content="GamingNest">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p1-color: #00ffcc;
+            --p2-color: #ff0055;
+            --arc-yellow: #ffcc00;
+            --arc-bg: #141726;
+            --arc-panel-mid: #252b42;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body, html {
+            overflow: hidden;
+            background: var(--arc-bg);
+            font-family: 'Share Tech Mono', monospace;
+            color: #d1d8e0;
+            height: 100%;
+            width: 100%;
+        }
+        /* CRT overlay & effects */
+        .fx-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(24, 28, 41, 0) 50%, rgba(0, 0, 0, 0.18) 50%);
+            background-size: 100% 4px;
+            z-index: 99;
+            pointer-events: none;
+        }
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 55%, rgba(10,12,24,0.65) 100%);
+            z-index: 98;
+            pointer-events: none;
+        }
+        #grain-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 97;
+            pointer-events: none;
+            opacity: 0.04;
+        }
+        /* Layout Symmetrical Screens */
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+        .screen-content {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(33, 39, 61, 0.96);
+            border: 3px solid #3d4a6e;
+            box-shadow: 0 0 35px rgba(69, 243, 255, 0.15);
+            border-radius: 8px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2.22rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0,255,204,0.4), 3px 3px 0 #000;
+            letter-spacing: 2px;
+        }
+        /* Symmetrical choice cards */
+        .choices-wrapper {
+            display: flex;
+            gap: 24px;
+            width: 100%;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        .choiceBox {
+            flex: 1;
+            background: var(--arc-panel-mid);
+            border: 2px solid #3c4866;
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 6px 6px 0 #000;
+        }
+        .choiceBox h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            border-bottom: 1.5px solid #3d4a6e;
+            padding-bottom: 8px;
+        }
+        select {
+            width: 100%;
+            background: #111424;
+            color: #fff;
+            border: 2px solid #3c4866;
+            padding: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.05rem;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        select:focus {
+            border-color: var(--p1-color);
+        }
+        .class-desc {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #a4b3c6;
+            min-height: 60px;
+        }
+        /* Buttons setup */
+        .btn {
+            background: linear-gradient(135deg, #2b334d 0%, #151826 100%);
+            border: 2.5px solid #45f3ff;
+            color: #fff;
+            padding: 14px 45px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 #000;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.15s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 7px 7px 0 #000;
+            filter: brightness(1.15);
+        }
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 2px 2px 0 #000;
+        }
+        /* Dual column Instructions */
+        .instructions-panel {
+            width: 100%;
+            background: #1b1f33;
+            border: 1.5px solid #3d4a6e;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .instructions-header {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.75rem;
+            color: var(--arc-yellow);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 0.95rem;
+        }
+        .inst-col h4 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.65rem;
+            margin-bottom: 8px;
+        }
+        .inst-col p { margin-bottom: 4px; color: #8f9aa6; }
+        .inst-col b { color: #fff; }
+
+        /* Game UI Overlay HUD */
+        #game-ui {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #hud-bar {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(20,24,38,0.96) 0%, rgba(20,24,38,0.7) 75%, transparent 100%);
+            border-bottom: 1px solid rgba(61,74,110,0.3);
+        }
+        .hud-stats-block {
+            width: 32%;
+            max-width: 320px;
+            pointer-events: auto;
+            background: rgba(34, 40, 66, 0.93);
+            border: 2px solid #3d4a6e;
+            border-radius: 4px;
+            padding: 10px 14px;
+            box-shadow: 4px 4px 0 #000;
+        }
+        .p1-hud { border-top: 4px solid var(--p1-color); }
+        .p2-hud { border-top: 4px solid var(--p2-color); text-align: right; }
+        
+        .hud-name {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .p2-hud .hud-name { flex-direction: row-reverse; }
+
+        .health-bar-bg {
+            height: 14px;
+            background: #000;
+            border: 1.5px solid #1f2833;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .health-bar-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 0.15s ease-out;
+        }
+        .health-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.55rem;
+            color: #fff;
+            text-shadow: 1px 1px 0 #000;
+        }
+        .cooldown-bar {
+            height: 6px;
+            background: #111;
+            margin-top: 6px;
+            border-radius: 1px;
+            overflow: hidden;
+            position: relative;
+        }
+        .cooldown-bar-fill {
+            height: 100%;
+            width: 100%;
+        }
+        .p1-cd { background: var(--p1-color); }
+        .p2-cd { background: var(--p2-color); float: right; }
+
+        /* Timer Block */
+        #timer-block {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #1f2833;
+            border-top: 4px solid var(--arc-yellow);
+            box-shadow: 3px 3px 0 #000;
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            font-family: 'Press Start 2P', cursive;
+        }
+        #timer-label { font-size: 0.55rem; color: #888; margin-bottom: 4px; }
+        #timer-text { font-size: 1.6rem; color: #fff; }
+
+        /* Game View Cannons */
+        #gameCanvas {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: none;
+        }
+        #menuCanvas {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* GameOver Screen / Upgrades Grid */
+        .upgrade-grid {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        .upgrade-btn {
+            background: #000;
+            border: 1.5px solid #222;
+            color: #ccc;
+            padding: 8px 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.1s;
+            border-radius: 3px;
+        }
+        .upgrade-btn:hover {
+            background: #111;
+            border-color: #555;
+            color: #fff;
+        }
+        .upgrade-btn.selected {
+            background: rgba(0, 255, 204, 0.1);
+            border-color: #00ffcc;
+            color: #00ffcc;
+        }
+        #p2UpgradeBox .upgrade-btn.selected {
+            background: rgba(255, 0, 85, 0.1);
+            border-color: #ff0055;
+            color: #ff0055;
+        }
+        #quit-btn {
+            background: #111;
+            border: 2px solid #333;
+            color: #888;
+            padding: 10px 25px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            border-radius: 4px;
+        }
+        #quit-btn:hover {
+            color: #fff;
+            border-color: #ff0055;
+        }
+		<!-- 3. Schema.org (Vertelt Google direct dat dit een VideoGame is) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Arena Clash: Nexus",
+      "url": "https://gamingnest.nl/games/arena-clash.html",
+      "image": "https://gamingnest.nl/arena-logo.webp",
+      "description": "A fast-paced 2D class-based PvP arena fighting game.",
+      "genre": ["Action", "Fighting", "Multiplayer", "Sci-Fi"],
+      "playMode": "MultiPlayer",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "publisher": {
+        "@type": "Organization",
+        "name": "GamingNest",
+        "url": "https://gamingnest.nl"
+      }
+    }
+    </script>
+    </style>
+</head>
+<body>
+
+    <div class="fx-overlay"></div>
+    <div class="vignette"></div>
+    <canvas id="grain-canvas"></canvas>
+    
+    <canvas id="menuCanvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
+<!-- 4. SEO Content (Visueel verborgen, maar perfect voor zoekmachines!) -->
+    <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
+        <h1>Arena Clash: Nexus spelen op GamingNest</h1>
+        <p>Speel Arena Clash: Nexus, een epische gratis 2D multiplayer fighting game in je browser op GamingNest. Vecht 1-tegen-1 in een sci-fi arena met unieke classes en brute vaardigheden.</p>
+        <h2>Kies je Class:</h2>
+        <ul>
+            <li><strong>Knight & Paladin:</strong> Sterke melee vechters met zwaarden en parry/heal abilities.</li>
+            <li><strong>Mage & Necromancer:</strong> Ranged aanvallers met krachtige spreuken en teleportatie.</li>
+            <li><strong>Assassin & Ninja:</strong> Snelle schaduwvechters, perfect voor dodelijke dashes.</li>
+            <li><strong>En nog veel meer:</strong> Zoals de Tank, Archer, Berserker, Gunslinger, Cryomancer en Stormbringer!</li>
+        </ul>
+        <h2>Besturing:</h2>
+        <p><strong>Speler 1:</strong> WASD om te bewegen, Q voor Primary Attack, E voor Special Ability.</p>
+        <p><strong>Speler 2:</strong> Pijltjestoetsen om te bewegen, M voor Primary Attack, N voor Special Ability.</p>
+        <p>Laad je aanvallen op voor extra damage en activeer je special voor een beslissende voorsprong in dit web game toernooi. Speel nu gratis zonder downloads!</p>
+    </div>
+    <!-- UI Overlay HUD Bar -->
+    <div id="game-ui">
+        <div id="hud-bar" style="display: none;">
+            <!-- Player 1 HP Module -->
+            <div class="hud-stats-block p1-hud">
+                <div class="hud-name">
+                    <span id="p1HudName">PLAYER 1</span>
+                    <span id="p1HudClass" style="color: var(--p1-color); font-size: 0.65rem;">KNIGHT</span>
+                </div>
+                <div class="health-bar-bg">
+                    <div id="p1HealthFill" class="health-bar-fill" style="background: var(--p1-color); width: 100%;"></div>
+                    <div class="health-text" id="p1HpText">100 / 100</div>
+                </div>
+                <div class="cooldown-bar">
+                    <div id="p1DefCD" class="cooldown-bar-fill p1-cd" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Central Arena Timer -->
+            <div id="timer-block">
+                <span id="timer-label">TIME</span>
+                <span id="timer-text">99</span>
+            </div>
+
+            <!-- Player 2 HP Module -->
+            <div class="hud-stats-block p2-hud">
+                <div class="hud-name">
+                    <span id="p2HudName">PLAYER 2</span>
+                    <span id="p2HudClass" style="color: var(--p2-color); font-size: 0.65rem;">MAGE</span>
+                </div>
+                <div class="health-bar-bg">
+                    <div id="p2HealthFill" class="health-bar-fill" style="background: var(--p2-color); width: 100%;"></div>
+                    <div class="health-text" id="p2HpText">100 / 100</div>
+                </div>
+                <div class="cooldown-bar">
+                    <div id="p2DefCD" class="cooldown-bar-fill p2-cd" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        <div></div> <!-- spacer bottom -->
+    </div>
+
+    <!-- START MATCH SELECTION MENU -->
+    <div id="startMenu" class="screen">
+        <div class="screen-content">
+            <h1 class="title">ARENA CLASH: NEXUS</h1>
+            
+            <div class="choices-wrapper">
+                <div class="choiceBox" id="p1ChoiceBox" style="border-color: var(--p1-color);">
+                    <h3 style="color: var(--p1-color);">P1 DRIVER BLOCK</h3>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <canvas id="p1PreviewCanvas" width="70" height="70" style="background:#000; border:1.5px solid #222; image-rendering:pixelated; border-radius:3px;"></canvas>
+                        <div style="flex: 1;">
+                            <select id="p1Weapon" onchange="updateClassDesc(1)">
+                                <option value="knight">Knight - Balanced Vanguard</option>
+                                <option value="assassin">Assassin - Lethal Shadow</option>
+                                <option value="tank">Tank - Immovable Bastion</option>
+                                <option value="archer">Archer - Ranger Sniper</option>
+                                <option value="mage">Mage - Arcane Catalyst</option>
+                                <option value="spearman">Spearman - High Reach</option>
+                                <option value="necromancer">Necromancer - Death Weaver</option>
+                                <option value="paladin">Paladin - Solar Knight</option>
+                                <option value="berserker">Berserker - Overclock Wrath</option>
+                                <option value="gunslinger">Gunslinger - Tech Outlaw</option>
+                                <option value="ninja">Ninja - Master of Shadows</option>
+                                <option value="cryomancer">Cryomancer - Engine of Zero</option>
+                                <option value="stormbringer">Stormbringer - Storm Weaver</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p id="p1Desc" class="class-desc"></p>
+                </div>
+
+                <div class="choiceBox" id="p2ChoiceBox" style="border-color: var(--p2-color);">
+                    <h3 style="color: var(--p2-color);">P2 DRIVER BLOCK</h3>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <canvas id="p2PreviewCanvas" width="70" height="70" style="background:#000; border:1.5px solid #222; image-rendering:pixelated; border-radius:3px;"></canvas>
+                        <div style="flex: 1;">
+                            <select id="p2Weapon" onchange="updateClassDesc(2)">
+                                <option value="archer">Archer - Ranger Sniper</option>
+                                <option value="mage">Mage - Arcane Catalyst</option>
+                                <option value="knight">Knight - Balanced Vanguard</option>
+                                <option value="assassin">Assassin - Lethal Shadow</option>
+                                <option value="tank">Tank - Immovable Bastion</option>
+                                <option value="spearman">Spearman - High Reach</option>
+                                <option value="necromancer">Necromancer - Death Weaver</option>
+                                <option value="paladin">Paladin - Solar Knight</option>
+                                <option value="berserker">Berserker - Overclock Wrath</option>
+                                <option value="gunslinger">Gunslinger - Tech Outlaw</option>
+                                <option value="ninja">Ninja - Master of Shadows</option>
+                                <option value="cryomancer">Cryomancer - Engine of Zero</option>
+                                <option value="stormbringer">Stormbringer - Storm Weaver</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p id="p2Desc" class="class-desc"></p>
+                </div>
+            </div>
+
+            <div class="instructions-panel">
+                <div class="instructions-header">ARCHIVE MANIPULATION CONTROLS</div>
+                <div class="instructions-grid">
+                    <div class="inst-col" style="border-right: 1.5px solid #1fa396; padding-right:10px;">
+                        <h4 style="color: var(--p1-color);">PLAYER 1 INPUT</h4>
+                        <p><b>[ W, A, S, D ]</b> - Locomotion Thrusters</p>
+                        <p><b>[ Q Key ]</b> - Primary Weapon Strike</p>
+                        <p><b>[ E Key ]</b> - Active Special Ability</p>
+                    </div>
+                    <div class="inst-col">
+                        <h4 style="color: var(--p2-color);">PLAYER 2 INPUT</h4>
+                        <p><b>[ Arrow Keys ]</b> - Locomotion Thrusters</p>
+                        <p><b>[ M Key ]</b> - Primary Weapon Strike</p>
+                        <p><b>[ N Key ]</b> - Active Special Ability</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="startButton" class="btn">INITIALIZE COMBAT</button>
+        </div>
+    </div>
+
+    <!-- GAME OVER SCREEN (WINNER/OVERVIEW Symmetrical Panel) -->
+    <div id="gameOver" class="screen" style="display:none;">
+        <div class="screen-content">
+            <h2 id="winnerText" class="title">VICTORY</h2>
+            
+            <!-- Engagement Metrics Stats -->
+            <div class="stats-overview" style="width: 100%; max-width: 600px; margin: 15px 0 25px 0; padding: 22px; border: 2px solid #3d4a6e; border-radius: 6px; background: rgba(21, 24, 38, 0.95); box-shadow: 4px 4px 0 #000;">
+                <h4 style="font-family: 'Press Start 2P'; font-size: 11px; margin-bottom: 18px; color: #45f3ff; text-align: center; letter-spacing: 1px;">DRIVERS ENGAGEMENT METRICS</h4>
+                <div style="display: flex; justify-content: space-around; font-family: 'Share Tech Mono', monospace; font-size: 17px; line-height: 1.5; color: #cbd5e1;">
+                    <div style="flex: 1; text-align: center; padding: 0 10px;">
+                        <p style="color: var(--p1-color); font-weight: bold; margin-bottom: 8px; font-family: 'Press Start 2P'; font-size: 11px;">PLAYER 1</p>
+                        <p style="margin-bottom: 4px; color: #fff;">Class: <span id="p1EndClass" style="font-weight: bold; color: var(--p1-color);">-</span></p>
+                        <p style="color: #a4b3c6;">Remaining Core: <span id="p1EndHp" style="font-weight: bold; color: #fff;">-</span></p>
+                    </div>
+                    <div style="width: 2px; background: rgba(61, 74, 110, 0.4); margin: 0 15px;"></div>
+                    <div style="flex: 1; text-align: center; padding: 0 10px;">
+                        <p style="color: var(--p2-color); font-weight: bold; margin-bottom: 8px; font-family: 'Press Start 2P'; font-size: 11px;">PLAYER 2</p>
+                        <p style="margin-bottom: 4px; color: #fff;">Class: <span id="p2EndClass" style="font-weight: bold; color: var(--p2-color);">-</span></p>
+                        <p style="color: #a4b3c6;">Remaining Core: <span id="p2EndHp" style="font-weight: bold; color: #fff;">-</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="nextRoundButton" class="btn">REMATCH COMBAT</button>
+            <button id="quitBtn" class="btn" style="background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #ef4444; margin-top: 15px; font-size: 0.75rem;">RETURN TO ARCHIVE</button>
+        </div>
+    </div>
+
+    <script>
+        // CLASSES CONFIGURATION
+        const CLASSES = {
+            knight: { 
+                name: "Knight", type: "melee", range: 90, damage: 32, cooldown: 0.5, color: "#cbd5e1", 
+                defType: "parry", defCooldown: 2.0, speed: 220,
+                desc: "Balanced vanguard. Triggers perfectly timed parries that reflect projectile damage." 
+            },
+            assassin: { 
+                name: "Assassin", type: "melee", range: 55, damage: 18, cooldown: 0.22, color: "#475569", 
+                defType: "dash", defCooldown: 1.5, speed: 310,
+                desc: "Rapid specs. Deploys shadow phase-dashes to strike and evade mechanics." 
+            },
+            tank: { 
+                name: "Tank", type: "melee", range: 85, damage: 45, cooldown: 0.85, color: "#94a3b8", 
+                defType: "block", defCooldown: 0, speed: 170,
+                desc: "Walking monolith. Enters massive block stance absorbing 80% incoming damage." 
+            },
+            archer: { 
+                name: "Archer", type: "ranged", range: 650, damage: 22, cooldown: 0.65, projSpeed: 850, color: "#34d399", 
+                defType: "dodge", defCooldown: 2.2, speed: 255,
+                desc: "Precision operative. Performs dynamic backward phase-rolls to reset spacing." 
+            },
+            mage: { 
+                name: "Mage", type: "ranged", range: 550, damage: 38, cooldown: 1.1, projSpeed: 480, color: "#8b5cf6", 
+                defType: "teleport", defCooldown: 3.5, speed: 215,
+                desc: "Arcane specialist. Channels unstable core-bolts and blink spatial teleports." 
+            },
+            spearman: { 
+                name: "Spearman", type: "melee", range: 140, damage: 26, cooldown: 0.6, color: "#fbbf24", 
+                defType: "knockback", defCooldown: 3.0, speed: 240,
+                desc: "Long-reach tactical. Sweeps weapons outwards, creating space or backing away." 
+            },
+            necromancer: { 
+                name: "Necromancer", type: "ranged", range: 480, damage: 24, cooldown: 0.75, projSpeed: 380, color: "#2dd4bf", 
+                defType: "lifeDrain", defCooldown: 5.0, speed: 205,
+                desc: "Soul harvester. Projects death core skulls, draining enemies life force on trigger." 
+            },
+            paladin: { 
+                name: "Paladin", type: "melee", range: 105, damage: 28, cooldown: 0.75, color: "#fef08a", 
+                defType: "heal", defCooldown: 9.0, speed: 200,
+                desc: "Solar templar. Regenerates up to 80 units of damage on severe cooling protocols." 
+            },
+            berserker: { 
+                name: "Berserker", type: "melee", range: 75, damage: 42, cooldown: 0.45, color: "#f87171", 
+                defType: "rage", defCooldown: 7.0, speed: 265,
+                desc: "Enraged gladiator. Overclocks movement and damage limits as combat intensifies." 
+            },
+            gunslinger: { 
+                name: "Gunslinger", type: "ranged", range: 600, damage: 16, cooldown: 0.32, projSpeed: 900, color: "#f43f5e", 
+                defType: "emp", defCooldown: 5.0, speed: 250,
+                desc: "Cyber outlaw. Twin laser triggers and active circuit slow EMP charges." 
+            },
+            ninja: { 
+                name: "Ninja", type: "melee", range: 75, damage: 25, cooldown: 0.4, color: "#06b6d4", 
+                defType: "substitute", defCooldown: 5.0, speed: 295,
+                desc: "Master of shadow veil. Drops explosive substitute wood blocks that erupt into shurikens." 
+            },
+            cryomancer: { 
+                name: "Cryomancer", type: "ranged", range: 530, damage: 21, cooldown: 0.75, projSpeed: 550, color: "#67e8f9", 
+                defType: "freezeShield", defCooldown: 6.5, speed: 210,
+                desc: "Crystalline engine. Discharges freeze-blocks, creating absolute-zero stun shields." 
+            },
+            stormbringer: { 
+                name: "Stormbringer", type: "ranged", range: 580, damage: 32, cooldown: 1.0, projSpeed: 700, color: "#fbcfe8", 
+                defType: "thunderStrike", defCooldown: 6.0, speed: 230,
+                desc: "Sky weaver. Dictates heavy electric energy streams to summon lightning strikes." 
+            }
+        };
+
+        // SETUP CANVAS & CORE ENGINES
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const menuCanvas = document.getElementById("menuCanvas");
+        const startButton = document.getElementById("startButton");
+        const nextRoundButton = document.getElementById("nextRoundButton");
+        const quitBtn = document.getElementById("quitBtn");
+        const startMenu = document.getElementById("startMenu");
+        const gameOverScreen = document.getElementById("gameOver");
+        const winnerText = document.getElementById("winnerText");
+        const upgradeBtns = document.querySelectorAll(".upgrade-btn");
+
+        let gameRunning = false;
+        let lastTime = 0;
+        let keys = {};
+        let screenShake = 0;
+        let matchSeconds = 99;
+        let matchInterval = null;
+
+        let player1 = null, player2 = null;
+        let p1DmgBonus = 0, p1SpdMult = 1, p1Shld = 0;
+        let p2DmgBonus = 0, p2SpdMult = 1, p2Shld = 0;
+
+        const mapWidth = 1400, mapHeight = 1000;
+        let obstacles = [];
+        let projectiles = [];
+        let particles = [];
+        let hitTexts = [];
+        let bloodPatches = [];
+        let floorDecals = [];
+        let grassPatches = [];
+        let rivers = [];
+        let ambientDust = [];
+        let medkits = [];
+
+        // AUDIO MANAGER SYNTHS (NO ASSETS REQUIRED)
+        const AudioMgr = {
+            ctx: null,
+            bgmNode: null,
+            init() {
+                if (this.ctx) return;
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) {}
+            },
+            resume() {
+                if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+            },
+            playSynth(freq, type, dur, vol = 0.1) {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                osc.start(); osc.stop(this.ctx.currentTime + dur);
+            },
+            sndAtk() { this.playSynth(220, "triangle", 0.1, 0.15); },
+            sndHit() { this.playSynth(110, "sawtooth", 0.15, 0.25); },
+            sndDef() { this.playSynth(440, "sine", 0.2, 0.1); },
+            sndUI() { this.playSynth(600, "triangle", 0.08, 0.1); },
+            startBGM(active) {
+                if (!this.ctx) return;
+                if (this.bgmNode) { try { this.bgmNode.stop(); } catch(e){} this.bgmNode = null; }
+                if (!active) return;
+                // Generate a continuous synth looping protocol
+                try {
+                    const bufferSize = this.ctx.sampleRate * 2;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        let t = i / this.ctx.sampleRate;
+                        // Retro synth bassline loop
+                        let note = [55, 65, 48, 41][Math.floor(t * 4) % 4];
+                        data[i] = Math.sin(2 * Math.PI * note * t) * 0.15;
+                    }
+                    this.bgmNode = this.ctx.createBufferSource();
+                    this.bgmNode.buffer = buffer; this.bgmNode.loop = true;
+                    this.bgmNode.connect(this.ctx.destination);
+                    this.bgmNode.start();
+                } catch(e){}
+            }
+        };
+
+        // PARTICLES GENERATION
+        function createParticles(x, y, color, count, type) {
+            for (let i = 0; i < count; i++) {
+                let angle = Math.random() * Math.PI * 2;
+                let spd = Math.random() * 150 + 50;
+                particles.push({
+                    type: type || "spark",
+                    x, y,
+                    vx: Math.cos(angle) * spd,
+                    vy: Math.sin(angle) * spd,
+                    life: Math.random() * 0.5 + 0.2,
+                    size: Math.random() * 3 + 1.5,
+                    color
+                });
+            }
+        }
+
+        function createHitText(x, y, text, color) {
+            hitTexts.push({ x, y, text, color, life: 0.8, vy: -50 });
+        }
+
+        // PLAYER CLASS
+        class Player {
+            constructor(id, x, y, color, classKey) {
+                this.id = id; this.x = x; this.y = y; this.w = 40; this.h = 40; // slightly wider for better visibility
+                this.color = color; this.classKey = classKey;
+                this.cls = CLASSES[classKey];
+                this.maxHp = 250; this.hp = this.maxHp;
+                this.shield = id===1 ? p1Shld : p2Shld;
+                this.damageBonus = id===1 ? p1DmgBonus : p2DmgBonus;
+                this.speedMult = id===1 ? p1SpdMult : p2SpdMult;
+                
+                this.isDashing = false; this.dashTimer = 0; this.dashDir = {x:0, y:0};
+                this.isParrying = false; this.parryTimer = 0;
+                this.isBlocking = false;
+                this.stunTimer = 0; this.flashTimer = 0;
+                this.rageMultiplier = 1.0;
+                this.defCooldownTimer = 0;
+                this.attackTimer = 0;
+                this.facing = id === 1 ? {x:1, y:0} : {x:-1, y:0};
+                this.animTimer = 0; this.isMoving = false;
+                this.trail = [];
+
+                // Godlike Charging mechanics
+                this.isCharging = false;
+                this.chargeVal = 0.0;
+                this.swingProgress = 0.0;
+                this.swingDuration = 0.18;
+                this.swingAngleStart = 0;
+                this.swingAngleEnd = 0;
+                this.swingSide = 1;
+            }
+            update(dt) {
+                this.animTimer += dt * 10;
+                if (this.stunTimer > 0) this.stunTimer -= dt;
+                if (this.flashTimer > 0) this.flashTimer -= dt;
+                if (this.defCooldownTimer > 0) this.defCooldownTimer -= dt;
+                if (this.attackTimer > 0) this.attackTimer -= dt;
+
+                if (this.stunTimer > 0 && this.isCharging) {
+                    this.isCharging = false;
+                    this.chargeVal = 0;
+                }
+
+                if (this.swingProgress > 0) {
+                    this.swingProgress -= dt / this.swingDuration;
+                    if (this.swingProgress < 0) this.swingProgress = 0;
+                }
+
+                // Trail Afterimages for high-velocity movements
+                if (this.isDashing || this.isMoving || this.isCharging) {
+                    this.trail.unshift({ x: this.x, y: this.y, animTimer: this.animTimer });
+                    if (this.trail.length > 8) this.trail.pop();
+                } else {
+                    if (this.trail.length > 0) this.trail.pop();
+                }
+
+                if (this.isDashing) {
+                    this.x += this.dashDir.x * 620 * dt; this.y += this.dashDir.y * 620 * dt;
+                    this.dashTimer -= dt;
+                    if (this.dashTimer <= 0) this.isDashing = false;
+                    this.x = Math.max(0, Math.min(mapWidth - this.w, this.x));
+                    this.y = Math.max(0, Math.min(mapHeight - this.h, this.y));
+                }
+                if (this.isParrying) {
+                    this.parryTimer -= dt;
+                    if (this.parryTimer <= 0) this.isParrying = false;
+                }
+            }
+            move(dx, dy, dt) {
+                if (this.stunTimer > 0 || this.isDashing) return;
+                this.isMoving = (dx !== 0 || dy !== 0);
+                if (this.isMoving) {
+                    let len = Math.sqrt(dx*dx + dy*dy);
+                    dx /= len; dy /= len;
+                    this.facing = {x: dx, y: dy};
+                    let curSpeed = this.cls.speed * this.speedMult * this.rageMultiplier;
+                    if (this.isBlocking) curSpeed *= 0.35;
+                    if (this.isCharging) curSpeed *= 0.45; // Weight/Slowdown when tension drawing
+                    
+                    this.x += dx * curSpeed * dt; this.y += dy * curSpeed * dt;
+                    // Obstacles check
+                    obstacles.forEach(o => {
+                        if (checkRectCollision(this.x, this.y, this.w, this.h, o.x, o.y, o.w, o.h)) {
+                            this.x -= dx * curSpeed * dt; this.y -= dy * curSpeed * dt;
+                        }
+                    });
+                    this.x = Math.max(0, Math.min(mapWidth - this.w, this.x));
+                    this.y = Math.max(0, Math.min(mapHeight - this.h, this.y));
+                }
+            }
+            startCharging() {
+                if (this.stunTimer > 0 || this.attackTimer > 0 || this.isBlocking || this.isDashing) return;
+                this.isCharging = true;
+                this.chargeVal = 0.15; // base min draw
+                AudioMgr.playSynth(130, "sine", 0.1, 0.1);
+            }
+            charge(dt) {
+                if (!this.isCharging || this.stunTimer > 0) return;
+                
+                let speedFactor = 1.35; // Cap at 0.7s draw for fast combat flow
+                if (this.cls.cooldown > 0.8) speedFactor = 1.0;
+                
+                let oldVal = this.chargeVal;
+                this.chargeVal = Math.min(1.0, this.chargeVal + dt * speedFactor);
+                
+                // Suction particles drifting into player core
+                if (Math.random() > 0.35) {
+                    let r = 70 * (1 - this.chargeVal) + 15;
+                    let angle = Math.random() * Math.PI * 2;
+                    let px = this.x + this.w/2 + Math.cos(angle) * r;
+                    let py = this.y + this.h/2 + Math.sin(angle) * r;
+                    particles.push({
+                        type: "vacuum",
+                        x: px, y: py,
+                        vx: -Math.cos(angle) * 150,
+                        vy: -Math.sin(angle) * 150,
+                        life: 0.22,
+                        size: Math.random() * 2.5 + 1.2,
+                        color: this.color
+                    });
+                }
+                if (Math.floor(oldVal * 8) !== Math.floor(this.chargeVal * 8)) {
+                    AudioMgr.playSynth(120 + this.chargeVal * 180, "sawtooth", 0.04, 0.05);
+                }
+            }
+            releaseAttack() {
+                if (!this.isCharging) return;
+                let finalCharge = this.chargeVal;
+                this.isCharging = false;
+                this.chargeVal = 0;
+                
+                this.attackTimer = this.cls.cooldown;
+                
+                // Damage from 40% to 150%+ depending on charge duration
+                let dmgMult = 0.45 + finalCharge * 1.15; // 1.6x damage output on fully tensioned bow/slash
+                let finalDmg = Math.floor((this.cls.damage + this.damageBonus) * dmgMult);
+                
+                AudioMgr.playSynth(200 + finalCharge * 150, "triangle", 0.14, 0.25);
+                let facingAngle = Math.atan2(this.facing.y, this.facing.x);
+                
+                if (this.cls.type === "melee") {
+                    this.swingProgress = 1.0;
+                    this.swingSide = -this.swingSide; // alternate swing sides
+                    let finalRange = this.cls.range * (0.65 + finalCharge * 0.45); // slash sweep expands with energy charge
+                    
+                    this.swingAngleStart = facingAngle - (Math.PI / 1.35) * this.swingSide;
+                    this.swingAngleEnd = facingAngle + (Math.PI / 1.35) * this.swingSide;
+                    
+                    // Physical visual swipe trail
+                    particles.push({
+                        type: "glowing_arc",
+                        x: this.x + this.w/2,
+                        y: this.y + this.h/2,
+                        r: finalRange,
+                        aStart: this.swingAngleStart,
+                        aEnd: this.swingAngleEnd,
+                        side: this.swingSide,
+                        color: this.color,
+                        life: this.swingDuration,
+                        maxLife: this.swingDuration,
+                        ownerId: this.id
+                    });
+                    
+                    // Sweep splash sparks in direction of slash
+                    createParticles(this.x + this.w/2 + this.facing.x * (finalRange * 0.7), this.y + this.h/2 + this.facing.y * (finalRange * 0.7), this.color, Math.floor(6 + finalCharge * 12), "trail");
+
+                    let target = this.id === 1 ? player2 : player1;
+                    let dx = (target.x + target.w/2) - (this.x + this.w/2);
+                    let dy = (target.y + target.h/2) - (this.y + this.h/2);
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < finalRange) {
+                        let targetAngle = Math.atan2(dy, dx);
+                        let angleDiff = Math.abs(normalizeAngle(targetAngle - facingAngle));
+                        if (angleDiff < Math.PI / 1.25) { // generous cone reach
+                            target.takeDamage(finalDmg, this);
+                            if (finalCharge > 0.65) {
+                                target.pushVx = this.facing.x * (finalCharge * 550);
+                                target.pushVy = this.facing.y * (finalCharge * 550);
+                            }
+                        }
+                    }
+                } else {
+                    // Ranged logic releases glowing arrow details
+                    let finalSpeed = (this.cls.projSpeed || 600) * (0.8 + finalCharge * 0.5);
+                    let finalRange = this.cls.range * (0.7 + finalCharge * 0.4);
+                    let projectileSize = 7 + finalCharge * 9; // Big glowing arrows / shells
+                    
+                    projectiles.push({
+                        x: this.x + this.w/2, y: this.y + this.h/2,
+                        dirX: this.facing.x, dirY: this.facing.y,
+                        speed: finalSpeed,
+                        damage: finalDmg,
+                        rangeLeft: finalRange,
+                        ownerId: this.id, color: this.color, size: projectileSize,
+                        className: this.cls.name,
+                        charge: finalCharge
+                    });
+                    
+                    // Glowing concentric shockwaves expanding outwards on release
+                    particles.push({
+                        type: "shockwave",
+                        x: this.x + this.w/2 + this.facing.x * 12,
+                        y: this.y + this.h/2 + this.facing.y * 12,
+                        r: 6,
+                        maxRadius: 35 + finalCharge * 35,
+                        life: 0.16,
+                        color: this.color
+                    });
+                    
+                    createParticles(this.x + this.w/2 + this.facing.x * 12, this.y + this.h/2 + this.facing.y * 12, this.color, Math.floor(5 + finalCharge * 10), "spark");
+                }
+            }
+            defend(isKeyDown) {
+                if (this.stunTimer > 0) return;
+                if (this.cls.defType === "block") { this.isBlocking = isKeyDown; return; }
+                if (!isKeyDown || this.defCooldownTimer > 0) return;
+
+                this.defCooldownTimer = this.cls.defCooldown;
+                AudioMgr.sndDef();
+
+                let target = this.id === 1 ? player2 : player1;
+                
+                switch(this.cls.defType) {
+                    case "parry": 
+                        this.isParrying = true; this.parryTimer = 0.55; 
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#fff", 12, "trail"); 
+                        break;
+                    case "dash":
+                        this.isDashing = true; this.dashTimer = 0.22; this.dashDir = { x: this.facing.x, y: this.facing.y };
+                        createParticles(this.x+this.w/2, this.y+this.h/2, this.color, 8, "trail");
+                        break;
+                    case "dodge":
+                        this.isDashing = true; this.dashTimer = 0.2; this.dashDir = { x: -this.facing.x, y: -this.facing.y };
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#cbd5e1", 6, "trail");
+                        break;
+                    case "teleport":
+                        this.x += this.facing.x * 200; this.y += this.facing.y * 200;
+                        this.x = Math.max(0, Math.min(mapWidth-this.w, this.x));
+                        this.y = Math.max(0, Math.min(mapHeight-this.h, this.y));
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#8b5cf6", 20, "spark");
+                        break;
+                    case "knockback":
+                        createAoE(this.x+this.w/2, this.y+this.h/2, 160, this.id, "push");
+                        break;
+                    case "lifeDrain":
+                        createAoE(this.x+this.w/2, this.y+this.h/2, 180, this.id, "drain");
+                        break;
+                    case "heal":
+                        this.hp = Math.min(this.maxHp, this.hp + 80);
+                        createHitText(this.x+this.w/2, this.y-25, "+80 CORE REPAIR", "#10b981");
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#10b981", 15, "spark");
+                        break;
+                    case "rage":
+                        this.rageMultiplier = 1.6;
+                        createHitText(this.x+this.w/2, this.y-25, "RAGE ACTUATED", "#ef4444");
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#ef4444", 20, "trail");
+                        setTimeout(() => { if (this) this.rageMultiplier = 1.0; }, 4000);
+                        break;
+                    case "emp":
+                        createAoE(this.x+this.w/2, this.y+this.h/2, 160, this.id, "emp");
+                        break;
+                    case "substitute":
+                        particles.push({
+                            type: "decoy", x: this.x + this.w/2, y: this.y + this.h/2,
+                            life: 2.0, color: "#854d0e", vx: 0, vy: 0, ownerId: this.id
+                        });
+                        this.x = target.x - target.facing.x * 120;
+                        this.y = target.y - target.facing.y * 120;
+                        this.x = Math.max(0, Math.min(mapWidth-this.w, this.x));
+                        this.y = Math.max(0, Math.min(mapHeight-this.h, this.y));
+                        createParticles(this.x+this.w/2, this.y+this.h/2, "#06b6d4", 25, "spark");
+                        break;
+                    case "freezeShield":
+                        this.shield = Math.min(100, this.shield + 60);
+                        createAoE(this.x+this.w/2, this.y+this.h/2, 140, this.id, "freeze");
+                        break;
+                    case "thunderStrike":
+                        createAoE(target.x+target.w/2, target.y+target.h/2, 130, this.id, "lightning");
+                        break;
+                }
+            }
+            takeDamage(amount, attacker) {
+                if (this.isParrying) {
+                    if (attacker) attacker.takeDamage(amount * 0.5, null);
+                    createHitText(this.x+this.w/2, this.y-20, "REFLECTED", "#fff");
+                    return;
+                }
+                if (this.isBlocking) {
+                    amount *= 0.2;
+                    createHitText(this.x+this.w/2, this.y-20, "BLOCKED", "#cbd5e1");
+                }
+                
+                if (this.shield > 0) {
+                    let d = Math.min(this.shield, amount);
+                    this.shield -= d; amount -= d;
+                }
+                
+                this.hp -= amount;
+                this.flashTimer = 0.15;
+                screenShake = 16 + (amount > 30 ? 10 : 0);
+                AudioMgr.sndHit();
+
+                // Interrupted when hit hard
+                if (amount > 16 && this.isCharging) {
+                    this.isCharging = false;
+                    this.chargeVal = 0;
+                    createHitText(this.x+this.w/2, this.y-35, "INTERRUPTED", "#ef4444");
+                }
+
+                // Explode massive blood sparks
+                createParticles(this.x+this.w/2, this.y+this.h/2, "#d6001c", 12, "spark");
+                createHitText(this.x + this.w/2, this.y - 12, `-${Math.floor(amount)}`, this.color);
+
+                if (Math.random() > 0.35) {
+                    bloodPatches.push({
+                        x: this.x + Math.random()*25 - 12,
+                        y: this.y + this.h - Math.random()*12,
+                        size: Math.random()*10 + 5,
+                        color: "rgba(180,0,10,0.72)",
+                        life: 6.0
+                    });
+                }
+
+                if (this.hp <= 0) {
+                    this.hp = 0;
+                    endMatch(this.id === 1 ? 2 : 1);
+                }
+                updateUI();
+            }
+        }
+
+        // TRIGGERS INTERACTIVE CLASS DETAIL VIEWS AND PORTRAIT RENDER
+        function updateClassDesc(playerNum) {
+            const val = document.getElementById(`p${playerNum}Weapon`).value;
+            const desc = CLASSES[val].desc;
+            document.getElementById(`p${playerNum}Desc`).textContent = desc;
+            drawPreview(`p${playerNum}PreviewCanvas`, val);
+        }
+
+        function drawPreview(canvasId, classKey) {
+            const pcv = document.getElementById(canvasId);
+            if (!pcv) return;
+            const pCtx = pcv.getContext("2d");
+            
+            // Core canvas dimension clear
+            pCtx.clearRect(0, 0, pcv.width, pcv.height);
+            
+            const cls = CLASSES[classKey];
+            if (!cls) return;
+
+            // Background of preview - sleeker, deeper slate
+            pCtx.fillStyle = "#0c0e16"; 
+            pcv.style.borderColor = cls.color;
+            pCtx.fillRect(0, 0, pcv.width, pcv.height);
+
+            // Tech cybernetic grid lines
+            pCtx.strokeStyle = "rgba(0, 255, 100, 0.05)"; pCtx.lineWidth = 1;
+            for (let x = 0; x <= 70; x += 10) {
+                pCtx.beginPath(); pCtx.moveTo(x, 0); pCtx.lineTo(x, 70); pCtx.stroke();
+            }
+            for (let y = 0; y <= 70; y += 10) {
+                pCtx.beginPath(); pCtx.moveTo(0, y); pCtx.lineTo(70, y); pCtx.stroke();
+            }
+
+            // Tech diagnostic sweeping bar
+            let sweepY = (Date.now() / 20) % 70;
+            pCtx.strokeStyle = "rgba(0, 255, 100, 0.12)";
+            pCtx.lineWidth = 1.5;
+            pCtx.beginPath(); pCtx.moveTo(0, sweepY); pCtx.lineTo(70, sweepY); pCtx.stroke();
+
+            // Sizing parameters
+            const pW = 30; // scaled for 70x70 preview
+            const pH = 30;
+
+            // Compute sequential time-loop cycle (4500ms total loop)
+            let cycle = Date.now() % 4500;
+            let bob = Math.sin(Date.now() * 0.007) * 2;
+            
+            let isCharging = false;
+            let chargeVal = 0.0;
+            let isAttacking = false;
+            let isSpecial = false;
+            let chargeFlash = false;
+            let specialFinishedRatio = 0;
+
+            if (cycle >= 1200 && cycle < 2700) {
+                // PHASE 2: CHARGING TENSION (1.5 seconds)
+                isCharging = true;
+                chargeVal = (cycle - 1200) / 1500;
+            } else if (cycle >= 2700 && cycle < 3100) {
+                // PHASE 3: WEAPON STRIKE / PRIMARY WEAPON SWING (400ms)
+                isAttacking = true;
+                chargeFlash = (cycle < 2780); // Quick white flash on release
+            } else if (cycle >= 3100 && cycle < 3900) {
+                // PHASE 4: DEFEND / ACTIVE SPECIAL ABILITY (800ms)
+                isSpecial = true;
+                specialFinishedRatio = (cycle - 3100) / 800;
+            }
+
+            // Draw shadow plate below feet
+            pCtx.fillStyle = "rgba(0,0,0,0.55)";
+            pCtx.beginPath();
+            pCtx.ellipse(35, 54, 15 + (isAttacking ? 3 : 0), 4.5, 0, 0, Math.PI * 2);
+            pCtx.fill();
+
+            // Draw glowing ground locator project ring
+            pCtx.strokeStyle = cls.color;
+            pCtx.lineWidth = 1.5;
+            pCtx.shadowColor = cls.color;
+            pCtx.shadowBlur = isSpecial ? 12 : 5;
+            pCtx.beginPath();
+            pCtx.arc(35, 54, 18, 0, Math.PI * 2);
+            pCtx.stroke();
+            pCtx.shadowBlur = 0; // reset shadow
+
+            // Draw a subtle aiming laser line in direction of facing (right/slightly down) if charging
+            if (isCharging && cls.type === "ranged") {
+                pCtx.save();
+                pCtx.strokeStyle = chargeVal > 0.85 ? "rgba(255,80,0,0.7)" : "rgba(69,243,255,0.45)";
+                pCtx.lineWidth = 1.5 + chargeVal * 2;
+                pCtx.beginPath();
+                pCtx.setLineDash([4, 4]);
+                pCtx.moveTo(35, 38);
+                pCtx.lineTo(35 + (22 * (0.5 + chargeVal * 0.5)), 38 + (7 * (0.5 + chargeVal * 0.5)));
+                pCtx.stroke();
+                pCtx.restore();
+            }
+
+            // Draw body translated and bobbing
+            pCtx.save();
+            pCtx.translate(35, 38 + bob);
+            pCtx.scale(0.75, 0.75);
+
+            // Draw primary color main base box
+            pCtx.save();
+            pCtx.shadowColor = cls.color;
+            pCtx.shadowBlur = isCharging ? 12 + Math.sin(Date.now() * 0.025) * 5 : (isSpecial ? 15 : 6);
+            pCtx.fillStyle = chargeFlash ? "#ffffff" : cls.color;
+            
+            // If activating special, add color effects (e.g. Berserker turns blood red, cryomancer turns pure white)
+            if (isSpecial) {
+                if (classKey === "berserker") pCtx.fillStyle = "#ff2222";
+                if (classKey === "cryomancer" || classKey === "ninja") pCtx.fillStyle = "#ffffff";
+                if (classKey === "paladin") pCtx.fillStyle = "#fff08a";
+            }
+
+            pCtx.strokeStyle = "#000"; pCtx.lineWidth = 3.5;
+            pCtx.beginPath();
+            pCtx.roundRect(-pW/2, -pH/2, pW, pH, 6);
+            pCtx.fill(); pCtx.stroke();
+            pCtx.restore();
+
+            // Neon Tech Visor Details
+            pCtx.fillStyle = "#111";
+            pCtx.fillRect(4, -10, pW/2 - 2, pH - 12);
+            // Cyber pupil glow lines
+            pCtx.fillStyle = canvasId.includes("p1") ? "#00ffcc" : "#ff0055";
+            if (isSpecial && classKey === "berserker") pCtx.fillStyle = "#ff0000";
+            pCtx.fillRect(8, -8, 3, pH - 16);
+
+            // Render outfits and accessories exactly like battlefield sprites
+            if (classKey === "knight") {
+                pCtx.fillStyle = "#b91c1c"; pCtx.fillRect(-17, -13, 8, 26); // Vanguard Cape
+            } else if (classKey === "mage") {
+                pCtx.fillStyle = "#5b21b6"; pCtx.fillRect(-14, -11, 7, 22); // Gown Hood
+                pCtx.strokeStyle = "#a78bfa"; pCtx.lineWidth = 1; pCtx.strokeRect(-14, -11, 7, 22);
+            } else if (classKey === "paladin") {
+                pCtx.fillStyle = "#fbbf24"; pCtx.fillRect(-11, -11, 11, 22); // Gold Plate
+            } else if (classKey === "ninja") {
+                pCtx.fillStyle = "#1f2937"; pCtx.fillRect(-13, -13, 26, 5); // Scarf
+            } else if (classKey === "archer") {
+                pCtx.fillStyle = "#065f46"; pCtx.fillRect(-16, -9, 8, 18); // Quiver
+            } else if (classKey === "berserker") {
+                pCtx.fillStyle = "#7f1d1d"; pCtx.fillRect(-14, -13, 9, 26); // Horns
+            }
+
+            // Weapon translation relative to active stance
+            pCtx.save();
+            let chargeScale = isCharging ? chargeVal : 0;
+            
+            if (cls.type === "melee") {
+                pCtx.translate(12, 10);
+                
+                // Tilt back or swing weapons depending on charge or attack status
+                if (isCharging) {
+                    pCtx.rotate(-0.4 - chargeVal * 0.5); // rotates backward during charge tension
+                } else if (isAttacking) {
+                    pCtx.rotate(1.2); // wide forward swing stance!
+                }
+
+                pCtx.fillStyle = "#e2e8f0";
+                pCtx.strokeStyle = cls.color;
+                pCtx.lineWidth = 1.5;
+
+                if (classKey === "knight") {
+                    // Giant Claymore
+                    pCtx.beginPath();
+                    pCtx.roundRect(0, -4, 23 + chargeScale * 5, 6, 2);
+                    pCtx.fill(); pCtx.stroke();
+                    pCtx.fillStyle = "#64748b"; pCtx.fillRect(-2, -6, 3, 11);
+                } else if (classKey === "spearman") {
+                    // Spear
+                    pCtx.fillStyle = "#475569"; pCtx.fillRect(-11, -2, 35, 3);
+                    pCtx.fillStyle = "#fbbf24"; pCtx.beginPath();
+                    pCtx.moveTo(22, -4); pCtx.lineTo(33, 0); pCtx.lineTo(22, 4); pCtx.closePath(); pCtx.fill();
+                } else if (classKey === "tank") {
+                    // Hex Shield
+                    pCtx.fillStyle = "#475569"; pCtx.strokeStyle = "#45f3ff"; pCtx.lineWidth = 2.0;
+                    pCtx.beginPath();
+                    pCtx.moveTo(0, -11); pCtx.lineTo(9, -6); pCtx.lineTo(9, 6); pCtx.lineTo(0, 11);
+                    pCtx.lineTo(-5, 6); pCtx.lineTo(-5, -6); pCtx.closePath(); pCtx.fill(); pCtx.stroke();
+                } else {
+                    // Standard Blade
+                    pCtx.beginPath();
+                    pCtx.roundRect(0, -3, 18, 5, 1.5);
+                    pCtx.fill(); pCtx.stroke();
+                }
+            } else {
+                // Ranged weaponry
+                pCtx.translate(10, 8);
+                
+                if (classKey === "archer") {
+                    // Bow bending
+                    pCtx.strokeStyle = cls.color; pCtx.lineWidth = 2.5;
+                    pCtx.beginPath();
+                    pCtx.arc(0, 0, 14, -Math.PI / 1.8 + chargeScale * 0.2, Math.PI / 1.8 - chargeScale * 0.2);
+                    pCtx.stroke();
+
+                    // String pulling back
+                    pCtx.strokeStyle = "#e2e8f0"; pCtx.lineWidth = 0.8;
+                    pCtx.beginPath();
+                    let drawBackX = -8 * chargeScale;
+                    pCtx.moveTo(Math.cos(-Math.PI / 1.5) * 14, Math.sin(-Math.PI / 1.5) * 14);
+                    pCtx.lineTo(drawBackX, 0);
+                    pCtx.lineTo(Math.cos(Math.PI / 1.5) * 14, Math.sin(Math.PI / 1.5) * 14);
+                    pCtx.stroke();
+                } else if (classKey === "mage" || classKey === "necromancer") {
+                    // Mage staff
+                    pCtx.fillStyle = "#78350f"; pCtx.fillRect(-8, -2, 24, 3);
+                    pCtx.fillStyle = cls.color; pCtx.shadowBlur = 8;
+                    pCtx.beginPath();
+                    pCtx.arc(18, 0, 4 + chargeScale * 3, 0, Math.PI * 2);
+                    pCtx.fill();
+                } else {
+                    // Rail Blaster / Gun
+                    pCtx.fillStyle = "#334155"; pCtx.fillRect(0, -3, 14, 6);
+                }
+            }
+            pCtx.restore();
+            pCtx.restore(); // restore player rotation
+
+            // DRAW DYNAMIC ATTACK PARTICLES OR SPELLS FLYING INSIDE BOX
+            if (isAttacking) {
+                pCtx.save();
+                pCtx.shadowColor = cls.color; pCtx.shadowBlur = 10;
+                pCtx.strokeStyle = cls.color;
+                pCtx.lineWidth = 2;
+                
+                if (cls.type === "melee") {
+                    // Show a glowing mini slash arc sweep
+                    pCtx.beginPath();
+                    pCtx.arc(44, 38, 15, -Math.PI / 3, Math.PI / 3);
+                    pCtx.stroke();
+                    
+                    // Tiny hit sparks in front of face
+                    pCtx.fillStyle = "#fff";
+                    pCtx.fillRect(47, 33, 2, 2);
+                    pCtx.fillRect(50, 38, 2, 2);
+                } else {
+                    // Show small projectile dart bullet zooming off-screen
+                    let prX = 38 + ((cycle - 2700) / 400) * 32;
+                    pCtx.fillStyle = cls.color;
+                    if (classKey === "archer") {
+                        pCtx.beginPath();
+                        pCtx.moveTo(prX - 6, 36); pCtx.lineTo(prX + 4, 38); pCtx.lineTo(prX - 6, 40);
+                        pCtx.closePath(); pCtx.fill();
+                    } else if (classKey === "mage" || classKey === "necromancer") {
+                        pCtx.beginPath(); pCtx.arc(prX, 38, 4, 0, Math.PI*2); pCtx.fill();
+                    } else {
+                        pCtx.fillRect(prX - 5, 36.5, 9, 3);
+                    }
+                }
+                pCtx.restore();
+            }
+
+            // DRAW SPECIAL SKILL EFFECTS
+            if (isSpecial) {
+                pCtx.save();
+                if (classKey === "paladin") {
+                    // Golden solar pillars beaming down
+                    let ratio = specialFinishedRatio;
+                    pCtx.fillStyle = "rgba(254, 240, 138, " + (0.5 * (1 - ratio)) + ")";
+                    pCtx.fillRect(16, 4, 38, 42);
+                    pCtx.strokeStyle = "rgba(254, 240, 138, " + (0.85 * (1 - ratio)) + ")";
+                    pCtx.lineWidth = 1.5;
+                    pCtx.strokeRect(16, 4, 38, 42);
+                } else if (classKey === "cryomancer") {
+                    // Glowing ice shield circle surrounding player
+                    pCtx.strokeStyle = "rgba(103, 232, 249, 0.75)";
+                    pCtx.lineWidth = 1.5;
+                    pCtx.shadowColor = "#67e8f9"; pCtx.shadowBlur = 8;
+                    pCtx.beginPath();
+                    pCtx.arc(35, 38, 18, 0, Math.PI*2);
+                    pCtx.stroke();
+                } else if (classKey === "tank") {
+                    // Front Hex shield energy matrix
+                    pCtx.strokeStyle = "rgba(69, 243, 255, 0.85)";
+                    pCtx.lineWidth = 2.5;
+                    pCtx.shadowColor = "#45f3ff"; pCtx.shadowBlur = 10;
+                    pCtx.beginPath();
+                    pCtx.moveTo(51, 22); pCtx.lineTo(57, 29); pCtx.lineTo(57, 47); pCtx.lineTo(51, 54);
+                    pCtx.stroke();
+                } else if (classKey === "berserker") {
+                    // Angry flame exhaust smoke sparks
+                    pCtx.fillStyle = "#ff5500";
+                    let o = (Date.now() / 4) % 15;
+                    pCtx.fillRect(15 + Math.random()*10, 15 - o, 2.5, 2.5);
+                    pCtx.fillRect(40 + Math.random()*10, 18 - o, 2, 2);
+                } else if (classKey === "ninja") {
+                    // Digital scan glitch blocks
+                    pCtx.fillStyle = "rgba(6, 182, 212, " + (0.8 * Math.sin(Date.now()*0.02)) + ")";
+                    pCtx.fillRect(20, 26, 8, 5);
+                    pCtx.fillRect(42, 40, 10, 4);
+                } else {
+                    // Generic elegant cyber expansion wave
+                    pCtx.strokeStyle = cls.color; pCtx.lineWidth = 1; pCtx.globalAlpha = 1 - specialFinishedRatio;
+                    pCtx.beginPath(); pCtx.arc(35, 38, 10 + specialFinishedRatio*24, 0, Math.PI*2); pCtx.stroke();
+                }
+                pCtx.restore();
+            }
+
+            // Draw a delicate interactive tension filling bar below character if charging
+            if (isCharging) {
+                pCtx.fillStyle = "rgba(0,0,0,0.7)";
+                pCtx.fillRect(15, 61, 40, 4);
+                pCtx.fillStyle = chargeVal > 0.85 ? "#ffae00" : "#00ffcc";
+                pCtx.fillRect(15, 61, 40 * chargeVal, 4);
+            }
+
+            // Draw status actions tag at top
+            pCtx.fillStyle = "rgba(255,255,255,0.35)";
+            pCtx.font = "8px 'Share Tech Mono'";
+            pCtx.textAlign = "center";
+            let actionTag = "STANDBY";
+            if (isCharging) actionTag = "TENSIONING_..." + Math.round(chargeVal * 100) + "%";
+            else if (isAttacking) actionTag = "STRIKE_RELEASE";
+            else if (isSpecial) actionTag = "SKILL_TRIGGER";
+            pCtx.fillText(actionTag, 35, 10);
+        }
+
+        function createAoE(x, y, radius, ownerId, type) {
+            let color = type === "push" ? "#fbbf24" : (type === "emp" ? "#06b6d4" : (type === "freeze" ? "#38bdf8" : "#f43f5e"));
+            particles.push({ type: "aoe", x, y, radius, life: 0.35, color });
+            
+            let target = ownerId === 1 ? player2 : player1;
+            let owner = ownerId === 1 ? player1 : player2;
+            let dx = (target.x + target.w/2) - x;
+            let dy = (target.y + target.h/2) - y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (type === "lightning") {
+                for(let k=0; k<5; k++) {
+                    particles.push({
+                        type: "lightning_strike",
+                        x: x + (Math.random()-0.5)*40, y: y - 500,
+                        targetX: x + (Math.random()-0.5)*40, targetY: y,
+                        life: 0.22, color: "#fbbf24"
+                    });
+                }
+            }
+
+            if (dist < radius + target.w/2) {
+                if (target.isDashing) return;
+                if (type === "push") {
+                    target.pushVx = (dx/dist)*900; target.pushVy = (dy/dist)*900;
+                    target.takeDamage(12, null);
+                } else if (type === "drain") {
+                    target.takeDamage(25, owner);
+                    owner.hp = Math.min(owner.maxHp, owner.hp + 25);
+                    createHitText(owner.x+owner.w/2, owner.y-25, "+25 HP REAPED", "#10b981");
+                } else if (type === "emp") {
+                    target.takeDamage(15, owner);
+                    target.speedMult = 0.25; target.stunTimer = 1.0;
+                    setTimeout(() => { if (target) target.speedMult = 1.0; }, 3000);
+                    createHitText(target.x+target.w/2, target.y-20, "EMP SEVERITY", "#06b6d4");
+                } else if (type === "freeze") {
+                    target.takeDamage(10, owner);
+                    target.speedMult = 0.1; target.stunTimer = 1.5;
+                    setTimeout(() => { if (target) target.speedMult = 1.0; }, 3000);
+                    createHitText(target.x+target.w/2, target.y-20, "FROZEN STATUS", "#38bdf8");
+                } else if (type === "lightning") {
+                    target.pushVx = (dx/dist)*500; target.pushVy = (dy/dist)*500;
+                    target.takeDamage(40, owner);
+                    createHitText(target.x+target.w/2, target.y-20, "SMITE", "#fbbf24");
+                }
+            }
+        }
+
+        // GENERATE GRAPHICS DECAL MAP
+        function generateMap() {
+            obstacles = [];
+            floorDecals = [];
+            grassPatches = [];
+            rivers = [];
+
+            // Concrete aligned symmetric industrial pillars
+            obstacles.push({ x: 300, y: 250, w: 100, h: 100 });
+            obstacles.push({ x: 1000, y: 250, w: 100, h: 100 });
+            obstacles.push({ x: 300, y: 650, w: 100, h: 100 });
+            obstacles.push({ x: 1000, y: 650, w: 100, h: 100 });
+            obstacles.push({ x: 650, y: 450, w: 100, h: 100 }); // Center Pillar
+
+            // Sludge Rivers
+            rivers.push({ x: 450, y: 500, w: 400, h: 40, angle: 0.15, color: "rgba(0, 255, 100, 0.2)" });
+
+            // Random floor decorations
+            for (let i = 0; i < 30; i++) {
+                floorDecals.push({
+                    x: Math.random() * (mapWidth-100) + 50,
+                    y: Math.random() * (mapHeight-100) + 50,
+                    w: Math.random() * 40 + 20,
+                    h: Math.random() * 40 + 20,
+                    type: Math.random() > 0.5 ? 'hatch' : 'plate'
+                });
+            }
+            for (let i = 0; i < 120; i++) {
+                grassPatches.push({
+                    x: Math.random() * mapWidth,
+                    y: Math.random() * mapHeight,
+                    size: Math.random() * 4 + 2,
+                    color: "rgba(0,100,250, 0.1)",
+                    flicker: Math.random() > 0.8
+                });
+            }
+
+            // Powerup medkits spawn points
+            medkits = [];
+            medkits.push({ x: 150, y: 500, w: 20, h: 20 });
+            medkits.push({ x: 1250, y: 500, w: 20, h: 20 });
+        }
+
+        // CONTROL ROUND TRANSITIONS
+        function initGame(isFirstStart) {
+            AudioMgr.sndUI();
+            startMenu.style.display = "none";
+            gameOverScreen.style.display = "none";
+            
+            document.getElementById("hud-bar").style.display = "flex";
+            canvas.style.display = "block";
+
+            let p1Class = document.getElementById("p1Weapon").value;
+            let p2Class = document.getElementById("p2Weapon").value;
+
+            player1 = new Player(1, 100, 480, varColor("--p1-color"), p1Class);
+            player2 = new Player(2, 1260, 480, varColor("--p2-color"), p2Class);
+
+            document.getElementById("p1HudClass").textContent = player1.cls.name.toUpperCase();
+            document.getElementById("p2HudClass").textContent = player2.cls.name.toUpperCase();
+
+            projectiles = [];
+            particles = [];
+            hitTexts = [];
+            bloodPatches = [];
+
+            // Background scrolling dust particles
+            ambientDust = [];
+            for (let i = 0; i < 50; i++) {
+                ambientDust.push({
+                    x: Math.random() * mapWidth,
+                    y: Math.random() * mapHeight,
+                    vx: -Math.random() * 15 - 5,
+                    vy: (Math.random() - 0.5) * 5,
+                    s: Math.random() * 3 + 1
+                });
+            }
+
+            generateMap();
+
+            gameRunning = true;
+            lastTime = performance.now();
+            matchSeconds = 99;
+            document.getElementById("timer-text").textContent = matchSeconds;
+
+            clearInterval(matchInterval);
+            matchInterval = setInterval(() => {
+                if (gameRunning) {
+                    matchSeconds--;
+                    document.getElementById("timer-text").textContent = matchSeconds;
+                    if (matchSeconds <= 0) {
+                        if (player1.hp > player2.hp) endMatch(1);
+                        else if (player2.hp > player1.hp) endMatch(2);
+                        else endMatch(1); // Standard resolution
+                    }
+                }
+            }, 1000);
+
+            AudioMgr.startBGM(true);
+            updateUI();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function endMatch(winnerId) {
+            gameRunning = false;
+            clearInterval(matchInterval);
+            AudioMgr.startBGM(false);
+
+            document.getElementById("hud-bar").style.display = "none";
+            canvas.style.display = "none";
+
+            winnerText.textContent = `PLAYER ${winnerId} DOMINATES`;
+            winnerText.style.color = winnerId === 1 ? "var(--p1-color)" : "var(--p2-color)";
+
+            // Populate engagement statistics overview
+            if (player1 && player2) {
+                document.getElementById("p1EndClass").textContent = player1.cls.name.toUpperCase();
+                document.getElementById("p1EndHp").textContent = player1.hp <= 0 ? "DECOMMISSIONED" : Math.floor(player1.hp) + " CORE HP";
+                document.getElementById("p1EndHp").style.color = player1.hp <= 0 ? "#ef4444" : "var(--p1-color)";
+
+                document.getElementById("p2EndClass").textContent = player2.cls.name.toUpperCase();
+                document.getElementById("p2EndHp").textContent = player2.hp <= 0 ? "DECOMMISSIONED" : Math.floor(player2.hp) + " CORE HP";
+                document.getElementById("p2EndHp").style.color = player2.hp <= 0 ? "#ef4444" : "var(--p2-color)";
+            }
+
+            nextRoundButton.style.display = "block";
+            gameOverScreen.style.display = "flex";
+        }
+
+        function updateUI() {
+            if (!player1 || !player2) return;
+            // P1 HP Bar
+            let p1Percent = (player1.hp / player1.maxHp) * 100;
+            document.getElementById("p1HealthFill").style.width = p1Percent + "%";
+            document.getElementById("p1HpText").textContent = Math.floor(player1.hp) + (player1.shield ? ` [+${player1.shield}]` : "");
+
+            // P2 HP Bar
+            let p2Percent = (player2.hp / player2.maxHp) * 100;
+            document.getElementById("p2HealthFill").style.width = p2Percent + "%";
+            document.getElementById("p2HpText").textContent = Math.floor(player2.hp) + (player2.shield ? ` [+${player2.shield}]` : "");
+        }
+
+        // MAIN RETRO RENDER LOOP
+        function gameLoop(timestamp) {
+            if (!gameRunning) return;
+            let dt = Math.min(0.1, (timestamp - lastTime) / 1000);
+            lastTime = timestamp;
+            
+            update(dt);
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update(dt) {
+            if (screenShake > 0) screenShake -= dt * 45;
+
+            // Player 1 controller inputs
+            let p1dx = 0, p1dy = 0;
+            if (keys['w'] || keys['W']) p1dy -= 1; 
+            if (keys['s'] || keys['S']) p1dy += 1;
+            if (keys['a'] || keys['A']) p1dx -= 1; 
+            if (keys['d'] || keys['D']) p1dx += 1;
+            player1.move(p1dx, p1dy, dt);
+            player1.defend(keys['e'] || keys['E']);
+            
+            // Q Attack Charge and Release system
+            if (keys['q'] || keys['Q']) {
+                if (!player1.isCharging) {
+                    player1.startCharging();
+                } else {
+                    player1.charge(dt);
+                }
+            } else {
+                if (player1.isCharging) {
+                    player1.releaseAttack();
+                }
+            }
+
+            // Player 2 controller inputs
+            let p2dx = 0, p2dy = 0;
+            if (keys['ArrowUp']) p2dy -= 1; if (keys['ArrowDown']) p2dy += 1;
+            if (keys['ArrowLeft']) p2dx -= 1; if (keys['ArrowRight']) p2dx += 1;
+            player2.move(p2dx, p2dy, dt);
+            player2.defend(keys['n'] || keys['N']);
+            
+            // M Attack Charge and Release system
+            if (keys['m'] || keys['M']) {
+                if (!player2.isCharging) {
+                    player2.startCharging();
+                } else {
+                    player2.charge(dt);
+                }
+            } else {
+                if (player2.isCharging) {
+                    player2.releaseAttack();
+                }
+            }
+
+            player1.update(dt);
+            player2.update(dt);
+
+            // Cooldown indicator fills
+            let p1CDPct = player1.cls.defCooldown ? (1 - player1.defCooldownTimer / player1.cls.defCooldown) * 100 : 100;
+            document.getElementById("p1DefCD").style.width = Math.max(0, p1CDPct) + "%";
+            
+            let p2CDPct = player2.cls.defCooldown ? (1 - player2.defCooldownTimer / player2.cls.defCooldown) * 100 : 100;
+            document.getElementById("p2DefCD").style.width = Math.max(0, p2CDPct) + "%";
+
+            // Projectile moves and targets collision check
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let pr = projectiles[i];
+                pr.x += pr.dirX * pr.speed * dt; pr.y += pr.dirY * pr.speed * dt;
+                pr.rangeLeft -= pr.speed * dt;
+
+                let col = false;
+                if (pr.x < 0 || pr.x > mapWidth || pr.y < 0 || pr.y > mapHeight) col = true;
+                
+                obstacles.forEach(o => {
+                    if (pr.x > o.x && pr.x < o.x + o.w && pr.y > o.y && pr.y < o.y + o.h) col = true;
+                });
+
+                let enemy = pr.ownerId === 1 ? player2 : player1;
+                if (!col && checkRectCollision(pr.x - 4, pr.y - 4, 8, 8, enemy.x, enemy.y, enemy.w, enemy.h)) {
+                    if (enemy.isParrying) {
+                        pr.dirX *= -1; pr.dirY *= -1; pr.ownerId = enemy.id;
+                    } else {
+                        enemy.takeDamage(pr.damage, null);
+                        col = true;
+                    }
+                }
+
+                if (col || pr.rangeLeft <= 0) projectiles.splice(i, 1);
+            }
+
+            // Powerups check
+            medkits.forEach((m, idx) => {
+                if (checkRectCollision(player1.x, player1.y, player1.w, player1.h, m.x, m.y, m.w, m.h)) {
+                    player1.hp = Math.min(player1.maxHp, player1.hp + 60);
+                    medkits.splice(idx, 1); updateUI();
+                    createHitText(player1.x+player1.w/2, player1.y-20, "REPAIROY (+60)", "#00ffcc");
+                } else if (checkRectCollision(player2.x, player2.y, player2.w, player2.h, m.x, m.y, m.w, m.h)) {
+                    player2.hp = Math.min(player2.maxHp, player2.hp + 60);
+                    medkits.splice(idx, 1); updateUI();
+                    createHitText(player2.x+player2.w/2, player2.y-20, "REPAIROY (+60)", "#ff0055");
+                }
+            });
+
+            // Entities update
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i];
+                p.life -= dt;
+                if(p.life <= 0) {
+                    if (p.type === "decoy") {
+                        // Wooden decoy explodes, casting shuriken rings
+                        for(let t=0; t<Math.PI*2; t+=Math.PI/4) {
+                            projectiles.push({
+                                x: p.x, y: p.y, dirX: Math.cos(t), dirY: Math.sin(t),
+                                speed: 650, damage: 16, rangeLeft: 300,
+                                ownerId: p.ownerId, color: "#cbd5e1", size: 6,
+                                className: "Ninja"
+                            });
+                        }
+                        createParticles(p.x, p.y, "#94a3b8", 14, "spark");
+                    }
+                    particles.splice(i, 1);
+                } else {
+                    p.x += p.vx * dt; p.y += p.vy * dt;
+                }
+            }
+
+            for(let i=hitTexts.length-1; i>=0; i--) {
+                hitTexts[i].life -= dt; hitTexts[i].y += hitTexts[i].vy * dt;
+                if(hitTexts[i].life <= 0) hitTexts.splice(i, 1);
+            }
+
+            for(let i=bloodPatches.length-1; i>=0; i--) {
+                bloodPatches[i].life -= dt;
+                if(bloodPatches[i].life <= 0) bloodPatches.splice(i, 1);
+            }
+
+            ambientDust.forEach(d => {
+                d.x += d.vx * dt; d.y += d.vy * dt;
+                if (d.x < 0) d.x = mapWidth;
+                if (d.y < 0) d.y = mapHeight; if (d.y > mapHeight) d.y = 0;
+            });
+        }
+
+        function draw() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let cx = (player1.x + player2.x) / 2;
+            let cy = (player1.y + player2.y) / 2;
+            let scale = Math.min(canvas.width / 1000, canvas.height / 750);
+            if (scale > 1.35) scale = 1.35;
+
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.scale(scale, scale);
+            if (screenShake > 0) ctx.translate((Math.random()-0.5)*screenShake, (Math.random()-0.5)*screenShake);
+            ctx.translate(-cx, -cy);
+
+            // Ground base - Brighter, premium high-contrast steel space slate for superb character pop!
+            ctx.fillStyle = "#262b40"; ctx.fillRect(0, 0, mapWidth, mapHeight);
+
+            // Metallic floor panels grid with brighter circuits
+            let gridBreath = 0.17 + Math.sin(Date.now() * 0.002) * 0.05;
+            ctx.strokeStyle = `rgba(69, 243, 255, ${gridBreath})`; ctx.lineWidth = 1.2;
+            const sz = 100;
+            for(let x=0; x<=mapWidth; x+=sz) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,mapHeight); ctx.stroke(); }
+            for(let y=0; y<=mapHeight; y+=sz) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(mapWidth,y); ctx.stroke(); }
+
+            // Laser border walls (high contrast boundaries)
+            ctx.save();
+            ctx.strokeStyle = "rgba(69, 243, 255, 0.45)";
+            ctx.lineWidth = 5;
+            ctx.shadowColor = "#45f3ff";
+            ctx.shadowBlur = 12;
+            ctx.strokeRect(0, 0, mapWidth, mapHeight);
+            ctx.restore();
+
+            // Circuit board aesthetic decorations on floor
+            ctx.strokeStyle = "rgba(0, 255, 204, 0.12)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(100, 100); ctx.lineTo(250, 100); ctx.lineTo(300, 150);
+            ctx.moveTo(1300, 900); ctx.lineTo(1150, 900); ctx.lineTo(1100, 850);
+            ctx.stroke();
+
+            // Rivet panels
+            ctx.fillStyle="#161b26";
+            for(let x=0; x<=mapWidth; x+=sz) {
+                for(let y=0; y<=mapHeight; y+=sz) { ctx.fillRect(x-3, y-3, 6, 6); }
+            }
+
+            // Floor decals
+            floorDecals.forEach(d => {
+                ctx.fillStyle = "#151924"; ctx.fillRect(d.x, d.y, d.w, d.h);
+                ctx.strokeStyle = "#1e2433"; ctx.lineWidth = 1.5; ctx.strokeRect(d.x, d.y, d.w, d.h);
+            });
+
+            grassPatches.forEach(g => {
+                ctx.fillStyle = g.color; ctx.fillRect(g.x, g.y, g.size, g.size);
+            });
+
+            // Active Glowing Sludge Rivers
+            rivers.forEach(r => {
+                ctx.save();
+                ctx.fillStyle = "rgba(0, 255, 110, 0.22)";
+                ctx.shadowColor = "#00ff66";
+                ctx.shadowBlur = 14;
+                ctx.beginPath();
+                ctx.roundRect(r.x, r.y, r.w, r.h, 4);
+                ctx.fill();
+
+                // Bright sweeping wave animations inside of sludge
+                ctx.strokeStyle = "rgba(0, 255, 110, 0.55)";
+                ctx.lineWidth = 2;
+                let waveOffset = (Date.now() / 15) % 60;
+                for(let wx = r.x - 60 + waveOffset; wx < r.x + r.w; wx += 60) {
+                    ctx.beginPath();
+                    ctx.moveTo(wx, r.y + r.h/2);
+                    ctx.bezierCurveTo(wx + 15, r.y + 4, wx + 30, r.y + r.h - 4, wx + 45, r.y + r.h/2);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
+
+            bloodPatches.forEach(b => {
+                ctx.fillStyle=b.color; ctx.globalAlpha = Math.min(1, b.life);
+                ctx.fillRect(b.x, b.y, b.size, b.size); ctx.globalAlpha = 1;
+            });
+
+            ambientDust.forEach(d => {
+                ctx.fillStyle="rgba(69,243,255,0.22)"; ctx.fillRect(d.x, d.y, d.s, d.s);
+            });
+
+            // Obstacles / Pillar blocks (highly brightened and sci-fi glowing)
+            obstacles.forEach(o => {
+                ctx.save();
+                // Core block body
+                ctx.fillStyle = "#1b212e";
+                ctx.shadowColor = "rgba(69, 243, 255, 0.3)";
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.roundRect(o.x, o.y, o.w, o.h, 6);
+                ctx.fill();
+
+                // Highlight border outline
+                ctx.strokeStyle = "rgba(69, 243, 255, 0.75)";
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                // Glowing hazard stripes clipping inside
+                ctx.clip();
+                ctx.strokeStyle = "rgba(255, 204, 0, 0.28)"; 
+                ctx.lineWidth = 14;
+                for(let i= -o.h; i < o.w+o.h; i+=30) {
+                    ctx.beginPath();
+                    ctx.moveTo(o.x+i, o.y);
+                    ctx.lineTo(o.x+i+30, o.y+o.h);
+                    ctx.stroke();
+                }
+
+                // Add bright glowing energy core center inside pillar blocks
+                ctx.fillStyle = "rgba(69, 243, 255, 0.85)";
+                ctx.shadowColor = "#45f3ff"; ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.arc(o.x + o.w/2, o.y + o.h/2, 10, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // Medkits drawing
+            medkits.forEach(m => {
+                ctx.save();
+                ctx.shadowColor = "#ff0055"; ctx.shadowBlur = 10;
+                ctx.fillStyle = "#ff0055"; ctx.fillRect(m.x, m.y, m.w, m.h);
+                ctx.fillStyle = "#fff"; ctx.fillRect(m.x+m.w/2-2, m.y+2, 4, m.h-4);
+                ctx.fillRect(m.x+2, m.y+m.h/2-2, m.w-4, 4);
+                ctx.restore();
+            });
+
+            // Draw Trails before main bodies
+            [player1, player2].forEach(p => {
+                p.trail.forEach((t, i) => {
+                    let a = (1 - (i/p.trail.length)) * 0.22;
+                    ctx.save();
+                    ctx.translate(t.x + p.w/2, t.y + p.h/2 + (p.isMoving ? Math.sin(t.animTimer)*3 : 0));
+                    ctx.rotate(Math.atan2(p.facing.y, p.facing.x));
+                    ctx.fillStyle = p.color; ctx.globalAlpha = a;
+                    ctx.beginPath(); ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 5); ctx.fill();
+                    ctx.restore();
+                });
+                ctx.globalAlpha = 1;
+            });
+
+            // Projectiles drawing (neon trail effect)
+            projectiles.forEach(pr => {
+                ctx.save(); 
+                ctx.fillStyle = pr.color;
+                ctx.shadowColor = pr.color; 
+                ctx.shadowBlur = 12;
+
+                if (pr.className === "MAGE" || pr.className === "Mage" || pr.className === "Necromancer" || pr.className === "NECROMANCER") {
+                    ctx.beginPath(); ctx.arc(pr.x, pr.y, pr.size, 0, Math.PI*2); ctx.fill();
+                    // Hot white core
+                    ctx.save();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath(); ctx.arc(pr.x, pr.y, pr.size * 0.45, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                } else if (pr.className === "Gunslinger" || pr.className === "GUNSLINGER" || pr.className === "Cryomancer" || pr.className === "CRYOMANCER") {
+                    let travelAngle = Math.atan2(pr.dirY, pr.dirX);
+                    ctx.translate(pr.x, pr.y);
+                    ctx.rotate(travelAngle);
+                    ctx.fillRect(-pr.size, -2.5, pr.size*2, 5);
+                    // Hot white inner center line
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(-pr.size, -0.8, pr.size*2, 1.6);
+                } else {
+                    // Archer sharp neon spears/arrows
+                    let travelAngle = Math.atan2(pr.dirY, pr.dirX);
+                    ctx.translate(pr.x, pr.y);
+                    ctx.rotate(travelAngle);
+                    ctx.beginPath();
+                    ctx.moveTo(-pr.size, -3);
+                    ctx.lineTo(pr.size, 0);
+                    ctx.lineTo(-pr.size, 3);
+                    ctx.closePath();
+                    ctx.fill();
+                    // Hot white center trace arrow
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(-pr.size + 2, 0);
+                    ctx.lineTo(pr.size - 1, 0);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
+
+            // Particles Rendering (Includes new arc and shockwave templates)
+            particles.forEach(p => {
+                ctx.save();
+                if (p.type === "aoe") {
+                    ctx.strokeStyle = p.color; ctx.lineWidth = 3; ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.stroke();
+                } else if (p.type === "glowing_arc") {
+                    // Epic Sci-fi Laser Blade Core Slash Sweep
+                    let ratio = (p.life / p.maxLife);
+                    
+                    // 1. Neon ambient color glow
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 20 * ratio;
+                    ctx.globalAlpha = ratio * 0.9;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 24;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, p.aStart, p.aEnd, p.side < 0);
+                    ctx.stroke();
+
+                    // 2. High density energetic hot white core
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 6 * ratio;
+                    ctx.globalAlpha = ratio * 1.0;
+                    ctx.shadowColor = "#ffffff";
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, p.aStart, p.aEnd, p.side < 0);
+                    ctx.stroke();
+                } else if (p.type === "shockwave") {
+                    // Dynamic expanding circular rings
+                    let ratio = (p.life / p.maxLife || 1);
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 2.5 * ratio;
+                    ctx.globalAlpha = ratio * 0.7;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r + (1-ratio)*(p.maxRadius - p.r), 0, Math.PI*2);
+                    ctx.stroke();
+                } else if (p.type === "lightning_strike") {
+                    ctx.strokeStyle = p.color; ctx.lineWidth = 3; ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    let mX = (p.x + p.targetX)/2 + (Math.random()-0.5)*50;
+                    let mY = (p.y + p.targetY)/2;
+                    ctx.lineTo(mX, mY); ctx.lineTo(p.targetX, p.targetY); ctx.stroke();
+                } else if (p.type === "decoy") {
+                    ctx.fillStyle = "#78350f"; ctx.fillRect(p.x-10, p.y-12, 20, 24);
+                    ctx.fillStyle = "#16a34a"; ctx.fillRect(p.x-12, p.y-16, 24, 4);
+                } else if (p.type === "vacuum" || p.type === "trail") {
+                    ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
+                    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+                } else {
+                    ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
+                }
+                ctx.restore();
+            });
+
+            // Players body & actions
+            [player1, player2].forEach(p => {
+                let bob = p.isMoving ? Math.sin(p.animTimer) * 3 : 0;
+                let shk = p.flashTimer > 0 ? (Math.random()-0.5)*7 : 0;
+
+                // 1. GUARANTEED VISIBILITY CORE TARGET FLOATING RING below feet
+                ctx.save();
+                ctx.strokeStyle = p.color;
+                ctx.lineWidth = 2.5;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = p.color + "26"; // 15% opacity neon fill pedestal
+                ctx.beginPath();
+                ctx.arc(p.x + p.w/2, p.y + p.h, 24, 0, Math.PI*2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Facing direction arrow indicator on Ring
+                let facingDir = Math.atan2(p.facing.y, p.facing.x);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x + p.w/2 + Math.cos(facingDir) * 24, p.y + p.h + Math.sin(facingDir) * 24, 4.5, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+
+                // Ground shadow
+                ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath();
+                ctx.ellipse(p.x+p.w/2, p.y+p.h, 20 + bob/2, 7, 0, 0, Math.PI*2); ctx.fill();
+
+                // 2. ACTIVE TENSION AIMING LINE (Visible during active Q/M charge inputs)
+                if (p.isCharging && p.cls.type === "ranged") {
+                    ctx.save();
+                    let endX = p.x + p.w/2 + p.facing.x * (p.cls.range * (0.6 + p.chargeVal * 0.4));
+                    let endY = p.y + p.h/2 + p.facing.y * (p.cls.range * (0.6 + p.chargeVal * 0.4));
+                    
+                    // Direct pulsing gradient laser guide line
+                    ctx.strokeStyle = p.chargeVal > 0.85 ? "rgba(255,100,0,0.75)" : "rgba(69,243,255,0.45)";
+                    ctx.lineWidth = 1.5 + p.chargeVal * 2;
+                    ctx.shadowColor = p.chargeVal > 0.85 ? "#ff5500" : p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.setLineDash([8, 6]);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x + p.w/2, p.y + p.h/2);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // 3. BASE BODY RENDERING (Beautiful vibrant details + glowing armor)
+                ctx.save();
+                ctx.translate(p.x+p.w/2 + shk, p.y+p.h/2 + bob);
+                ctx.rotate(Math.atan2(p.facing.y, p.facing.x));
+
+                // Glowing neon shadow surrounding player
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = p.isCharging ? 15 + Math.sin(Date.now() * 0.02) * 5 : 8;
+
+                ctx.fillStyle = p.flashTimer > 0 ? "#fff" : p.color;
+                ctx.strokeStyle = "#000"; ctx.lineWidth = 3.5;
+                ctx.beginPath(); 
+                ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 6); 
+                ctx.fill(); 
+                ctx.stroke();
+
+                // Neon Tech Visor Details (high visual contrast)
+                ctx.fillStyle = "#111";
+                ctx.fillRect(4, -12, 10, 24); // Solid visor frame
+                
+                // Active cyan/magenta energy line inside visor
+                ctx.fillStyle = p.id === 1 ? "#00ffcc" : "#ff0055";
+                if (p.cls.name === "Berserker" && p.rageMultiplier > 1.2) ctx.fillStyle = "#ff0000"; // Fire fury eyes
+                ctx.fillRect(8, -10, 4, 20);
+
+                // Armories visual assets details (Rich identity layers overlayed on standard blocks)
+                if (p.cls.name === "Knight") {
+                    ctx.fillStyle = "#b91c1c"; ctx.fillRect(-22, -16, 10, 32); // Deep Red Vanguard Cape
+                } else if (p.cls.name === "Mage") {
+                    ctx.fillStyle = "#5b21b6"; ctx.fillRect(-18, -14, 8, 28); // Wizard Gown Hood
+                    ctx.strokeStyle = "#a78bfa"; ctx.lineWidth = 1; ctx.strokeRect(-18, -14, 8, 28);
+                } else if (p.cls.name === "Paladin") {
+                    ctx.fillStyle = "#fbbf24"; ctx.fillRect(-14, -14, 14, 28); // Golden Shield Plate
+                } else if (p.cls.name === "Ninja") {
+                    ctx.fillStyle = "#1f2937"; ctx.fillRect(-16, -16, 32, 6); // Shadow Scarf
+                } else if (p.cls.name === "Archer") {
+                    ctx.fillStyle = "#065f46"; ctx.fillRect(-20, -12, 11, 24); // Forest Sniper Quiver
+                } else if (p.cls.name === "Berserker") {
+                    ctx.fillStyle = "#7f1d1d"; ctx.fillRect(-18, -16, 12, 32); // Horn shoulder pauldrons
+                }
+
+                // Cybernetic weapons (drawn and animated relative to bob and charge tension)
+                ctx.save();
+                let chargeScale = p.isCharging ? p.chargeVal : 0;
+                
+                if (p.cls.type === "melee") {
+                    // Swing weapon visual adjustments
+                    ctx.translate(14, 12);
+                    ctx.rotate(Math.sin(chargeScale * Math.PI / 4)); // rotates back slightly when tensioning charge
+                    
+                    ctx.fillStyle = "#e2e8f0";
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 1.5;
+
+                    if (p.cls.name === "Knight") {
+                        // Giant Glowing Claymore Sword
+                        ctx.beginPath();
+                        ctx.roundRect(0, -5, 28 + chargeScale * 6, 8, 2.5);
+                        ctx.fill(); ctx.stroke();
+                        // Sword handle guards
+                        ctx.fillStyle = "#64748b"; ctx.fillRect(-3, -8, 4, 14);
+                    } else if (p.cls.name === "Spearman") {
+                        // High Tech Reach Pike
+                        ctx.fillStyle = "#475569"; ctx.fillRect(-15, -2, 45, 4); // pole shaft
+                        ctx.fillStyle = "#fbbf24"; ctx.beginPath(); // spear blade point
+                        ctx.moveTo(30, -5); ctx.lineTo(44, 0); ctx.lineTo(30, 5); ctx.closePath(); ctx.fill();
+                    } else if (p.cls.name === "Tank") {
+                        // Massive Hex Shield
+                        ctx.fillStyle = "#475569";
+                        ctx.strokeStyle = "#45f3ff";
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(0, -16); ctx.lineTo(12, -8); ctx.lineTo(12, 8); ctx.lineTo(0, 16);
+                        ctx.lineTo(-6, 8); ctx.lineTo(-6, -8); ctx.closePath(); ctx.fill(); ctx.stroke();
+                    } else {
+                        // Standard Energy Blade
+                        ctx.beginPath();
+                        ctx.roundRect(0, -3.5, 24, 6, 2);
+                        ctx.fill(); ctx.stroke();
+                    }
+                } else {
+                    // Ranged Weaponry (Dynamic animations, e.g. Archer bow strings)
+                    ctx.translate(12, 10);
+                    
+                    if (p.cls.name === "Archer") {
+                        // Recurve Cyber Bow
+                        ctx.strokeStyle = p.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        // Draw bending arc bow curve
+                        ctx.arc(0, 0, 18, -Math.PI/1.8 + chargeScale*0.2, Math.PI/1.8 - chargeScale*0.2);
+                        ctx.stroke();
+
+                        // Bow string pulling backwards proportionally to tension draw value
+                        ctx.strokeStyle = "#e2e8f0"; ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        let drawBackX = -10 * chargeScale;
+                        ctx.moveTo(Math.cos(-Math.PI/1.8) * 18, Math.sin(-Math.PI/1.8) * 18);
+                        ctx.lineTo(drawBackX, 0);
+                        ctx.lineTo(Math.cos(Math.PI/1.8) * 18, Math.sin(Math.PI/1.8) * 18);
+                        ctx.stroke();
+
+                        // Arrow point glowing
+                        if (p.isCharging) {
+                            ctx.fillStyle = "#fff";
+                            ctx.beginPath();
+                            ctx.arc(drawBackX + 8, 0, 2.5 + chargeScale*2.5, 0, Math.PI*2);
+                            ctx.fill();
+                        }
+                    } else if (p.cls.name === "Mage" || p.cls.name === "Necromancer") {
+                        // Sorcerer Crystal staff
+                        ctx.fillStyle = "#78350f"; ctx.fillRect(-10, -2, 32, 4); // Staff
+                        ctx.fillStyle = p.color; ctx.shadowBlur = 10;
+                        ctx.beginPath(); // Floating core gem sphere
+                        ctx.arc(24 + Math.sin(Date.now()*0.015)*2, Math.cos(Date.now()*0.015)*2, 5 + chargeScale * 4, 0, Math.PI*2);
+                        ctx.fill();
+                    } else {
+                        // Rail / Blasters
+                        ctx.fillStyle = "#334155"; ctx.fillRect(0, -3.5, 18, 7);
+                    }
+                }
+                ctx.restore();
+
+                ctx.restore(); // end player base rotation
+
+                // Overhead Dynamic Health Display HUD (high contrast off-white and red)
+                const hpY = p.y - 14 + bob;
+                ctx.fillStyle = "#000"; ctx.fillRect(p.x - 3, hpY, p.w + 6, 4.5);
+                ctx.fillStyle = "#7f1d1d"; ctx.fillRect(p.x - 3, hpY, p.w + 6, 4.5); // Red missing base
+                ctx.fillStyle = p.color; ctx.fillRect(p.x - 3, hpY, (p.w + 6) * (p.hp/p.maxHp), 4.5);
+                
+                // Secondary shielding bar segment overlayed cleanly
+                if (p.shield > 0) {
+                    ctx.fillStyle = "#45f3ff"; ctx.fillRect(p.x - 3, hpY-3, (p.w + 6) * (p.shield/100), 2.5);
+                }
+
+                // If currently charging, render an interactive glowing charging percentage bar above health!
+                if (p.isCharging) {
+                    ctx.fillStyle = "#000"; ctx.fillRect(p.x - 3, hpY - 7, p.w + 6, 3);
+                    ctx.fillStyle = p.chargeVal > 0.85 ? "#ffcc00" : "#ffffff";
+                    ctx.fillRect(p.x - 3, hpY - 7, (p.w + 6) * p.chargeVal, 3);
+                }
+
+                // Knight / Parrying custom active futuristic shield bubble
+                if (p.isParrying) {
+                    ctx.save();
+                    ctx.strokeStyle = "rgba(69, 243, 255, 0.95)";
+                    ctx.fillStyle = "rgba(69, 243, 255, 0.16)";
+                    ctx.lineWidth = 3.5;
+                    ctx.shadowColor = "#45f3ff";
+                    ctx.shadowBlur = 18;
+                    ctx.beginPath();
+                    ctx.arc(p.x + p.w/2, p.y + p.h/2 + bob, 34, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Circuit overlays / crosshairs inside the shield
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.lineWidth = 1.0;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x + p.w/2 - 34, p.y + p.h/2 + bob);
+                    ctx.lineTo(p.x + p.w/2 + 34, p.y + p.h/2 + bob);
+                    ctx.moveTo(p.x + p.w/2, p.y + p.h/2 - 34 + bob);
+                    ctx.lineTo(p.x + p.w/2, p.y + p.h/2 + 34 + bob);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                if (p.isBlocking) {
+                    ctx.save();
+                    ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
+                    ctx.fillStyle = "rgba(251, 191, 36, 0.12)";
+                    ctx.lineWidth = 3.5;
+                    ctx.shadowColor = "#fbbf24";
+                    ctx.shadowBlur = 12;
+                    ctx.beginPath();
+                    let angle = Math.atan2(p.facing.y, p.facing.x);
+                    ctx.arc(p.x + p.w/2, p.y + p.h/2 + bob, 28, angle - Math.PI/2.2, angle + Math.PI/2.2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                if (p.shield > 0) {
+                    ctx.save();
+                    ctx.strokeStyle = "rgba(69, 243, 255, 0.6)";
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.arc(p.x + p.w/2, p.y + p.h/2 + bob, 28, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            });
+
+            // Combat floating statistics numbers
+            hitTexts.forEach(ht => {
+                ctx.save();
+                ctx.fillStyle = ht.color; 
+                ctx.font = "13px 'Press Start 2P'";
+                ctx.shadowColor = "#000";
+                ctx.shadowBlur = 4;
+                ctx.fillText(ht.text, ht.x - 12, ht.y);
+                ctx.restore();
+            });
+
+            ctx.restore();
+        }
+
+        // MOVEMENT LISTENERS
+        window.addEventListener("keydown", e => keys[e.key] = true);
+        window.addEventListener("keyup", e => keys[e.key] = false);
+
+        startButton.addEventListener("click", () => {
+            AudioMgr.init(); AudioMgr.resume();
+            initGame(true);
+        });
+
+        nextRoundButton.addEventListener("click", () => {
+            initGame(false);
+        });
+
+        quitBtn.addEventListener("click", () => {
+            gameRunning = false;
+            clearInterval(matchInterval);
+            AudioMgr.startBGM(false);
+            canvas.style.display = "none";
+            document.getElementById("hud-bar").style.display = "none";
+            startMenu.style.display = "flex";
+        });
+
+
+
+        // MENU BACKGROUND ASH DECAL STREAMERS
+        let menuParts = [];
+        let menuW = window.innerWidth, menuH = window.innerHeight;
+        function initMenu() {
+            menuW = window.innerWidth; menuH = window.innerHeight;
+            menuCanvas.width = menuW; menuCanvas.height = menuH;
+            menuParts = [];
+            for (let i = 0; i < 60; i++) {
+                menuParts.push({
+                    x: Math.random() * menuW,
+                    y: Math.random() * menuH,
+                    vy: -Math.random() * 1.5 - 0.5,
+                    s: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function drawMenu() {
+            if (gameRunning) return;
+            let mCtx = menuCanvas.getContext("2d");
+            mCtx.clearRect(0,0,menuW, menuH);
+            mCtx.fillStyle="rgba(0, 255, 204, 0.1)";
+            menuParts.forEach(p => {
+                p.y += p.vy; if (p.y < 0) p.y = menuH;
+                mCtx.fillRect(p.x, p.y, p.s, p.s);
+            });
+            // Also update preview drawings on selections dynamically
+            const p1Val = document.getElementById("p1Weapon").value;
+            const p2Val = document.getElementById("p2Weapon").value;
+            drawPreview("p1PreviewCanvas", p1Val);
+            drawPreview("p2PreviewCanvas", p2Val);
+
+            requestAnimationFrame(drawMenu);
+        }
+
+        // CRT NOISE OVERLAY COMPILERS
+        function updateGrain() {
+            const gr = document.getElementById("grain-canvas");
+            gr.width = 120; gr.height = 120;
+            const gCtx = gr.getContext("2d");
+            const imgData = gCtx.createImageData(120, 120);
+            for (let i = 0; i < imgData.data.length; i += 4) {
+                let n = Math.random() * 255;
+                imgData.data[i] = n; imgData.data[i+1] = n; imgData.data[i+2] = n; imgData.data[i+3] = 45;
+            }
+            gCtx.putImageData(imgData, 0,0);
+        }
+
+        // GLOBALS UTILSHELPERS
+        function checkRectCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
+            return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+        }
+
+        function normalizeAngle(a) {
+            while (a > Math.PI) a -= Math.PI * 2;
+            while (a < -Math.PI) a += Math.PI * 2;
+            return a;
+        }
+
+        function varColor(variableName) {
+            if (variableName.startsWith("var(")) {
+                let clean = variableName.replace("var(", "").replace(")", "").trim();
+                return getComputedStyle(document.documentElement).getPropertyValue(clean).trim();
+            }
+            return variableName;
+        }
+
+        window.addEventListener("resize", () => { initMenu(); });
+        
+        // Boot execution
+        initMenu();
+        drawMenu();
+        updateGrain();
+        updateClassDesc(1);
+        updateClassDesc(2);
+    </script>
+</body>
+</html>
