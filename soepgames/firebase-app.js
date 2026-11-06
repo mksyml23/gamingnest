@@ -1,2 +1,1 @@
-export { auth, firestore, updateDoc, increment, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from "https://raw.githubusercontent.com/mksyml23/gamingnest/3b4875e/soepgames/firebase-app.js";
-import "https://raw.githubusercontent.com/mksyml23/gamingnest/3b4875e/soepgames/firebase-app.js";
+export * from "https://cdn.jsdelivr.net/gh/mksyml23/gamingnest@3b4875e/soepgames/firebase-app.js";
