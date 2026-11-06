@@ -1,1 +1,1 @@
-export * from "https://cdn.jsdelivr.net/gh/mksyml23/gamingnest@3b4875e/soepgames/firebase-app.js";
+export * from "https://cdn.jsdelivr.net/gh/mksyml23/gamingnest@2fcac71/soepgames/firebase-app.js";
