@@ -76,11 +76,11 @@
     },
     "soepgames/index.html": {
       "base_sha256": "269b009881f833429c4aa25127c0f598db7aa6d54d6da429c053923cd0463d5b",
-      "result_sha256": "86a4733ad4cdb692cb24e4ff8ea00bb545b1390ffaff0dd159adb626d03a58c5"
+      "result_sha256": "1291466bb311078149e9d60143f0cfca3b235856a745371516403ba7aa7757dc"
     }
   },
   "format": 1,
   "just_click_sha256": "0be3292c633148a115791537b95b7666594f4b451231856fea7281f7b1d6a19b",
-  "patch_bytes": 243373,
-  "patch_sha256": "7f83b1d59dd0b0cc66273d851f51f9bfe299f155bb9fc1e78e4b301b595e05e4"
+  "patch_bytes": 244014,
+  "patch_sha256": "34b08b126ca964842c7bcebc3b05d1ab30187ca5285dd0ecf6e46a500d1b1e5e"
 }
