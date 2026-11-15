@@ -1,0 +1,84 @@
+{
+  "base_commit": "7156ef4f3946601833ff92ed78ad838a10ab1591",
+  "chunks": [
+    "chunk-0000.txt",
+    "chunk-0001.txt",
+    "chunk-0002.txt",
+    "chunk-0003.txt",
+    "chunk-0004.txt",
+    "chunk-0005.txt",
+    "chunk-0006.txt",
+    "chunk-0007.txt",
+    "chunk-0008.txt"
+  ],
+  "files": {
+    "soepgames/games/aces.html": {
+      "base_sha256": "ebf5dd97bab6f0aaa1387f1cb4cb66f6f08a06a556a04255f92532a29773adc2",
+      "result_sha256": "119e2a0e835eef2753e179adafd11a8bdc5f182b724be4906987e1da6232c848"
+    },
+    "soepgames/games/battlecore.html": {
+      "base_sha256": "4c1bf9d88799ee3ecd9bd821ca401deeccf92bd0c0028818569f6868dce48273",
+      "result_sha256": "6d1b3121c7d6d50aea875afce5afb595139239f1a54ac050949b0f64d11f00fc"
+    },
+    "soepgames/games/chrono-core/index.html": {
+      "base_sha256": "ec7cccb7ce539b5164cd6ea63db72fb7b9f83fdd4e056750e86b86da76488c76",
+      "result_sha256": "74baf2fa93b05a06503ad54498c4f344a3f90b7cfbbe92cb27271dab96f088fd"
+    },
+    "soepgames/games/index.html": {
+      "base_sha256": "5753e95ac171d1032b430fa2f91207cb2a9dc163bedf89fbf4429be807d23b34",
+      "result_sha256": "2aca034fa5a360bd02f98018976a33b007f8ff0be0b19fb2579c8dcee82122ab"
+    },
+    "soepgames/games/index.html.incaseofcorruption.bak": {
+      "base_sha256": "ba60847eeee64ff03304d9440df2e4739d302cb1dd11be6887799eb8d7f01850",
+      "result_sha256": null
+    },
+    "soepgames/games/neon-breach.html": {
+      "base_sha256": "5460e47e08f1fd1ea0449acc6604135aecd6d9d1d08bbcd3d90c4f48006bc52f",
+      "result_sha256": "78b38e505fa4440b4b2e0a8e703e2eacf8db0afec8193ed7579b7c25189e5cdc"
+    },
+    "soepgames/games/new 1.html": {
+      "base_sha256": "fbdcb41b0262c9d961e9b424e60fa7843048b35e9a35ce6e85d3f7bdb43e7ad2",
+      "result_sha256": null
+    },
+    "soepgames/games/parcour.html": {
+      "base_sha256": "02fd1bec0516eec45ce5fd9b9a43438d184a63d40d67848ebf47826befd7d576",
+      "result_sha256": "c022a047eafe7307867595d8d8192749a32b183e1ed03d448abe5a04cea4e240"
+    },
+    "soepgames/games/pixelstack.html": {
+      "base_sha256": "9c7c0d4aad37b9c2228f3f575696cb104bc66bcb7e5f0ce4ced1bdedc2829093",
+      "result_sha256": "f660c46a7772be3a37b2e26bc44d9f8a6e3db37bce49a998c5f4418b1223cd72"
+    },
+    "soepgames/games/scp-foundation.html": {
+      "base_sha256": "371be9803ae9bb12ce1991184a68e6dff9026f31df8c02b4457647dea775c977",
+      "result_sha256": "f53d1a99782faaf83c9a62133de32827cb5adc55add621831358670b75e4ba88"
+    },
+    "soepgames/games/soulreaper/index.html": {
+      "base_sha256": "222a1cd2a16989b3baed6a6340a1659188f500c4ada16b03bce8cc1620132dac",
+      "result_sha256": "c917211a2ba2060833afa0ec2be0dda4c815fb8f22a9941f9dab628c9cf405e7"
+    },
+    "soepgames/games/spacejumper.html": {
+      "base_sha256": "275d1d03e3e7b0cbde0cc0137c4ea129c8be0532927f933f5009ee47debed1c5",
+      "result_sha256": "e79f7f13dc8abfd9fec54474dd9a75f78fb87ab7e50e06d4af21b41dbee49916"
+    },
+    "soepgames/games/spendthemoney.html": {
+      "base_sha256": "392d341602f399a69ec8fe6f6772cabc4e07bf705d691fbc842a014212b7f75b",
+      "result_sha256": "f49e0a0acfdcc5ddc953dd7a1cc5429be9d6e48f2746d16f829360a264eb151d"
+    },
+    "soepgames/games/tag.html": {
+      "base_sha256": "75edefe11cecafa35debde1f23e98db433a792556a65d27e445e6d988756c260",
+      "result_sha256": "17ff114a27557b5a65ae671e09e7eee5a8c24fe74c817601ce78b93901f1bd6d"
+    },
+    "soepgames/games/tictac/index.html": {
+      "base_sha256": "28bf93271ae81c0465c1c6ef491596b5e087f61be2fdca324858ab0553b8c111",
+      "result_sha256": "2dca01e733c9e288b75afd1d0ab37f1bae2709360ee476798e7f9181028111b0"
+    },
+    "soepgames/index.html": {
+      "base_sha256": "269b009881f833429c4aa25127c0f598db7aa6d54d6da429c053923cd0463d5b",
+      "result_sha256": "45d71a3246ba228b9df23a712db68b93140d0715288cdcaa4b09c14a34a950f1"
+    }
+  },
+  "format": 1,
+  "just_click_sha256": "0be3292c633148a115791537b95b7666594f4b451231856fea7281f7b1d6a19b",
+  "patch_bytes": 198154,
+  "patch_sha256": "5ce240efa687a9b0ace117b5dc6e663f3c1f2a827af0a6cbab9e4098fb7f1e5d"
+}
