@@ -1,2 +1,10 @@
 [build]
   publish = "soepgames"
+
+[context.deploy-preview]
+  command = "python3 scripts/build-preview.py"
+  publish = ".preview-publish"
+
+[context.branch-deploy]
+  command = "python3 scripts/build-preview.py"
+  publish = ".preview-publish"
