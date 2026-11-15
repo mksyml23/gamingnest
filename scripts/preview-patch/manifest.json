@@ -9,7 +9,9 @@
     "chunk-0005.txt",
     "chunk-0006.txt",
     "chunk-0007.txt",
-    "chunk-0008.txt"
+    "chunk-0008.txt",
+    "chunk-0009.txt",
+    "chunk-0010.txt"
   ],
   "files": {
     "soepgames/games/aces.html": {
@@ -74,11 +76,11 @@
     },
     "soepgames/index.html": {
       "base_sha256": "269b009881f833429c4aa25127c0f598db7aa6d54d6da429c053923cd0463d5b",
-      "result_sha256": "c73aaa98a1098f2202efa964024c71113c43c7831fcddc733d45a8aaca7998e7"
+      "result_sha256": "86a4733ad4cdb692cb24e4ff8ea00bb545b1390ffaff0dd159adb626d03a58c5"
     }
   },
   "format": 1,
   "just_click_sha256": "0be3292c633148a115791537b95b7666594f4b451231856fea7281f7b1d6a19b",
-  "patch_bytes": 207235,
-  "patch_sha256": "e56152ee3cb95e050a9ceaf7c848f666aca1c1ad499c9c7a7f0064214192c8d4"
+  "patch_bytes": 243373,
+  "patch_sha256": "7f83b1d59dd0b0cc66273d851f51f9bfe299f155bb9fc1e78e4b301b595e05e4"
 }
