@@ -127,7 +127,7 @@ def build():
                     raise RuntimeError(f'Production link remains in {f.relative_to(stage)}')
         (stage / '_headers').write_text('/*\n  Content-Security-Policy: ' + CSP + '\n  X-Robots-Tag: noindex, nofollow\n  X-Content-Type-Options: nosniff\n', encoding='utf-8')
         (stage / 'preview-blocked.html').write_text('<!doctype html><html><head>' + META + '</head><body>' + BANNER + '<h1>Preview service disabled</h1></body></html>', encoding='utf-8')
-        (stage / '_redirects').write_text('/api/*  /preview-blocked.html  404!\n/.netlify/functions/*  /preview-blocked.html  404!\n', encoding='utf-8')
+        (stage / '_redirects').write_text('/api/*  /preview-blocked.html  404!\n', encoding='utf-8')
         stage.rename(OUTPUT)
         print(f'Preview built: {html_count + 1} HTML files, isolated Firebase and JSONBin, cloud requests blocked.')
 
