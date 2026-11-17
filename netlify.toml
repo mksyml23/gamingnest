@@ -2,9 +2,9 @@
   publish = "soepgames"
 
 [context.deploy-preview]
-  command = "python3 scripts/apply-preview-patch.py && python3 scripts/apply-account-aces-overlay.py && python3 scripts/apply-aces-ad-experiment.py && python3 scripts/apply-aces-preview-skins.py"
+  command = "python3 scripts/apply-preview-patch.py && python3 scripts/apply-account-aces-overlay.py && python3 scripts/apply-aces-ad-experiment.py && python3 scripts/apply-aces-preview-skins.py && python3 scripts/apply-aces-safe-cosmetics.py"
   publish = ".preview-publish"
 
 [context.branch-deploy]
-  command = "python3 scripts/apply-preview-patch.py && python3 scripts/apply-account-aces-overlay.py && python3 scripts/apply-aces-ad-experiment.py && python3 scripts/apply-aces-preview-skins.py"
+  command = "python3 scripts/apply-preview-patch.py && python3 scripts/apply-account-aces-overlay.py && python3 scripts/apply-aces-ad-experiment.py && python3 scripts/apply-aces-preview-skins.py && python3 scripts/apply-aces-safe-cosmetics.py"
   publish = ".preview-publish"
