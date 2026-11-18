@@ -1,3 +1,4 @@
+# Preview branch: mobile assets applied only in deploy-preview context.
 [build]
   publish = "soepgames"
 
