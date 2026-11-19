@@ -12,7 +12,7 @@ function setup({stored = false, blocked = false} = {}) {
   const invite = el('account-invite'); invite.hidden = true;
   const close = el('account-invite-close'), create = el('account-invite-create'), dock = el('account-dock-button'), email = el('account-email');
   invite.contains = target => target === close || target === create;
-  const modal = el('modal-account'); modal.display = blocked ? 'flex' : 'none';
+  const modal = el('modal-account'); modal.display = blocked ? 'flex' : 'none'; modal.contains = () => false; modal.querySelector = () => null;
   const nodes = Object.fromEntries([invite,close,create,dock,email,modal].map(n => [n.id,n]));
   document.getElementById = id => nodes[id];
   document.querySelectorAll = () => [modal];
@@ -21,7 +21,7 @@ function setup({stored = false, blocked = false} = {}) {
   const window = {accountMode:'signup', openAccount() { opened++; modal.display = 'flex'; }, switchAccountMode() { window.accountMode = window.accountMode === 'login' ? 'signup' : 'login'; }};
   const setTimeout = (fn, ms) => { const id = nextId++; pending.set(id,{fn, at:now+ms}); return id; };
   const clearTimeout = id => pending.delete(id);
-  const context = {auth, document, window, setTimeout, clearTimeout, getComputedStyle: el => ({display:el.display}), sessionStorage:{getItem: key => store[key], setItem: (key,val) => store[key]=val}, onAuthStateChanged: (_auth, cb, err) => {listener = cb; error = err;}};
+  const context = {auth, document, window, setTimeout, clearTimeout, MutationObserver: class { observe() {} }, getComputedStyle: el => ({display:el.display}), sessionStorage:{getItem: key => store[key], setItem: (key,val) => store[key]=val}, onAuthStateChanged: (_auth, cb, err) => {listener = cb; error = err;}};
   vm.runInNewContext(source, context);
   function advance(ms) { const end = now + ms; while (true) { const entries = [...pending.entries()].sort((a,b) => a[1].at-b[1].at); if (!entries.length || entries[0][1].at > end) break; const [id, job] = entries[0]; pending.delete(id); now=job.at; job.fn(); } now=end; }
   function emit(user) { auth.currentUser = user; listener(user); }
