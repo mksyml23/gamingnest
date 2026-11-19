@@ -1,0 +1,5 @@
+[
+  {"id":"prismatic_gold","name":"Prismatic Gold","nameNl":"Prismatisch Goud","color":"#ffd700","trailColor":"#ff8a00","costBits":1500},
+  {"id":"void_rose","name":"Void Rose","nameNl":"Leegte Roos","color":"#ff66aa","trailColor":"#a020f0","costBits":3000},
+  {"id":"glacial_spectrum","name":"Glacial Spectrum","nameNl":"IJsspectrum","color":"#bafaff","trailColor":"#508cff","costBits":5000}
+]
