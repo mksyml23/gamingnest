@@ -1,2 +1,3 @@
 [build]
   publish = "soepgames"
+  command = "python3 scripts/apply-release-8ce7aec.py"
