@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.1.0/fi
 const invite = document.getElementById('account-invite');
 const closeButton = document.getElementById('account-invite-close');
 const createButton = document.getElementById('account-invite-create');
+const loginButton = document.getElementById('account-invite-login');
 const accountModal = document.getElementById('modal-account');
 const dock = document.getElementById('account-dock-button');
 const storageKey = 'gamingnest-account-invite-dismissed';
@@ -43,14 +44,17 @@ onAuthStateChanged(auth, user => {
   if (signedOut && !dismissed) schedule(8000);
 }, () => { signedOut = false; hide(); });
 closeButton.addEventListener('click', dismiss);
-createButton.addEventListener('click', () => {
+function openMode(mode) {
   if (!signedOut || auth.currentUser || typeof window.openAccount !== 'function' ||
       typeof window.switchAccountMode !== 'function') { hide(); return; }
+  if (window.accountMode !== mode) window.switchAccountMode();
+  if (window.accountMode !== mode) return;
   dismiss();
-  if (window.accountMode === 'login') window.switchAccountMode();
   window.openAccount();
   document.getElementById('account-email')?.focus();
-});
+}
+createButton.addEventListener('click', () => openMode('signup'));
+loginButton.addEventListener('click', () => openMode('login'));
 
 // Existing modals may open after the invitation has appeared. Never overlay them.
 const modalObserver = new MutationObserver(() => {
