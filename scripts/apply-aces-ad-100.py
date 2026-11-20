@@ -35,6 +35,9 @@ def main():
     for path, text in outputs.items():
         path.write_text(text, encoding='utf-8')
     print('Verified ACES ad label and 100 Bits patch applied')
+    # The release homepage is assembled earlier; apply language improvements last.
+    import runpy
+    runpy.run_path(str(ROOT / 'scripts/apply-language-switch.py'), run_name='__main__')
 
 if __name__ == '__main__':
     main()
