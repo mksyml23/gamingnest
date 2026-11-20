@@ -1,0 +1,16 @@
+/* Match the original compact EN/NL pill while giving its choices a styled panel. */
+.language-control { position: absolute; left: 4%; top: 20px; z-index: 100; font: 700 .78rem 'Poppins', sans-serif; }
+.language-control__trigger { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 68px; min-height: 36px; padding: 8px 11px; border: 1px solid rgba(0,191,255,.42); border-radius: 999px; background: rgba(6,8,13,.92); color: #d9f7ff; cursor: pointer; list-style: none; }
+.language-control__trigger::-webkit-details-marker { display: none; }
+.language-control__trigger:hover, .language-control[open] .language-control__trigger { border-color: #75ddff; background: #162c42; }
+.language-control__chevron { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.language-control[open] .language-control__chevron { transform: rotate(225deg) translate(-1px,-1px); }
+.language-control__options { position: absolute; top: calc(100% + 8px); left: 0; width: 162px; padding: 5px; border: 1px solid rgba(115,223,255,.48); border-radius: 14px; background: #0c1928; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+.language-control__option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; color: #e7f9ff; font: inherit; text-align: left; cursor: pointer; }
+.language-control__option:hover { background: #20415c; }
+.language-control__option[aria-pressed="true"] { background: #17384c; color: #a9edff; }
+.language-control__check { visibility: hidden; color: #75ddff; }
+.language-control__option[aria-pressed="true"] .language-control__check { visibility: visible; }
+.language-control__trigger:focus-visible, .language-control__option:focus-visible { outline: 3px solid white; outline-offset: 2px; }
+@media (max-width: 650px) { .language-control { top: 15px; } }
+@media (forced-colors: active) { .language-control__option[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -2px; } }

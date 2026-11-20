@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebas
 import {
     getAuth, GoogleAuthProvider, signInWithPopup,
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
-    signOut, onAuthStateChanged
+    signOut, onAuthStateChanged, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
     getFirestore, doc, setDoc, getDoc, serverTimestamp,
@@ -84,46 +84,73 @@ window.loadGameData = async function(gameId) {
 // ACCOUNT UI LOGICA (Alleen actief als knoppen bestaan)
 // ==========================================
 const googleBtn = document.getElementById("google-login");
-if (googleBtn) {
-    const provider = new GoogleAuthProvider();
-    googleBtn.addEventListener("click", async () => {
-        try {
-            const result = await signInWithPopup(auth, provider);
-            await createUserDocument(result.user);
-            updateAccountUI(result.user);
-        } catch (error) {
-            showAccountError(error);
-        }
+const submitBtn = document.getElementById("account-submit");
+const resetBtn = document.getElementById("account-reset");
+let accountBusy = false;
+let accountReady = false;
+function setAccountBusy(busy) {
+    accountBusy = busy;
+    for (const button of [submitBtn, googleBtn, resetBtn]) if (button) button.disabled = busy || !accountReady;
+    const switchButton = document.getElementById("account-switch-button");
+    if (switchButton) switchButton.disabled = busy;
+}
+function clearAccountMessage() {
+    const box = document.getElementById("account-error");
+    if (box) { box.style.display = "none"; box.textContent = ""; }
+}
+function accountMessage(text) {
+    const box = document.getElementById("account-error");
+    if (box) { box.textContent = text; box.style.display = "block"; }
+}
+// Authentication succeeds independently of the optional Firestore profile write.
+function afterSignIn(user) {
+    updateAccountUI(user);
+    Promise.resolve().then(() => createUserDocument(user)).catch(() => {
+        console.warn("Account profile could not be initialized; authentication remains active.");
     });
 }
-
-const submitBtn = document.getElementById("account-submit");
+async function runAccountAction(action) {
+    if (accountBusy || !accountReady) return;
+    clearAccountMessage();
+    setAccountBusy(true);
+    try { await action(); } catch (error) { showAccountError(error); }
+    finally { setAccountBusy(false); }
+}
+if (googleBtn) {
+    const provider = new GoogleAuthProvider();
+    googleBtn.addEventListener("click", () => runAccountAction(async () => {
+        const result = await signInWithPopup(auth, provider);
+        afterSignIn(result.user);
+    }));
+}
 if (submitBtn) {
-    submitBtn.addEventListener("click", async () => {
-        const emailInput = document.getElementById("account-email");
-        const passwordInput = document.getElementById("account-password");
-        
-        const email = emailInput ? emailInput.value.trim() : "";
-        const password = passwordInput ? passwordInput.value : "";
-
-        if (!email || !password) {
-            showAccountError({ message: "Vul een email en wachtwoord in." });
-            return;
+    submitBtn.addEventListener("click", () => runAccountAction(async () => {
+        const email = document.getElementById("account-email")?.value.trim() || "";
+        const password = document.getElementById("account-password")?.value || "";
+        if (!email || !password) { accountMessage("Enter your email and password."); return; }
+        const mode = window.accountMode;
+        if (mode !== "signup" && mode !== "login") {
+            accountMessage("The account form is not ready. Please reload the page."); return;
         }
-
-        try {
-            let result;
-            if (window.accountMode === "signup") {
-                result = await createUserWithEmailAndPassword(auth, email, password);
-            } else {
-                result = await signInWithEmailAndPassword(auth, email, password);
-            }
-            await createUserDocument(result.user);
-            updateAccountUI(result.user);
-        } catch (error) {
-            showAccountError(error);
-        }
+        const result = mode === "signup"
+            ? await createUserWithEmailAndPassword(auth, email, password)
+            : await signInWithEmailAndPassword(auth, email, password);
+        afterSignIn(result.user);
+    }));
+}
+for (const id of ["account-email", "account-password"]) {
+    document.getElementById(id)?.addEventListener("keydown", event => {
+        if (event.key === "Enter" && submitBtn && !submitBtn.disabled) { event.preventDefault(); submitBtn.click(); }
     });
+}
+if (resetBtn) {
+    resetBtn.addEventListener("click", () => runAccountAction(async () => {
+        const email = document.getElementById("account-email")?.value.trim() || "";
+        if (!email) { accountMessage("Enter your email address first."); return; }
+        try { await sendPasswordResetEmail(auth, email); }
+        catch (error) { if (error?.code !== "auth/user-not-found") throw error; }
+        accountMessage("If an account exists for this email, a reset email may arrive shortly.");
+    }));
 }
 
 async function createUserDocument(user) {
@@ -139,11 +166,50 @@ async function createUserDocument(user) {
     }
 }
 
+let accountWasSignedIn = false;
+const originalAccountSwitch = document.querySelector(".account-switch")?.innerHTML;
+setAccountBusy(false);
 onAuthStateChanged(auth, (user) => {
-    if (user && document.getElementById("account-title")) {
+    accountReady = true;
+    setAccountBusy(accountBusy);
+    if (!document.getElementById("account-title")) return;
+    if (user) {
+        accountWasSignedIn = true;
         updateAccountUI(user);
+    } else if (accountWasSignedIn) {
+        accountWasSignedIn = false;
+        restoreSignedOutAccountUI();
     }
+}, () => {
+    accountReady = false;
+    setAccountBusy(accountBusy);
+    accountMessage("Account service is unavailable. Please reload and try again.");
 });
+
+function restoreSignedOutAccountUI() {
+    const title = document.getElementById("account-title");
+    const subtitle = document.getElementById("account-subtitle");
+    const submit = document.getElementById("account-submit");
+    const login = window.accountMode === "login";
+    if (title) title.innerText = login ? "Welcome back" : "Create your account";
+    if (subtitle) subtitle.innerText = login ? "Log in to continue your GamingNest journey." : "Create an account or log in to GamingNest.";
+    if (submit) submit.innerText = login ? "Log In" : "Create Account";
+    for (const el of [submit, resetBtn, googleBtn, document.querySelector(".account-divider"), document.getElementById("account-email"), document.getElementById("account-password")]) {
+        if (el) el.style.display = "";
+    }
+    const switchBox = document.querySelector(".account-switch");
+    if (switchBox && originalAccountSwitch !== undefined) {
+        switchBox.innerHTML = originalAccountSwitch;
+        const text = document.getElementById("account-switch-text");
+        const button = document.getElementById("account-switch-button");
+        if (text) text.innerText = login ? "Don't have an account?" : "Already have an account?";
+        if (button) button.innerText = login ? "Create account" : "Log in";
+        if (button) button.disabled = accountBusy;
+    }
+    const password = document.getElementById("account-password");
+    if (password) password.autocomplete = login ? "current-password" : "new-password";
+    clearAccountMessage();
+}
 
 function updateAccountUI(user) {
     const title = document.getElementById("account-title");
@@ -157,6 +223,9 @@ function updateAccountUI(user) {
     const submit = document.getElementById("account-submit");
     if (submit) submit.style.display = "none";
     
+    const reset = document.getElementById("account-reset");
+    if (reset) reset.style.display = "none";
+
     const google = document.getElementById("google-login");
     if (google) google.style.display = "none";
     
@@ -167,27 +236,37 @@ function updateAccountUI(user) {
     if (emailEl) emailEl.style.display = "none";
     
     const passEl = document.getElementById("account-password");
-    if (passEl) passEl.style.display = "none";
+    if (passEl) { passEl.value = ""; passEl.style.display = "none"; }
     
     const switchBox = document.querySelector(".account-switch");
     if (switchBox) {
-        switchBox.innerHTML = `<span id="logout-button" class="account-switch-button cursor-pointer text-red-400 hover:underline">Log out</span>`;
+        switchBox.innerHTML = `<button type="button" id="logout-button" class="account-switch-button cursor-pointer text-red-400 hover:underline">Log out</button>`;
         const logoutBtn = document.getElementById("logout-button");
         if (logoutBtn) {
             logoutBtn.addEventListener("click", async () => {
-                await signOut(auth);
-                location.reload();
+                try { await signOut(auth); }
+                catch (error) { showAccountError(error); }
             });
         }
     }
 }
 
 function showAccountError(error) {
-    const errorBox = document.getElementById("account-error");
-    if (errorBox) {
-        errorBox.style.display = "block";
-        errorBox.innerText = error.message || "Something went wrong.";
-    }
+    const messages = {
+        "auth/invalid-email": "Enter a valid email address.",
+        "auth/invalid-credential": "Email or password is incorrect.",
+        "auth/wrong-password": "Email or password is incorrect.",
+        "auth/user-not-found": "Email or password is incorrect.",
+        "auth/email-already-in-use": "This email is already in use. Try logging in instead.",
+        "auth/weak-password": "Choose a stronger password.",
+        "auth/user-disabled": "This account is disabled.",
+        "auth/operation-not-allowed": "This sign-in method is unavailable. Please contact support.",
+        "auth/too-many-requests": "Too many attempts. Please try again later.",
+        "auth/network-request-failed": "Network error. Check your connection and try again.",
+        "auth/popup-closed-by-user": "The Google sign-in window was closed.",
+        "auth/unauthorized-domain": "Sign-in is not available on this domain. Please contact support."
+    };
+    accountMessage(messages[error?.code] || "Sign-in could not be completed. Please try again.");
 }
 // ==========================================
 // EXPORTS VOOR INDEX.HTML (Stats & Hall of Fame)
