@@ -1,8 +1,16 @@
-.language-control { position: absolute; z-index: 100; top: 18px; left: 4%; display: flex; align-items: center; gap: 9px; padding: 6px 9px 6px 12px; border: 1px solid rgba(115, 223, 255, .48); border-radius: 16px; background: rgba(8, 15, 29, .94); box-shadow: 0 8px 24px rgba(0,0,0,.35); color: #e7f9ff; font: 700 .75rem 'Poppins', sans-serif; }
-.language-control__icon { color: #75ddff; font-size: 1rem; }
-.language-control__label { display: flex; flex-direction: column; line-height: 1.2; color: #b8c9db; }
-.language-control__label strong { color: #fff; font-size: .82rem; }
-.language-control__select { min-height: 38px; max-width: 125px; padding: 7px 27px 7px 10px; border: 1px solid rgba(117,221,255,.55); border-radius: 10px; color: #fff; background: #162c42; font: 700 .78rem 'Poppins', sans-serif; cursor: pointer; }
-.language-control__select:hover { border-color: #fff; background: #20415c; }
-.language-control__select:focus-visible { outline: 3px solid white; outline-offset: 3px; }
-@media (max-width: 650px) { .language-control { top: 12px; left: 4%; gap: 6px; padding: 5px 6px 5px 9px; } .language-control__label { font-size: .67rem; } .language-control__label strong { font-size: .74rem; } .language-control__select { min-height: 38px; } }
+/* Match the original compact EN/NL pill while giving its choices a styled panel. */
+.language-control { position: absolute; left: 4%; top: 20px; z-index: 100; font: 700 .78rem 'Poppins', sans-serif; }
+.language-control__trigger { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 68px; min-height: 36px; padding: 8px 11px; border: 1px solid rgba(0,191,255,.42); border-radius: 999px; background: rgba(6,8,13,.92); color: #d9f7ff; cursor: pointer; list-style: none; }
+.language-control__trigger::-webkit-details-marker { display: none; }
+.language-control__trigger:hover, .language-control[open] .language-control__trigger { border-color: #75ddff; background: #162c42; }
+.language-control__chevron { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.language-control[open] .language-control__chevron { transform: rotate(225deg) translate(-1px,-1px); }
+.language-control__options { position: absolute; top: calc(100% + 8px); left: 0; width: 162px; padding: 5px; border: 1px solid rgba(115,223,255,.48); border-radius: 14px; background: #0c1928; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+.language-control__option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent; color: #e7f9ff; font: inherit; text-align: left; cursor: pointer; }
+.language-control__option:hover { background: #20415c; }
+.language-control__option[aria-pressed="true"] { background: #17384c; color: #a9edff; }
+.language-control__check { visibility: hidden; color: #75ddff; }
+.language-control__option[aria-pressed="true"] .language-control__check { visibility: visible; }
+.language-control__trigger:focus-visible, .language-control__option:focus-visible { outline: 3px solid white; outline-offset: 2px; }
+@media (max-width: 650px) { .language-control { top: 15px; } }
+@media (forced-colors: active) { .language-control__option[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -2px; } }
