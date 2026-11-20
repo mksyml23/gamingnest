@@ -43,7 +43,9 @@ with tempfile.TemporaryDirectory(prefix='gn-build-') as td:
     assert sha(stage/'soepgames/games/aces.html') == 'c0a279877abe941d21935b339cad36e4c0451be59dcb9f63b910f573811d54f3'
     assert firebase.read_bytes() == bad
     final = home.read_bytes()
-    assert final.count(b'id="language-select"') == 1
+    assert final.count(b'id="language-control"') == 1
+    assert final.count(b'id="language-trigger"') == 1
+    assert final.count(b'data-language="en"') == 1 and final.count(b'data-language="nl"') == 1
     assert final.count(b'id="account-invite-login"') == 1
     assert final.count(b'id="home-scrollbar-style"') == 1
     assert b'/language.js' in final and b'/language.css' in final
