@@ -13,7 +13,9 @@
 #account-invite h2 { margin: 0 32px 8px 0; font-size: 1.15rem; line-height: 1.3; }
 #account-invite p { margin: 0 0 16px; color: #d0d6df; font-size: .9rem; line-height: 1.5; }
 #account-invite button { font-family: inherit; cursor: pointer; }
-#account-invite-create { border: 0; border-radius: 10px; padding: 11px 15px; background: #00bfff; color: #05080c; font-weight: 800; }
+#account-invite-create, #account-invite-login { border-radius: 10px; min-height: 44px; padding: 11px 15px; font-weight: 800; }
+#account-invite-create { border: 1px solid #00bfff; background: #00bfff; color: #05080c; }
+#account-invite-login { margin-left: 8px; border: 1px solid #73dfff; background: #162c42; color: #fff; }
 #account-invite-close { position: absolute; top: 9px; right: 10px; border: 0; border-radius: 8px; width: 40px; height: 40px; background: transparent; color: white; font-size: 1.6rem; line-height: 1; }
 #account-invite button:hover { filter: brightness(1.15); }
 #account-invite button:focus-visible, #modal-account button:focus-visible, #modal-account input:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
