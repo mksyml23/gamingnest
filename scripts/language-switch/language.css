@@ -1,0 +1,8 @@
+.language-control { position: absolute; z-index: 100; top: 18px; left: 4%; display: flex; align-items: center; gap: 9px; padding: 6px 9px 6px 12px; border: 1px solid rgba(115, 223, 255, .48); border-radius: 16px; background: rgba(8, 15, 29, .94); box-shadow: 0 8px 24px rgba(0,0,0,.35); color: #e7f9ff; font: 700 .75rem 'Poppins', sans-serif; }
+.language-control__icon { color: #75ddff; font-size: 1rem; }
+.language-control__label { display: flex; flex-direction: column; line-height: 1.2; color: #b8c9db; }
+.language-control__label strong { color: #fff; font-size: .82rem; }
+.language-control__select { min-height: 38px; max-width: 125px; padding: 7px 27px 7px 10px; border: 1px solid rgba(117,221,255,.55); border-radius: 10px; color: #fff; background: #162c42; font: 700 .78rem 'Poppins', sans-serif; cursor: pointer; }
+.language-control__select:hover { border-color: #fff; background: #20415c; }
+.language-control__select:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+@media (max-width: 650px) { .language-control { top: 12px; left: 4%; gap: 6px; padding: 5px 6px 5px 9px; } .language-control__label { font-size: .67rem; } .language-control__label strong { font-size: .74rem; } .language-control__select { min-height: 38px; } }
