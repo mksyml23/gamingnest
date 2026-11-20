@@ -42,4 +42,11 @@ with tempfile.TemporaryDirectory(prefix='gn-build-') as td:
     run(stage, 'apply-aces-ad-100.py'); assert sha(old) == old_hash
     assert sha(stage/'soepgames/games/aces.html') == 'c0a279877abe941d21935b339cad36e4c0451be59dcb9f63b910f573811d54f3'
     assert firebase.read_bytes() == bad
+    final = home.read_bytes()
+    assert final.count(b'id="language-select"') == 1
+    assert final.count(b'id="account-invite-login"') == 1
+    assert final.count(b'id="home-scrollbar-style"') == 1
+    assert b'/language.js' in final and b'/language.css' in final
+    assert (stage/'soepgames/language.js').is_file()
+    run(stage, 'apply-language-switch.py', False); assert home.read_bytes() == final
     print('PASS: clean verified build, fixed intermediate/final hashes, replay/drift fail-closed, one reset/invite, unchanged auth and legacy ACES, new ACES output')
