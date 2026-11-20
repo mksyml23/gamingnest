@@ -1,9 +1,6 @@
 (() => {
   'use strict';
-  const messages = {
-    en: { heroEyebrow:'Instant browser games', heroTitle:'Your next favourite game is already loaded.', heroText:'Pick a game, hit play, and jump straight in. No installs, no account required.', popular:'🔥 Popular', liked:'❤️ Most Liked', newest:'🆕 New', all:'🎮 All Games', search:'Search free browser games...', searchLabel:'Search for games', play:'Play', playNow:'Play Now', gameOfDay:'Game of the Day', featured:'One of GamingNest’s featured games. Jump in and see what makes it special.', results:'{count} games ready to play', noResults:'No games found. Try another title.', noResultsHint:'Nestor checked everywhere. Even behind the arcade cabinet.', heading:'Play Free Games Online Without Downloading', intro:'Play <strong style="color:#00bfff;">free online browser games</strong> instantly. No downloads. Just click and play action, idle, strategy and multiplayer games.', footerTitle:'Play Free Browser Games Online', footer1:'GamingNest is a free online gaming platform where you can play browser games instantly without downloads. Discover action games, idle games, strategy games and multiplayer games all in one place.', footer2:'Our games load directly in your browser, meaning you can start playing in seconds. No installation, no registration required, just click and play.', footer3:'Whether you enjoy fast-paced action, relaxing idle games, or competitive multiplayer experiences, GamingNest offers a growing collection of free games optimized for desktop and mobile.', label:'Language', current:'English', choose:'Choose language', inviteTitle:'Make GamingNest yours', inviteText:'Create a GamingNest account, or log in if you already have one. You can still play without an account.', inviteButton:'Create an account', inviteClose:'Dismiss account invitation', feedbackFor:'Feedback for: {game}', feedbackDefault:"What's on your mind?", feedbackName:'Your Name', feedbackEmail:'Your Email', feedbackMessage:'Type here...', messageLabel:'Your Message', submit:'Submit', close:'Close modal', hofLoading:'Loading legends...', hofEmpty:'No legends have been forged yet.', hofFirst:'Will you be the first?', hofFailed:'Failed to load Hall of Fame.', like:'Like {game}', feedback:'Give feedback on {game}', image:'Play {game} - Free Online Browser Game' },
-    nl: { heroEyebrow:'Direct in je browser', heroTitle:'Je volgende favoriete game staat al klaar.', heroText:'Kies een game, druk op spelen en ga meteen los. Geen installatie en geen account nodig.', popular:'🔥 Populair', liked:'❤️ Meest geliket', newest:'🆕 Nieuw', all:'🎮 Alle games', search:'Zoek gratis browsergames...', searchLabel:'Zoek naar games', play:'Spelen', playNow:'Nu spelen', gameOfDay:'Game van de dag', featured:'Een uitgelichte GamingNest-game. Start hem en ontdek waarom.', results:'{count} games klaar om te spelen', noResults:'Geen games gevonden. Probeer een andere titel.', noResultsHint:'Nestor heeft overal gekeken. Zelfs achter de arcadekast.', heading:'Speel gratis online games zonder download', intro:'Speel direct <strong style="color:#00bfff;">gratis online browsergames</strong>. Geen downloads. Klik en speel actie-, idle-, strategie- en multiplayerspellen.', footerTitle:'Speel gratis browsergames online', footer1:'GamingNest is een gratis online spelplatform waar je direct browsergames speelt zonder downloads. Ontdek actie-, idle-, strategie- en multiplayergames op één plek.', footer2:'Onze games laden direct in je browser, zodat je binnen enkele seconden kunt spelen. Geen installatie of registratie nodig: klik en speel.', footer3:'Of je nu houdt van snelle actie, ontspannende idle-games of competitieve multiplayer: GamingNest biedt een groeiende verzameling gratis games voor desktop en mobiel.', label:'Taal', current:'Nederlands', choose:'Kies taal', inviteTitle:'Maak GamingNest van jou', inviteText:'Maak een GamingNest-account aan of log in als je er al een hebt. Je kunt ook zonder account spelen.', inviteButton:'Account aanmaken', inviteClose:'Accountuitnodiging sluiten', feedbackFor:'Feedback voor: {game}', feedbackDefault:'Wat wil je ons vertellen?', feedbackName:'Je naam', feedbackEmail:'Je e-mailadres', feedbackMessage:'Typ hier...', messageLabel:'Je bericht', submit:'Versturen', close:'Venster sluiten', hofLoading:'Legendes laden...', hofEmpty:'Er zijn nog geen legendes gemaakt.', hofFirst:'Ben jij de eerste?', hofFailed:'Hall of Fame kon niet worden geladen.', like:'Like {game}', feedback:'Geef feedback over {game}', image:'Speel {game} - gratis online browsergame' }
-  };
+  const messages = window.GNMessages;
   let saved;
   try { saved = localStorage.getItem('gn_locale'); } catch (_) {}
   let locale = saved === 'nl' || saved === 'en' ? saved : ((navigator.language || '').toLowerCase().startsWith('nl') ? 'nl' : 'en');
@@ -19,7 +16,8 @@
       ['#account-switch-button', ['Log in','Create account'], ['Inloggen','Account aanmaken']],
       ['#account-reset', ['Forgot password?'], ['Wachtwoord vergeten?']],
       ['#logout-button', ['Log out'], ['Uitloggen']],
-      ['.account-divider', ['OR'], ['OF']]
+      ['.account-divider', ['OR'], ['OF']],
+      ...(window.GNAccountMessageTranslations ? [window.GNAccountMessageTranslations] : [])
     ];
     for (const [selector, en, nl] of pairs) {
       const el = document.querySelector(selector); if (!el) continue;
@@ -36,8 +34,11 @@
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll('.categories button').forEach((el, i) => { const key = ['popular','liked','newest','all'][i]; if (key) el.textContent = t(key); });
     const search = document.getElementById('search'); if (search) { search.placeholder = t('search'); search.setAttribute('aria-label', t('searchLabel')); }
-    const picker = document.getElementById('language-select'); picker.value = locale; picker.setAttribute('aria-label', t('choose'));
-    setText('#language-label', t('label')); setText('#language-current', t('current'));
+    const trigger = document.getElementById('language-trigger');
+    trigger.setAttribute('aria-label', `${t('choose')}: ${t('current')}`);
+    document.querySelector('.language-control__options').setAttribute('aria-label', t('choose'));
+    document.querySelectorAll('[data-language]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.language === locale)));
+    setText('#language-current', locale.toUpperCase());
     setText('.hero-desc h2', t('heading')); const intro = document.querySelector('.hero-desc p'); if (intro) intro.innerHTML = t('intro');
     const footer = document.getElementById('homepage-description'); if (footer) { footer.querySelector('h2').textContent = t('footerTitle'); footer.querySelectorAll('p').forEach((p,i) => { p.textContent = t('footer' + (i+1)); }); }
     setText('#account-invite-title', t('inviteTitle')); setText('#account-invite p', t('inviteText')); setText('#account-invite-create', t('inviteButton')); setText('#account-invite-login', locale === 'nl' ? 'Inloggen' : 'Log in');
@@ -45,14 +46,32 @@
     const feedback = document.getElementById('modal-subtitle'); if (feedback) feedback.textContent = feedback.dataset.game ? t('feedbackFor', {game: feedback.dataset.game}) : t('feedbackDefault');
     for (const [selector, placeholder, label] of [['#modal-contact input[name="name"]','feedbackName','feedbackName'],['#modal-contact input[name="email"]','feedbackEmail','feedbackEmail'],['#modal-contact textarea','feedbackMessage','messageLabel']]) { const el = document.querySelector(selector); if (el) { el.placeholder = t(placeholder); el.setAttribute('aria-label', t(label)); } }
     setText('#modal-contact .submit-btn', t('submit')); document.querySelector('#modal-contact .close-modal')?.setAttribute('aria-label', t('close'));
+    const stats = document.querySelectorAll('.hero-stats > div');
+    const labels = locale === 'nl' ? ['🎮 18 games', '👥 3600+ keer gespeeld', '❤️ 500+ likes'] : ['🎮 18 Games', '👥 3600+ Plays', '❤️ 500+ Likes'];
+    stats.forEach((el, i) => { if (labels[i] && el.textContent !== labels[i]) el.textContent = labels[i]; });
+    document.querySelector('.dock')?.setAttribute('aria-label', locale === 'nl' ? 'Sociale media' : 'Social Media Links');
+    document.querySelector('#modal-account .close-modal')?.setAttribute('aria-label', locale === 'nl' ? 'Accountvenster sluiten' : 'Close account');
     updateAccount();
   }
-  window.GNLanguage = { get locale() { return locale; }, t };
-  document.getElementById('language-select').addEventListener('change', e => {
-    if (e.target.value !== 'en' && e.target.value !== 'nl') return;
-    locale = e.target.value; try { localStorage.setItem('gn_locale', locale); } catch (_) {}
+
+  window.GNLanguage = { get locale() { return locale; }, t, nestor: text => locale === 'nl' ? ((window.GNNestorNL || {})[text] || text) : text };
+  const control = document.getElementById('language-control');
+  const trigger = document.getElementById('language-trigger');
+  control.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => {
+    const next = button.dataset.language;
+    control.open = false;
+    trigger.focus();
+    if ((next !== 'en' && next !== 'nl') || next === locale) return;
+    locale = next; try { localStorage.setItem('gn_locale', locale); } catch (_) {}
     apply(); window.dispatchEvent(new Event('gn-language-change'));
+  }));
+  control.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && control.open) { e.preventDefault(); control.open = false; trigger.focus(); }
   });
+  control.addEventListener('focusout', e => {
+    if (control.open && e.relatedTarget && !control.contains(e.relatedTarget)) control.open = false;
+  });
+  document.addEventListener('click', e => { if (control.open && !control.contains(e.target)) control.open = false; });
   apply();
   // The invitation is appended later in the document by the build pipeline.
   document.addEventListener('DOMContentLoaded', apply, {once:true});
