@@ -10,10 +10,10 @@ function setup({stored = false, blocked = false} = {}) {
   const document = {hidden:false, activeElement:null, addEventListener(type, fn) { handlers[type] = fn; }};
   const el = id => ({id, hidden:false, display:'none', handlers:{}, focus() { document.activeElement = this; }, addEventListener(type, fn) { this.handlers[type] = fn; }, click() { this.handlers.click(); }});
   const invite = el('account-invite'); invite.hidden = true;
-  const close = el('account-invite-close'), create = el('account-invite-create'), dock = el('account-dock-button'), email = el('account-email');
-  invite.contains = target => target === close || target === create;
+  const close = el('account-invite-close'), create = el('account-invite-create'), login = el('account-invite-login'), dock = el('account-dock-button'), email = el('account-email');
+  invite.contains = target => target === close || target === create || target === login;
   const modal = el('modal-account'); modal.display = blocked ? 'flex' : 'none'; modal.contains = () => false; modal.querySelector = () => null;
-  const nodes = Object.fromEntries([invite,close,create,dock,email,modal].map(n => [n.id,n]));
+  const nodes = Object.fromEntries([invite,close,create,login,dock,email,modal].map(n => [n.id,n]));
   document.getElementById = id => nodes[id];
   document.querySelectorAll = () => [modal];
   const store = stored ? {'gamingnest-account-invite-dismissed':'1'} : {};
@@ -25,7 +25,7 @@ function setup({stored = false, blocked = false} = {}) {
   vm.runInNewContext(source, context);
   function advance(ms) { const end = now + ms; while (true) { const entries = [...pending.entries()].sort((a,b) => a[1].at-b[1].at); if (!entries.length || entries[0][1].at > end) break; const [id, job] = entries[0]; pending.delete(id); now=job.at; job.fn(); } now=end; }
   function emit(user) { auth.currentUser = user; listener(user); }
-  return {invite, close, create, dock, email, modal, auth, window, document, store, advance, emit, error: () => error(new Error()), key: k => handlers.keydown({key:k, preventDefault() {}}), opened: () => opened};
+  return {invite, close, create, login, dock, email, modal, auth, window, document, store, advance, emit, error: () => error(new Error()), key: k => handlers.keydown({key:k, preventDefault() {}}), opened: () => opened};
 }
 {
  const t=setup(); t.advance(100000); assert(t.invite.hidden, 'unresolved authentication must never show'); t.emit({uid:'signed-in'}); t.advance(100000); assert(t.invite.hidden, 'signed-in must never show');
@@ -48,4 +48,13 @@ function setup({stored = false, blocked = false} = {}) {
 {
  const t=setup(); t.emit(null); t.advance(8000); t.auth.currentUser={uid:'new'}; t.create.click(); assert.equal(t.opened(),0); assert(t.invite.hidden);
 }
-console.log('PASS: unresolved/signed-in/signed-out timing, close/Escape/session/focus, auth changes/errors, existing modal, signup CTA and stale state');
+{
+ const t=setup(); t.emit(null); t.advance(8000); t.login.click(); assert.equal(t.window.accountMode,'login'); assert.equal(t.opened(),1); assert(t.invite.hidden); assert.equal(t.document.activeElement,t.email);
+}
+{
+ const t=setup(); t.emit(null); t.advance(8000); t.window.accountMode='login'; t.login.click(); assert.equal(t.window.accountMode,'login'); assert.equal(t.opened(),1);
+}
+{
+ const t=setup(); t.emit(null); t.advance(8000); t.auth.currentUser={uid:'new'}; t.login.click(); assert.equal(t.opened(),0); assert(t.invite.hidden);
+}
+console.log('PASS: invitation visibility, accessibility, signup and login actions, auth changes and stale state');
